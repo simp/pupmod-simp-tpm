@@ -67,7 +67,7 @@ class tpm::ima (
     }
 
     kernel_parameter { 'ima_audit':
-      value    => "$ima_audit",
+      value    => $ima_audit,
       bootmode => 'normal'
     }
 

@@ -1,10 +1,15 @@
-require 'rubygems'
 require 'pathname'
 require 'rspec-puppet'
 require 'puppetlabs_spec_helper/module_spec_helper'
 
 # RSpec Material
+
+def mod_site_pp(content)
+  File.open(@orig_site_pp,'w'){|f| f.write(content) }
+end
+
 fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
+module_name = File.basename(File.expand_path(File.join(__FILE__,'../..')))
 
 # Add fixture lib dirs to LOAD_PATH. Work-around for PUP-3336
 if Puppet.version < "4.0.0"
@@ -28,8 +33,25 @@ default_hiera_config =<<-EOM
   - "default"
 EOM
 
+if not File.directory?(File.join(fixture_path,'hieradata')) then
+  FileUtils.mkdir_p(File.join(fixture_path,'hieradata'))
+end
+
+if not File.directory?(File.join(fixture_path,'modules',module_name)) then
+  FileUtils.mkdir_p(File.join(fixture_path,'modules',module_name))
+end
+
+Dir.chdir(File.join(fixture_path,'modules',module_name)) do
+  ['manifests','templates','lib'].each do |tgt|
+    if not File.symlink?(tgt) then
+      FileUtils.ln_sf("../../../../#{tgt}",tgt)
+    end
+  end
+end
+
 RSpec.configure do |c|
   c.mock_framework = :rspec
+  c.mock_with :mocha
 
   c.module_path = File.join(fixture_path, 'modules')
   c.manifest_dir = File.join(fixture_path, 'manifests')
@@ -45,10 +67,26 @@ if Puppet.version < "4.0.0"
 end
 
     data = YAML.load(default_hiera_config)
-    data[:yaml][:datadir] = File.join(fixture_path, 'hieradata')
+    data[:yaml][:datadir] = File.join(fixture_path, 'hieradata').to_s
     File.open(c.hiera_config, 'w') do |f|
       f.write data.to_yaml
     end
+
+    @orig_site_pp = File.join(c.manifest_dir,'site.pp')
+    @orig_site_pp_content = File.read(@orig_site_pp)
+  end
+
+  c.before(:each) do
+    @spec_global_env_temp = Dir.mktmpdir('simptest')
+    Puppet[:environmentpath] = @spec_global_env_temp
+  end
+
+  c.after(:each) do
+    FileUtils.rm_rf(@spec_global_env_temp)
+  end
+
+  c.after(:all) do
+    mod_site_pp(@orig_site_pp_content)
   end
 end
 
