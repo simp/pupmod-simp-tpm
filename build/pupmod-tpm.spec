@@ -1,7 +1,7 @@
 Summary: TPM Puppet Module
 Name: pupmod-tpm
 Version: 0.0.1
-Release: 6
+Release: 7
 License: Apache License, Version 2.0
 Group: Applications/System
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -61,6 +61,9 @@ fi
 # Post uninstall stuff
 
 %changelog
+* Thu Jul 09 2015 Nick Markowski <nmarkowski@kewcorp.com> - 0.0.1-7
+- Cast ima_audit to string when passed to kernel_parameter.
+
 * Thu Feb 19 2015 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.1-6
 - Migrated to the new 'simp' environment.
 
