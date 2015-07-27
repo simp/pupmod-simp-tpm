@@ -41,14 +41,6 @@ if not File.directory?(File.join(fixture_path,'modules',module_name)) then
   FileUtils.mkdir_p(File.join(fixture_path,'modules',module_name))
 end
 
-Dir.chdir(File.join(fixture_path,'modules',module_name)) do
-  ['manifests','templates','lib'].each do |tgt|
-    if not File.symlink?(tgt) then
-      FileUtils.ln_sf("../../../../#{tgt}",tgt)
-    end
-  end
-end
-
 RSpec.configure do |c|
   c.mock_framework = :rspec
   c.mock_with :mocha

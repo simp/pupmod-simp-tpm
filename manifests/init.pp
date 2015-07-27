@@ -1,6 +1,6 @@
 # == Class: tpm
 #
-# Sets up tpm
+# Provides utilities for interacting with a TPM
 #
 # == Parameters
 #
@@ -12,7 +12,7 @@
 # * Nick Markowski <nmarkowski@keywcorp.com>
 #
 class tpm (
-  $use_ima = true
+  $use_ima = false
 ){
   # Check if the system has a TPM (which also checks that it
   # is a physical machine, and if so install tools and setup
