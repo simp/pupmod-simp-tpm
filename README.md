@@ -12,3 +12,9 @@ Please read our [Contribution Guide](https://simp-project.atlassian.net/wiki/dis
 Please excuse us as we transition this code into the public domain.
 
 Downloads, discussion, and patches are still welcome!
+
+### tboot.pp
+#
+# The tpm::tboot class is disabled by default. You will need to add the class and set enable to true. When enabled it will look for the "has_tpm" fact and the version of Enterprise Linux. If it is version 6 or version 7 it will install the tboot RPM and setup grub for trusted boot. A reboot is required to enter tboot mode. If tboot was successful PCR 17-19 will be populated with real hash values. Developement information of Intel(R) TXT can be found here: http://www.intel.com/content/dam/www/public/us/en/documents/guides/intel-txt-software-development-guide.pdf. 
+#
+###
