@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ae8d1ca_9caea5e6",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-09-03T13:38:00Z",
+      "side": 1,
+      "message": "Typo: perameters \u003d\u003e parameters",
+      "revId": "dd39583fe10cc0459d200c9632a51f0638394249",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_fc8c0982",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-09-03T13:38:00Z",
+      "side": 1,
+      "message": "Typo: optioni",
+      "revId": "dd39583fe10cc0459d200c9632a51f0638394249",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_fcba4909",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-09-03T13:38:00Z",
+      "side": 1,
+      "message": "If there is an enable \u0027true\u0027, there needs to be an enable \u0027false\u0027 so that the system can disable trusted boot if necessary.",
+      "revId": "dd39583fe10cc0459d200c9632a51f0638394249",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_5c417d0a",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-09-03T13:38:00Z",
+      "side": 1,
+      "message": "This should probably be pulled up into init.pp so that this becomes a proper subclass of the TPM class.",
+      "revId": "dd39583fe10cc0459d200c9632a51f0638394249",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_3c3cb193",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-09-03T13:38:00Z",
+      "side": 1,
+      "message": "This looks like it modifies the current entry.\n\nThere should be a backup made of the existing entry so that users can recover in case there is only one entry in the list.\n\nAlso, I\u0027m not seeing where the system sets this new entry as the default. This should be done if you\u0027re enabling trusted boot.\n\nFinally, how do you know that you\u0027re getting the correct entry? Grub can set the default to be something other than the first entry.",
+      "revId": "dd39583fe10cc0459d200c9632a51f0638394249",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_9c4a2526",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-09-03T13:38:00Z",
+      "side": 1,
+      "message": "This should probably be simp_file_line.",
+      "revId": "dd39583fe10cc0459d200c9632a51f0638394249",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_dc54adcc",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-09-03T13:38:00Z",
+      "side": 1,
+      "message": "This is not precise enough. How do you know that this is the *correct* tboot?",
+      "revId": "dd39583fe10cc0459d200c9632a51f0638394249",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_bcc0c17d",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-09-03T13:38:00Z",
+      "side": 1,
+      "message": "This should be moved to the top.",
+      "revId": "dd39583fe10cc0459d200c9632a51f0638394249",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
