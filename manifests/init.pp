@@ -7,12 +7,16 @@
 # [*use_ima*]
 #   Boolean.  Toggles IMA on or off.
 #
+# [*use_tboot*]
+#   Boolean.  Toggles tboot on or off.
+#
 # == Authors
 #
 # * Nick Markowski <nmarkowski@keywcorp.com>
 #
 class tpm (
-  $use_ima = false
+  $use_ima = false,
+  $use_tboot = false
 ){
   # Check if the system has a TPM (which also checks that it
   # is a physical machine, and if so install tools and setup
@@ -31,5 +35,9 @@ class tpm (
 
   if $use_ima {
     include '::tpm::ima'
+  }
+
+  if $use_tboot {
+    include '::tpm::tboot'
   }
 }
