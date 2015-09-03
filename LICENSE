@@ -13,6 +13,16 @@ derivatives thereof, pursuant to the contracts under which it was developed and
 the License under which it falls.
 
 ---
+tboot.pp
+
+Intel(R) TXT Trusted Boot Module - Puppet module for configuring tboot
+
+   Copyright (C) 2015 Silicon Graphics International Corp.
+   All Rights Reserved.
+
+     Jacob Gingrich <gingrich@sgi.com>
+
+---
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
