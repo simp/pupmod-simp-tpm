@@ -1,0 +1,303 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e10c3997",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "Should this be something like \"Add tboot support to tpm module?\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 11,
+        "endLine": 7,
+        "endChar": 27
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_814615be",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 11,
+        "startChar": 547,
+        "endLine": 11,
+        "endChar": 548
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a11231b2",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 12,
+        "startChar": 168,
+        "endLine": 12,
+        "endChar": 169
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_614909d0",
+        "filename": "manifests/init.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 11,
+        "startChar": 38,
+        "endLine": 11,
+        "endChar": 40
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_216d4133",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "This is *REALLY* good to know.  Thanks for adding it!",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 70
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_018925eb",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "We should consider moving this into tpm (init.pp)",
+      "range": {
+        "startLine": 33,
+        "startChar": 1,
+        "endLine": 33,
+        "endChar": 17
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a17951fe",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "This should be operatingsystemmajrelease (in case redhat-lsb-core isn\u0027t installed).",
+      "range": {
+        "startLine": 45,
+        "startChar": 14,
+        "endLine": 45,
+        "endChar": 31
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c1173da2",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 8
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_416a4d1b",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "operatingsystemmajrelease",
+      "range": {
+        "startLine": 81,
+        "startChar": 14,
+        "endLine": 81,
+        "endChar": 31
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_21262117",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "operatingsystemmajrelease",
+      "range": {
+        "startLine": 108,
+        "startChar": 12,
+        "endLine": 108,
+        "endChar": 29
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_811d35c0",
+        "filename": "manifests/tboot.pp",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "operatingsystemmajrelease",
+      "range": {
+        "startLine": 145,
+        "startChar": 12,
+        "endLine": 145,
+        "endChar": 29
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c1657d46",
+        "filename": "spec/classes/tboot_spec.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "operatingsystemmajrelease",
+      "range": {
+        "startLine": 7,
+        "startChar": 5,
+        "endLine": 7,
+        "endChar": 22
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a1607136",
+        "filename": "spec/classes/tboot_spec.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-09-16T04:49:34Z",
+      "side": 1,
+      "message": "operatingsystemmajrelease",
+      "range": {
+        "startLine": 19,
+        "startChar": 7,
+        "endLine": 19,
+        "endChar": 24
+      },
+      "revId": "7aadd70c6e984caed049a102d97d5c59fdd3124d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
