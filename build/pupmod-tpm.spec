@@ -1,13 +1,14 @@
 Summary: TPM Puppet Module
 Name: pupmod-tpm
 Version: 0.0.1
-Release: 8
+Release: 9
 License: Apache License, Version 2.0
 Group: Applications/System
 Source: %{name}-%{version}-%{release}.tar.gz
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Requires: pupmod-augeasproviders >= 1.0.2-1
 Requires: pupmod-common >= 4.2.0-7
+Requires: pupmod-simplib >= 1.0.0-0
 Requires: puppet >= 3.3.0
 Requires: puppetlabs-stdlib >= 4.1.0-0
 Buildarch: noarch
@@ -61,6 +62,9 @@ fi
 # Post uninstall stuff
 
 %changelog
+* Mon Nov 09 2015 Chris Tessmer <chris.tessmer@onypoint.com> - 0.0.1-9
+- migration to simplib and simpcat (lib/ only)
+
 * Mon Jul 27 2015 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.0.1-8
 - Disable IMA by default.
 
