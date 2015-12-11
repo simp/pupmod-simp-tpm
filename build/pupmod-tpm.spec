@@ -7,7 +7,6 @@ Group: Applications/System
 Source: %{name}-%{version}-%{release}.tar.gz
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Requires: pupmod-augeasproviders >= 1.0.2-1
-Requires: pupmod-common >= 4.2.0-7
 Requires: pupmod-simplib >= 1.0.0-0
 Requires: puppet >= 3.3.0
 Requires: puppetlabs-stdlib >= 4.1.0-0

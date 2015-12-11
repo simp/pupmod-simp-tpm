@@ -1,0 +1,41 @@
+{
+  "name":    "simp-tpm",
+  "version": "0.0.1",
+  "author":  "simp",
+  "summary": "manages IMA (if your system supports it)",
+  "license": "Apache-2.0",
+  "source":  "https://github.com/simp/pupmod-simp-tpm",
+  "project_page": "https://github.com/simp/pupmod-simp-tpm",
+  "issues_url":   "https://simp-project.atlassian.net",
+  "tags": [ "simp", "tpm", "ima" ],
+  "dependencies": [
+    {
+      "name": "herculesteam/augeasproviders",
+      "version_requirement": ">= 1.0.2"
+    },
+    {
+      "name": "simp-simplib",
+      "version_requirement": ">= 1.0.0"
+    },
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 4.1.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ]
+}

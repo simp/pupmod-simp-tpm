@@ -44,6 +44,11 @@ class tpm::ima (
   $ima_hash = 'sha1',
   $ima_tcb = true
 ){
+  validate_bool($enable)
+  validate_absolute_path($mount_dir)
+  validate_bool($ima_audit)
+  validate_array_member($ima_template, ['ima','ima-ng','ima-sig'])
+  validate_bool($ima_tcb)
 
   if $enable {
     if $::cmdline['ima'] == 'on' {
@@ -67,7 +72,7 @@ class tpm::ima (
     }
 
     kernel_parameter { 'ima_audit':
-      value    => "$ima_audit",
+      value    => $ima_audit,
       bootmode => 'normal'
     }
 
@@ -106,9 +111,4 @@ class tpm::ima (
       Kernel_parameter['ima_hash']
     ]
   }
-
-  validate_bool($ima_audit)
-  validate_absolute_path($mount_dir)
-  validate_array_member($ima_template, ['ima','ima-ng','ima-sig'])
-  validate_bool($ima_tcb)
 }

@@ -1,28 +1,68 @@
-#!/usr/bin/rake -T
+require 'puppetlabs_spec_helper/rake_tasks'
+require 'puppet/version'
+require 'puppet/vendor/semantic/lib/semantic' unless Puppet.version.to_f < 3.6
+require 'puppet-syntax/tasks/puppet-syntax'
+require 'puppet-lint/tasks/puppet-lint'
 
-# For playing nice with mock
-File.umask(027)
+# These gems aren't always present, for instance
+# on Travis with --without development
+begin
+  require 'puppet_blacksmith/rake_tasks'
+rescue LoadError
+end
 
-require 'simp/rake/pkg'
+
+# Lint & Syntax exclusions
+exclude_paths = [
+  "bundle/**/*",
+  "pkg/**/*",
+  "dist/**/*",
+  "vendor/**/*",
+  "spec/**/*",
+]
+PuppetSyntax.exclude_paths = exclude_paths
+
+# See: https://github.com/rodjek/puppet-lint/pull/397
+Rake::Task[:lint].clear
+PuppetLint.configuration.ignore_paths = exclude_paths
+PuppetLint::RakeTask.new :lint do |config|
+  config.ignore_paths = PuppetLint.configuration.ignore_paths
+end
 
 begin
-  require 'puppetlabs_spec_helper/rake_tasks'
+  require 'simp/rake/pkg'
+  Simp::Rake::Pkg.new( File.dirname( __FILE__ ) ) do | t |
+    t.clean_list << "#{t.base_dir}/spec/fixtures/hieradata/hiera.yaml"
+  end
 rescue LoadError
-  puts "== WARNING: Gem puppetlabs_spec_helper not found, spec tests cannot be run! =="
+  puts "== WARNING: Gem simp-rake-helpers not found, pkg: tasks cannot be run! =="
 end
 
-# Lint Material
 begin
-  require 'puppet-lint/tasks/puppet-lint'
-
-  PuppetLint.configuration.send("disable_80chars")
-  PuppetLint.configuration.send("disable_variables_not_enclosed")
-  PuppetLint.configuration.send("disable_class_parameter_defaults")
-  PuppetLint.configuration.send('disable_only_variable_string')
+  require 'simp/rake/beaker'
+  Simp::Rake::Beaker.new( File.dirname( __FILE__ ) )
 rescue LoadError
-  puts "== WARNING: Gem puppet-lint not found, lint tests cannot be run! =="
+  # Ignoring this for now since all of these are currently convenience methods.
 end
 
-Simp::Rake::Pkg.new( File.dirname( __FILE__ ) ) do | t |
-  t.clean_list << "#{t.base_dir}/spec/fixtures/hieradata/hiera.yaml"
+desc "Run acceptance tests"
+RSpec::Core::RakeTask.new(:acceptance) do |t|
+  t.pattern = 'spec/acceptance'
 end
+
+desc "Populate CONTRIBUTORS file"
+task :contributors do
+  system("git log --format='%aN' | sort -u > CONTRIBUTORS")
+end
+
+task :metadata do
+  sh "metadata-json-lint metadata.json"
+end
+
+desc "Run syntax, lint, and spec tests."
+task :test => [
+  :syntax,
+  :lint,
+  :spec,
+  :metadata,
+]
