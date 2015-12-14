@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac4a560_1e5eb612",
+        "filename": "build/pupmod-tpm.spec",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-12-14T13:19:24Z",
+      "side": 0,
+      "message": "Can we go ahead and change /etc to %{_sysconfdir} here?",
+      "revId": "fa9a536980d8a12f35ecd0a77d4e35df9b4b6352",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
