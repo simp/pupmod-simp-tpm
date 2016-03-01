@@ -1,7 +1,7 @@
 Summary: TPM Puppet Module
 Name: pupmod-tpm
 Version: 0.0.1
-Release: 9
+Release: 10
 License: Apache License, Version 2.0
 Group: Applications/System
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -13,6 +13,7 @@ Requires: puppetlabs-stdlib >= 4.1.0-0
 Buildarch: noarch
 Requires: simp-bootstrap >= 4.2.0
 Obsoletes: pupmod-tpm-test
+Requires: pupmod-onyxpoint-compliance_markup
 
 Prefix: /etc/puppet/environments/simp/modules
 
@@ -61,6 +62,9 @@ fi
 # Post uninstall stuff
 
 %changelog
+* Tue Mar 01 2016 Ralph Wright <ralph.wright@onyxpoint.com> - 0.0.1-10
+- Added compliance function support
+
 * Mon Nov 09 2015 Chris Tessmer <chris.tessmer@onypoint.com> - 0.0.1-9
 - migration to simplib and simpcat (lib/ only)
 

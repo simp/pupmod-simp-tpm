@@ -6,5 +6,6 @@ fixtures:
     common: "git://github.com/simp/pupmod-simp-common"
     simplib: "git://github.com/simp/pupmod-simp-simplib"
     stdlib: "git://github.com/simp/puppetlabs-stdlib"
+    compliance: "https://github.com/trevor-vaughan/pupmod-compliance"
   symlinks:
     tpm: "#{source_dir}"
