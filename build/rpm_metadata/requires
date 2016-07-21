@@ -1,0 +1,5 @@
+Requires: pupmod-augeasproviders >= 1.0.2-1
+Requires: pupmod-simp-compliance_markup
+Requires: pupmod-simplib >= 1.0.0-0
+Requires: puppetlabs-stdlib >= 4.1.0-0
+Obsoletes: pupmod-tpm-test >= 0.0.1
