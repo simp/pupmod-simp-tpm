@@ -1,6 +1,6 @@
 ---
 language: ruby
-sudo: false
+sudo: true
 cache: bundler
 before_script:
   - bundle

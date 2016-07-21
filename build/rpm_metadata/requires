@@ -1,0 +1,3 @@
+Requires: pupmod-herculesteam-augeasproviders >= 1.0.2-1
+Requires: pupmod-simp-compliance_markup
+Obsoletes: pupmod-tpm-test >= 0.0.1
