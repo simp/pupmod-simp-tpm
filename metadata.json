@@ -1,20 +1,19 @@
 {
   "name":    "simp-tpm",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author":  "simp",
-  "summary": "manages IMA (if your system supports it)",
+  "summary": "manages TPMs and IMA (if your system supports it)",
   "license": "Apache-2.0",
   "source":  "https://github.com/simp/pupmod-simp-tpm",
   "project_page": "https://github.com/simp/pupmod-simp-tpm",
   "issues_url":   "https://simp-project.atlassian.net",
-  "tags": [ "simp", "tpm", "ima" ],
+  "tags": [ "simp", "tpm", "ima", "pkcs11" ],
   "dependencies": [
     {
       "name": "herculesteam/augeasproviders",
       "version_requirement": ">= 1.0.2"
     },
-    {
-      "name": "simp/simplib",
+    {  "name": "simp/simplib",
       "version_requirement": ">= 1.0.0"
     },
     {
