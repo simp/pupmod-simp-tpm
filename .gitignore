@@ -1,5 +1,5 @@
 .*.sw?
-.yardoc
+.yard*
 dist
 /pkg
 /spec/fixtures
@@ -13,3 +13,4 @@ dist
 /vendor
 /junit
 /log
+/doc

@@ -1,9 +1,0 @@
---- 
-  fixtures: 
-    symlinks: 
-      augeasproviders_core: "#{source_dir}/../augeasproviders_core"
-      augeasproviders_grub: "#{source_dir}/../augeasproviders_grub"
-      compliance_markup: "#{source_dir}/../compliance_markup"
-      simplib: "#{source_dir}/../simplib"
-      stdlib: "#{source_dir}/../stdlib"
-      tpm: "#{source_dir}"
