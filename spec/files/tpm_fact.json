@@ -1,0 +1,57 @@
+{
+  "version": {
+    "chip_version": "1.2.37.19",
+    "spec_level": 2,
+    "errata_revision": 3,
+    "tpm_vendor_id": "ATML",
+    "tpm_version": 266240,
+    "manufacturer_info": "41544d4c"
+  },
+  "status": {
+    "pcrs": {
+      "pcr-00": "A2 39 13 09 65 A6 54 06 07 7F C4 C2 E3 7C C5 B9 C5 D7 ED AA",
+      "pcr-01": "EA AF 1F 19 4A 9A BE 72 AD E1 7D 1A 4A 4C C4 9A 98 73 33 12",
+      "pcr-02": "BB A3 51 74 CF 09 74 27 B6 C7 DB B6 14 F4 85 8B 22 12 D6 48",
+      "pcr-03": "B2 A8 3B 0E BF 2F 83 74 29 9A 5B 2B DF C3 1E A9 55 AD 72 36",
+      "pcr-04": "67 8F 6B B3 34 00 C4 68 60 99 37 97 91 F0 D5 AD 15 0B 99 4F",
+      "pcr-05": "08 57 12 44 4A 8C 4E DA 61 D2 83 72 74 24 E8 B8 2F E3 14 DE",
+      "pcr-06": "EE 1B 0F 99 7D 75 17 B2 86 BC 9D 73 A4 CF 74 2C 65 A7 69 BE",
+      "pcr-07": "B2 A8 3B 0E BF 2F 83 74 29 9A 5B 2B DF C3 1E A9 55 AD 72 36",
+      "pcr-08": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-09": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-10": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-11": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-12": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-13": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-14": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-15": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-16": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-17": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-18": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-19": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-20": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-21": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-22": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-23": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+    },
+    "caps": {
+      "manufacturer": 1096043852,
+      "tcg_version": 1.2,
+      "firmware_version": 37.19
+    },
+    "owned": "0",
+    "enabled": "1",
+    "active": "1"
+  },
+  "pubek": {
+    "version": 266240,
+    "usage": "0x0002 (Unknown)",
+    "flags": "0x00000000 (!VOLATILE, !MIGRATABLE, !REDIRECTION)",
+    "authusage": "0x00 (Never)",
+    "algorithm": "0x00000020 (Unknown)",
+    "encryption_scheme": "0x00000012 (Unknown)",
+    "signature_scheme": "0x00000010 (Unknown)",
+    "public_key": "c94d7f093285e5c6c12ed82fa8c9b7ecbd54b159d5aa547ef5326a0bc8e7790529b9e90f47c38f83dd2cb5b10274930fdd3a73cecab8d55c9bf6fe69dcc482c47f6d5f2d770fbced3393b877bad5bb04e96f83ac8a259ff934930d1fcb0e2f81c90e681e3f0dfbd446c64d6b67569ffbd9bd84263c8f2db849bd7976fbc8d206413ba20e6c9a653499c00b4995259c1e6028d379e9effe4eedf98129311fc132a51ce58d43fbc630dccc446210c1b250161fcb409a488462c358cbe2390efd2d8817b34403e3da240b5ee1fc92772390630c3489720df89a371d20d7a34032f6e3f4325e6b5a22e50ceea7d5e20d61f47048f4b76ea02669c90e21c4bd8c0561",
+    "raw": "Public Endorsement Key:\n  Version:   01010000\n  Usage:     0x0002 (Unknown)\n  Flags:     0x00000000 (!VOLATILE, !MIGRATABLE, !REDIRECTION)\n  AuthUsage: 0x00 (Never)\n  Algorithm:         0x00000020 (Unknown)\n  Encryption Scheme: 0x00000012 (Unknown)\n  Signature Scheme:  0x00000010 (Unknown)\n  Public Key:\n\tc94d7f09 3285e5c6 c12ed82f a8c9b7ec bd54b159 d5aa547e f5326a0b c8e77905\n\t29b9e90f 47c38f83 dd2cb5b1 0274930f dd3a73ce cab8d55c 9bf6fe69 dcc482c4\n\t7f6d5f2d 770fbced 3393b877 bad5bb04 e96f83ac 8a259ff9 34930d1f cb0e2f81\n\tc90e681e 3f0dfbd4 46c64d6b 67569ffb d9bd8426 3c8f2db8 49bd7976 fbc8d206\n\t413ba20e 6c9a6534 99c00b49 95259c1e 6028d379 e9effe4e edf98129 311fc132\n\ta51ce58d 43fbc630 dccc4462 10c1b250 161fcb40 9a488462 c358cbe2 390efd2d\n\t8817b344 03e3da24 0b5ee1fc 92772390 630c3489 720df89a 371d20d7 a34032f6\n\te3f4325e 6b5a22e5 0ceea7d5 e20d61f4 7048f4b7 6ea02669 c90e21c4 bd8c0561\n"
+  }
+}
