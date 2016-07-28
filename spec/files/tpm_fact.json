@@ -1,0 +1,67 @@
+{
+  "version": {
+    "chip_version": "1.2.18.60",
+    "spec_level": 2,
+    "errata_revision": 3,
+    "tpm_vendor_id": "IBM",
+    "tpm_version": 266240,
+    "manufacturer_info": "49424d00",
+    "_status": "tpm_version loaded correctly"
+  },
+  "status": {
+    "id": "PNP0c31",
+    "durations": "50000000 100000000 300000000 [original]",
+    "caps": {
+      "manufacturer": 1229081856,
+      "tcg_version": 1.2,
+      "firmware_version": 18.6
+    },
+    "pcrs": {
+      "pcr-00": "3A 3F 78 0F 11 A4 B4 99 69 FC AA 80 CD 6E 39 57 C3 3B 22 75",
+      "pcr-01": "75 4C A8 27 48 AE 2C C1 3C 10 7C 07 F1 39 BB F7 25 90 02 24",
+      "pcr-02": "8E AA AA 16 6C 1D 2B D3 B0 DA 5B FF 75 BE 64 73 F9 08 5C 36",
+      "pcr-03": "3A 3F 78 0F 11 A4 B4 99 69 FC AA 80 CD 6E 39 57 C3 3B 22 75",
+      "pcr-04": "A8 19 CD 80 A7 2B 41 BB C4 D1 5D 7A AA 76 21 9E AD 5B AC 2A",
+      "pcr-05": "5B E5 F4 CE 8C 17 FF 28 A6 31 94 98 13 10 D7 CE A6 36 E9 94",
+      "pcr-06": "3A 3F 78 0F 11 A4 B4 99 69 FC AA 80 CD 6E 39 57 C3 3B 22 75",
+      "pcr-07": "3A 3F 78 0F 11 A4 B4 99 69 FC AA 80 CD 6E 39 57 C3 3B 22 75",
+      "pcr-08": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-09": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-10": "3F 21 FD A0 65 59 D3 C6 5C 57 D9 58 A4 BE 99 B3 A9 4F F9 98",
+      "pcr-11": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-12": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-13": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-14": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-15": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-16": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "pcr-17": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-18": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-19": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-20": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-21": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-22": "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF",
+      "pcr-23": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+    },
+    "owned": 0,
+    "enabled": 1,
+    "active": 1,
+    "cancel": false,
+    "uevent": "DRIVER=tpm_tis",
+    "resources": "state = active mem 0xfed40000-0xfed44fff",
+    "options": false,
+    "timeouts": "1000000 1000000 1000000 1000000 [original]",
+    "temp_deactivated": 0
+  },
+  "pubek": {
+    "_status": "success: raw parsed",
+    "version": 266240,
+    "usage": "0x0002 (Unknown)",
+    "flags": "0x00000000 (!VOLATILE, !MIGRATABLE, !REDIRECTION)",
+    "authusage": "0x00 (Never)",
+    "algorithm": "0x00000020 (Unknown)",
+    "encryption_scheme": "0x00000012 (Unknown)",
+    "signature_scheme": "0x00000010 (Unknown)",
+    "public_key": "ab062723ce1593e544e9abb290eb6cdbf8f5193acab9e330f14dda25472c2805e90b48671fa31cf5b0d0f1a23288ac08e7b8a363deb9d4071e256d4345db5dc044e1eccc3a260f76da7e8d0ffb597d1db7ab76122f2bd124bc4d95213e519f8a67bd01dd52729213d27e5e700baf5d41d66ff0f1697dfd0ae75a34e5fb50ba1497ff0a69fd11d2e356c83ddf1115ea8c68fd36a3b4c4b48ad676565f4f495544af34474676e9b2c56cc849a28542c16642ff0a749bc4757a2885f8b635d1814e2f7126989900011d2d06060c56f617966585c8eab9d5f4f1e0707fc33b9ecfbf85fdee3087234af76e2ab5c050b58a7e1ad13406a26bb2b84268d777dc7b2d2d",
+    "raw": "Public Endorsement Key:\r\n  Version:   01010000\r\n  Usage:     0x0002 (Unknown)\r\n  Flags:     0x00000000 (!VOLATILE, !MIGRATABLE, !REDIRECTION)\r\n  AuthUsage: 0x00 (Never)\r\n  Algorithm:         0x00000020 (Unknown)\r\n  Encryption Scheme: 0x00000012 (Unknown)\r\n  Signature Scheme:  0x00000010 (Unknown)\r\n  Public Key:\r\n\tab062723 ce1593e5 44e9abb2 90eb6cdb f8f5193a cab9e330 f14dda25 472c2805\r\n\te90b4867 1fa31cf5 b0d0f1a2 3288ac08 e7b8a363 deb9d407 1e256d43 45db5dc0\r\n\t44e1eccc 3a260f76 da7e8d0f fb597d1d b7ab7612 2f2bd124 bc4d9521 3e519f8a\r\n\t67bd01dd 52729213 d27e5e70 0baf5d41 d66ff0f1 697dfd0a e75a34e5 fb50ba14\r\n\t97ff0a69 fd11d2e3 56c83ddf 1115ea8c 68fd36a3 b4c4b48a d676565f 4f495544\r\n\taf344746 76e9b2c5 6cc849a2 8542c166 42ff0a74 9bc4757a 2885f8b6 35d1814e\r\n\t2f712698 9900011d 2d06060c 56f61796 6585c8ea b9d5f4f1 e0707fc3 3b9ecfbf\r\n\t85fdee30 87234af7 6e2ab5c0 50b58a7e 1ad13406 a26bb2b8 4268d777 dc7b2d2d\r\n"
+  }
+}

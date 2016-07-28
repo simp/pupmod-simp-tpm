@@ -1,48 +1,36 @@
-# == Class: tpm::ima
-#
 # Sets up IMA kernel boot flags if they are not enabled, and mounts the
 # securityfs when they are.
 #
-# == Parameters
+# @param enable [Boolean] If true, enable IMA on the system.
 #
-# [*enable*]
-#   Type: Boolean
-#   Default: true
-#     If true, enable IMA on the system.
+# @param mount_dir [AbsolutePath] Where to mount ima securityfs
 #
-# [*mount_dir*]
-#   Where to mount ima securityfs
-#
-# [*ima_audit*]
+# @param ima_audit [Boolean]
 #   Audit control.  Can be set to:
 #     true  - Enable additional integrity auditing messages
 #     false - Enable integrity auditing messages (default)
 #
-# [*ima_template*]
+# @param ima_template [String]
 #   A pre-defined IMA measurement template format.
 #   Can be one of ima, ima-ng, ima-sig. Defaults to ima-ng.
 #
-# [*ima_hash*]
-#   Choose one of various hashes.  Defaults to sha1.
+# @param ima_hash [String]
 #   The list of supported hashes can be found in crypto/hash_info.h
 #
-# [*ima_tcb*]
-#   Boolean. Toggle the TCB policy.  This means IMA will measure all
-#   programs exec'd, files mmap'd for exec, and all file opened
+# @param ima_tcb [Boolean] Toggle the TCB policy.  This means IMA will measure
+#   all programs exec'd, files mmap'd for exec, and all file opened
 #   for read by uid=0. Defaults to true.
 #
-# == Authors
-#
-# * Nick Markowski <namarkowski@keywcorp.com>
-# * Trevor Vaughan <tvaughan@onyxpoint.com>
+# @author Nick Markowski <namarkowski@keywcorp.com>
+# @author Trevor Vaughan <tvaughan@onyxpoint.com>
 #
 class tpm::ima (
-  $enable = true,
-  $mount_dir = '/sys/kernel/security',
-  $ima_audit = true,
+  $enable       = true,
+  $mount_dir    = '/sys/kernel/security',
+  $ima_audit    = true,
   $ima_template = 'ima-ng',
-  $ima_hash = 'sha1',
-  $ima_tcb = true
+  $ima_hash     = 'sha1',
+  $ima_tcb      = true
 ){
   validate_bool($enable)
   validate_absolute_path($mount_dir)
@@ -54,7 +42,6 @@ class tpm::ima (
 
   if $enable {
     if $::cmdline['ima'] == 'on' {
-
       mount { $mount_dir:
         ensure   => mounted,
         atboot   => true,
