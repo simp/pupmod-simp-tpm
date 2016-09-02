@@ -17,7 +17,6 @@ Facter.add('tpm') do
   #   the String#scrub method can be used.
   #
   # @param [String] the string to be cleaned
-  #
   # @return [String] string with non-acii characters removed
   #
   def clean_text(text)
@@ -30,9 +29,9 @@ Facter.add('tpm') do
     text.encode(Encoding.find('ASCII'), encoding_options).gsub(/\u0000/, '')
   end
 
+  # Get the pubek from tpm_getpubek when the TPM is owned
   # @param [String] the owner password of the TPM
-  #
-  # @return [String] the output of the command
+  # @return [String] the output of the command, or nil if it times out
   #
   def get_pubek_owned(owner_pass)
     require 'expect'
@@ -40,31 +39,63 @@ Facter.add('tpm') do
     require 'timeout'
 
     out = []
-    PTY.spawn('/sbin/tpm_getpubek') do |r,w,pid|
-      w.sync = true
-      begin
-        r.expect( /owner password/i, 15 ) { |s| w.puts owner_pass }
-        r.each { |line| out << line }
-      rescue Errno::EIO
-        # just until the end of the IO stream
+
+    begin
+      Timeout::timeout(15) do
+        Puppet.debug('running tpm_getpubek')
+        PTY.spawn('/sbin/tpm_getpubek') do |r,w,pid|
+          w.sync = true
+          begin
+            r.expect( /owner password/i, 15 ) { |s| w.puts owner_pass }
+            r.each { |line| out << line }
+          rescue Errno::EIO
+            # just until the end of the IO stream
+          end
+          Process.wait(pid)
+        end
       end
-      Process.wait(pid)
+    rescue Timeout::Error
+      return nil
     end
+
     # get rid of title line and return if the exit code is 0
     out.drop(1).join if $? == 0
   end
 
+  # Get the pubek from tpm_getpubek when the TPM isn't owned
+  # @return [String] the output of the command, or nil if it times out
+  #
   def get_pubek_unowned
     require 'timeout'
 
-    out = ''
-
-    status = Timeout::timeout(15) do
-      # require 'pry';binding.pry
-      out = Facter::Core::Execution.execute('tpm_getpubek')
+    begin
+      status = Timeout::timeout(15) do
+        Puppet.debug('running tpm_getpubek')
+        Facter::Core::Execution.execute('tpm_getpubek')
+      end
+    rescue Timeout::Error
+      status = 'error: tpm_getpubek timed out'
     end
 
-    out
+    status
+  end
+
+  # Get the output of tpm_version
+  # @return [String] the output of the command, or nil if it times out
+  #
+  def tpm_version
+    require 'timeout'
+
+    begin
+      status = Timeout::timeout(15) do
+        Puppet.debug('running tpm_version')
+        Facter::Core::Execution.execute('tpm_version')
+      end
+    rescue Timeout::Error
+      return nil
+    end
+
+    status
   end
 
   # @return [Hash] the yaml output from `tpm_version`
@@ -87,10 +118,11 @@ Facter.add('tpm') do
     require 'yaml'
 
     output = Hash.new
-    cmd_out = Facter::Core::Execution.execute('tpm_version')
+    cmd_out = tpm_version
 
     if cmd_out == "" or cmd_out.nil?
       output['_status'] = 'Trousers is not running'
+      return output
     else
       version = YAML.load(clean_text(cmd_out))
 
@@ -118,7 +150,9 @@ Facter.add('tpm') do
     out = Hash.new
 
     files.each do |file|
-      next if File.directory? file
+      next if File.directory?(file)
+      next if File.basename(file) == 'pubek' # pubek is found in another section
+
       raw = YAML.load(Facter::Core::Execution.execute("cat #{file}"))
       if raw.is_a? Hash
         out[File.basename(file)] = Hash[raw.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
@@ -130,15 +164,14 @@ Facter.add('tpm') do
     out
   end
 
-  # @param [Boolean] whether or not the TPM is owned
+  # If the TPM is unowned, it can be retreived simply with the command. However,
+  #   when the TPM is owned, the command asks for a password. We use an
+  #   an interactive PTY to get around this restriction.
   #
+  # @param [Boolean] whether or not the TPM is owned
   # @return [Hash] the TPM public key, including the raw key in `['raw']`
   #
-  # If the TPM is unowned, it can be retreived simply with the command. However,
-  #  when the TPM is owned, the command asks for a password. We use an
-  #  an interactive PTY to get around this restriction.
   def pubek(status)
-
     pass_file = "#{Puppet[:vardir]}/simp/tpm_ownership_owner_pass"
     enabled   = status['enabled'] == 1
     owned     = status['owned'] == 1
@@ -154,7 +187,7 @@ Facter.add('tpm') do
       out['_status'] = 'success: tpm unowned'
     else
       if File.exists?(pass_file)
-        owner_pass = Facter::Core::Execution.execute("cat #{pass_file}")
+        owner_pass = Facter::Core::Execution.execute("cat #{pass_file} 2>/dev/null")
         if owner_pass.eql? ""
           out['_status'] = 'error: the password file is empty'
           return out
@@ -168,7 +201,7 @@ Facter.add('tpm') do
       end
     end
 
-    if raw.nil?
+    if raw.nil? or raw == ""
       out['_status'] = 'error: trousers is not running, the tpm is not enabled, or the password in the password file is incorrect'
     else
       pubek = YAML.load(raw.gsub(/\t/,' '*4).split("\n").drop(1).join("\n"))
