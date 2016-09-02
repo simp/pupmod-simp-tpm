@@ -12,8 +12,7 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
 
   defaultfor :kernel => :Linux
 
-  TPM_TAKEOWNERSHIP = '/sbin/tpm_takeownership'
-  PTY_TIMEOUT       = 15
+  commands :tpm_takeownership => '/sbin/tpm_takeownership'
 
   # Dump the owner password to a flat file in Puppet's `$vardir`
   #
@@ -40,16 +39,18 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
   # @param command [String] The command to interact with
   # @param stdin [Array<Regex, String>] List of pairs [regex, string] to print as stdin
   # @return [Boolean] <= 0 is true, anything else is false
-  def tpm_takeownership(expect_array, cmd = TPM_TAKEOWNERSHIP )
+  def tpm_takeownership(expect_array, cmd = '/sbin/tpm_takeownership' )
     require 'expect'
     require 'pty'
+
+    pty_timeout = 15
 
     PTY.spawn( cmd ) do |r,w,pid|
       w.sync = true
 
       expect_array.each do |reg,stdin|
         begin
-          r.expect( reg, PTY_TIMEOUT ) do |s|
+          r.expect( reg, pty_timeout) do |s|
             if s.nil?
               err('tpm_takeownership command timed out, killing process')
               Process.kill(9, pid)
@@ -67,14 +68,23 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
     exit_code = $?
     debug( ['exit code', exit_code] )
 
-    exit_code.exitstatus == 0 ? true : false
+    if exit_code.exitstatus == 0
+      return true
+    else
+      return false
+    end
   end
 
   def exists?
     if resource[:advanced_facts]
       dump_owner_pass(Puppet[:vardir])
     end
-    Facter.value(:tpm)['status']['owned'] == 1 ? true : false
+    
+    if Facter.value(:tpm)['status']['owned'] == 1
+      return true
+    else
+      return false
+    end
   end
 
   def create
