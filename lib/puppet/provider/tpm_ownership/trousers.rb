@@ -8,7 +8,10 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
   has_feature :take_ownership
 
   confine :has_tpm => true
-  confine :tpm['status']['enabled'] => 1
+  require "pry";binding.pry
+  confine :tpm do |value|
+    value['status']['enabled'] == 1
+  end
 
   defaultfor :kernel => :Linux
 
@@ -34,7 +37,7 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
     File.read(pass_file)
   end
 
-  # Interact with a command using stdin
+  # Interact with a tpm_takeownership using stdin
   #
   # @param command [String] The command to interact with
   # @param stdin [Array<Regex, String>] List of pairs [regex, string] to print as stdin
@@ -51,11 +54,11 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
       expect_array.each do |reg,stdin|
         begin
           r.expect( reg, pty_timeout) do |s|
-            if s.nil?
-              err('tpm_takeownership command timed out, killing process')
-              Process.kill(9, pid)
-              return false
-            end
+            # if s.nil?
+            #   err('tpm_takeownership command timed out, killing process')
+            #   Process.kill(9, pid)
+            #   return false
+            # end
             w.puts stdin
             debug( [reg, stdin, s] )
           end
@@ -79,7 +82,7 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
     if resource[:advanced_facts]
       dump_owner_pass(Puppet[:vardir])
     end
-    
+
     if Facter.value(:tpm)['status']['owned'] == 1
       return true
     else

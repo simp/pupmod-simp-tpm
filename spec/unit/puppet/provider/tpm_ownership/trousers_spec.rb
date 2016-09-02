@@ -18,6 +18,7 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
 
     Facter.stubs(:value).with(:has_tpm).returns(true)
     Facter.stubs(:value).with(:tpm).returns(tpm_fact)
+    Facter.stubs(:[]).with(:tpm).with(value).returns(tpm_fact)
     Facter.stubs(:value).with(:kernel).returns(true)
   end
 
