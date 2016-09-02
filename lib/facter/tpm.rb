@@ -34,12 +34,13 @@ Facter.add('tpm') do
   #
   # @return [String] the output of the command
   #
-  def get_pubek(owner_pass)
+  def get_pubek_owned(owner_pass)
     require 'expect'
     require 'pty'
+    require 'timeout'
 
     out = []
-    PTY.spawn('/sbin/tpm_getpubek') do |r,w|
+    PTY.spawn('/sbin/tpm_getpubek') do |r,w,pid|
       w.sync = true
       begin
         r.expect( /owner password/i, 15 ) { |s| w.puts owner_pass }
@@ -47,8 +48,23 @@ Facter.add('tpm') do
       rescue Errno::EIO
         # just until the end of the IO stream
       end
+      Process.wait(pid)
     end
-    out.drop(1).join
+    # get rid of title line and return if the exit code is 0
+    out.drop(1).join if $? == 0
+  end
+
+  def get_pubek_unowned
+    require 'timeout'
+
+    out = ''
+
+    status = Timeout::timeout(15) do
+      # require 'pry';binding.pry
+      out = Facter::Core::Execution.execute('tpm_getpubek')
+    end
+
+    out
   end
 
   # @return [Hash] the yaml output from `tpm_version`
@@ -58,33 +74,38 @@ Facter.add('tpm') do
   #
   # Example output:
   #  ```
-  #  TPM 1.2 Version Info:
-  #  Chip Version:        1.2.18.60
-  #  Spec Level:          2
-  #  Errata Revision:     3
-  #  TPM Vendor ID:       IBM
-  #  TPM Version:         01010000
-  #  Manufacturer Info:   49424d00
+  #    TPM 1.2 Version Info:
+  #    Chip Version:        1.2.18.60
+  #    Spec Level:          2
+  #    Errata Revision:     3
+  #    TPM Vendor ID:       IBM
+  #    TPM Version:         01010000
+  #    Manufacturer Info:   49424d00
   #  ```
   #
   def version
     require 'yaml'
 
-    output = Facter::Core::Execution.execute('tpm_version')
+    output = Hash.new
+    cmd_out = Facter::Core::Execution.execute('tpm_version')
 
-    if output == "" or output.nil?
-      'Trousers is not running'
+    if cmd_out == "" or cmd_out.nil?
+      output['_status'] = 'Trousers is not running'
     else
-      version = YAML.load(clean_text(output))
+      version = YAML.load(clean_text(cmd_out))
 
       # Format keys in a way that Facter will like
       begin
-        Hash[version.flatten[1].map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
+        output = Hash[version.flatten[1].map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
       rescue NoMethodError
         version.delete_if { |k,y| k =~ /Version Info/ }
-        Hash[version.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
+        output = Hash[version.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
       end
+
+      output['_status'] = 'tpm_version loaded correctly'
     end
+
+    output
   end
 
   # @return [Hash] information about the TPM from /sys/class/tpm/tpm0/
@@ -92,18 +113,19 @@ Facter.add('tpm') do
   def status
     require 'yaml'
 
+    files = Dir.glob('/sys/class/tpm/tpm0/device/*')
+
     out = Hash.new
 
-    pcrs = YAML.load(Facter::Core::Execution.execute('cat /sys/class/tpm/tpm0/device/pcrs'))
-    caps = YAML.load(Facter::Core::Execution.execute('cat /sys/class/tpm/tpm0/device/caps'))
-
-    # keys can be symbols when we use ruby 2.1+
-    out['pcrs'] = Hash[pcrs.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
-    out['caps'] = Hash[caps.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
-
-    out['owned']   = Facter::Core::Execution.execute('cat /sys/class/tpm/tpm0/device/owned')
-    out['enabled'] = Facter::Core::Execution.execute('cat /sys/class/tpm/tpm0/device/enabled')
-    out['active']  = Facter::Core::Execution.execute('cat /sys/class/tpm/tpm0/device/active')
+    files.each do |file|
+      next if File.directory? file
+      raw = YAML.load(Facter::Core::Execution.execute("cat #{file}"))
+      if raw.is_a? Hash
+        out[File.basename(file)] = Hash[raw.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
+      else
+        out[File.basename(file)] = raw
+      end
+    end
 
     out
   end
@@ -115,36 +137,48 @@ Facter.add('tpm') do
   # If the TPM is unowned, it can be retreived simply with the command. However,
   #  when the TPM is owned, the command asks for a password. We use an
   #  an interactive PTY to get around this restriction.
-  def pubek(owned)
-    require 'timeout'
+  def pubek(status)
 
     pass_file = "#{Puppet[:vardir]}/simp/tpm_ownership_owner_pass"
+    enabled   = status['enabled'] == 1
+    owned     = status['owned'] == 1
 
-    if !owned
-      if File.exists?(pass_file)
-        raw = 'Cannot access pubek. Check that $vardir/simp/tpm_ownership_owner_pass exists and contains the correct password. Then, check your tpm_ownership resource to make sure the it uses the correct password.'
-      else
-        raw = Facter::Core::Execution.execute('tpm_getpubek')
-      end
+    out = Hash.new
+    raw = ''
+
+    if !enabled
+      out['_status'] = 'error: tpm not enabled'
+      return out
+    elsif !owned
+      raw = get_pubek_unowned
+      out['_status'] = 'success: tpm unowned'
     else
       if File.exists?(pass_file)
         owner_pass = Facter::Core::Execution.execute("cat #{pass_file}")
-        raw = get_pubek(owner_pass) unless owner_pass.eql? ""
+        if owner_pass.eql? ""
+          out['_status'] = 'error: the password file is empty'
+          return out
+        else
+          raw = get_pubek_owned(owner_pass)
+          out['_status'] = 'success: raw pubek grabbed' unless raw.nil?
+        end
       else
-        raw = 'Password file not found or Trousers is not running'
+        out['_status'] = 'error: password file not found'
+        return out
       end
     end
 
-    raw = 'Trousers is not running' if raw.nil? or raw.eql? ""
-
-    pubek = YAML.load(raw.gsub(/\t/,' '*4).split("\n").drop(1).join("\n"))
-    if pubek.is_a? Hash
+    if raw.nil?
+      out['_status'] = 'error: trousers is not running, the tpm is not enabled, or the password in the password file is incorrect'
+    else
+      pubek = YAML.load(raw.gsub(/\t/,' '*4).split("\n").drop(1).join("\n"))
       pubek['Public Key'].gsub!(/ /, '')
       pubek['raw'] = raw
-      Hash[pubek.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }]
-    else
-      raw.strip
+      out.merge!( Hash[pubek.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }] )
+      out['_status'] = 'success: raw parsed'
     end
+
+    out
   end
 
   setcode do
@@ -153,7 +187,7 @@ Facter.add('tpm') do
     # Assemble!
     out['version'] = version
     out['status']  = status
-    out['pubek']   = pubek(out['status']['owned'] == '1')
+    out['pubek']   = pubek(out['status'])
 
     out
   end

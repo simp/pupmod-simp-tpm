@@ -8,6 +8,7 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
   has_feature :take_ownership
 
   confine :has_tpm => true
+  confine :tpm['status']['enabled'] => 1
 
   defaultfor :kernel => :Linux
 
@@ -66,14 +67,14 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
     exit_code = $?
     debug( ['exit code', exit_code] )
 
-    exit_code.exitstatus <= 0 ? true : false
+    exit_code.exitstatus == 0 ? true : false
   end
 
   def exists?
     if resource[:advanced_facts]
       dump_owner_pass(Puppet[:vardir])
     end
-    Facter.value(:tpm)['status']['owned'] == '1' ? true : false
+    Facter.value(:tpm)['status']['owned'] == 1 ? true : false
   end
 
   def create
