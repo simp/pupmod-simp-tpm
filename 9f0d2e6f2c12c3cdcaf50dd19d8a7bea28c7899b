@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_c7127058",
+        "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2016-09-06T22:54:23Z",
+      "side": 1,
+      "message": "Change to just \u0027tpm_takeownership\u0027",
+      "revId": "9f0d2e6f2c12c3cdcaf50dd19d8a7bea28c7899b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a70d2c37",
+        "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2016-09-06T22:54:23Z",
+      "side": 1,
+      "message": "Change to cmd \u003d command(:tpm_takeownership)",
+      "revId": "9f0d2e6f2c12c3cdcaf50dd19d8a7bea28c7899b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
