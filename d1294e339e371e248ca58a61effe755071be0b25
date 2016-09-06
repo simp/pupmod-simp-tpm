@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e9e2f42e",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b8b9d8cd",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_78b350ea",
         "filename": "lib/facter/tpm.rb",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-09-02T10:05:09Z",
       "side": 1,
       "message": "Why are you dropping this?",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6b125c0b",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_78b350ea",
       "revId": "d1294e339e371e248ca58a61effe755071be0b25",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_cefdf609",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_d8b49cd5",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_18ac448b",
         "filename": "lib/facter/tpm.rb",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2016-09-02T10:05:09Z",
       "side": 1,
       "message": "Add a Timeout around this unless you know that it won\u0027t hang.",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_09199822",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_18ac448b",
       "revId": "d1294e339e371e248ca58a61effe755071be0b25",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_ce24d6b3",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f8a88079",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_58a2cc9b",
         "filename": "lib/facter/tpm.rb",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2016-09-02T10:05:09Z",
       "side": 1,
       "message": "Make sure the files exist before you do something with them and set the values appropriately.",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6e44aa1a",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_58a2cc9b",
       "revId": "d1294e339e371e248ca58a61effe755071be0b25",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_89a36800",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_789c705d",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b892f849",
         "filename": "lib/facter/tpm.rb",
         "patchSetId": 2
@@ -132,6 +258,24 @@
       "writtenOn": "2016-09-02T10:05:09Z",
       "side": 1,
       "message": "Probably need a Timeout around this.",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e91554e5",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b892f849",
       "revId": "d1294e339e371e248ca58a61effe755071be0b25",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e9b43436",
+        "filename": "lib/facter/tpm.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9897343a",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_58940c43",
         "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
         "patchSetId": 2
@@ -166,6 +328,24 @@
       "writtenOn": "2016-09-02T10:05:09Z",
       "side": 1,
       "message": "Don\u0027t do globals, you\u0027ll end up with weird warnings sometimes.\n\nAlso, you should confine on this command.\n\nExample: https://github.com/simp/pupmod-simp-simplib/blob/master/lib/puppet/provider/runlevel/telinit.rb#L3",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_89db684f",
+        "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_58940c43",
       "revId": "d1294e339e371e248ca58a61effe755071be0b25",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -189,6 +369,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_49e68017",
+        "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_189e8463",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b88b181e",
         "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
         "patchSetId": 2
@@ -206,6 +404,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_29e33c07",
+        "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b88b181e",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f89ac06d",
         "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
         "patchSetId": 2
@@ -217,6 +433,24 @@
       "writtenOn": "2016-09-02T10:05:09Z",
       "side": 1,
       "message": "You can just return the result of the \u0027\u003d\u003d\u0027 statement, no need to map true to true and false to false.\n\nTry to do an explicit return so that it\u0027s clear to people.",
+      "revId": "d1294e339e371e248ca58a61effe755071be0b25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_09f078c8",
+        "filename": "lib/puppet/provider/tpm_ownership/trousers.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-09-06T17:11:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f89ac06d",
       "revId": "d1294e339e371e248ca58a61effe755071be0b25",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
