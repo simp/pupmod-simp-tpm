@@ -6,7 +6,7 @@
 2. [Setup - The basics of getting started with tpm](#setup)
     * [What tpm affects](#what-tpm-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with the tpm](#beginning-with-the-tpm)
+    * [Beginning with the tpm](#beginning-with-the-tpm-module)
 3. [Usage - Configuration options and additional functionality](#usage)
 4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -23,7 +23,9 @@ interface, or to use SecureBoot or IMA.
 The [Integrity Management Architecture (IMA)](https://sourceforge.net/p/linux-ima/wiki/Home/) subsystem is a tool that
 uses the TPM to verify integrity of the system, based on filesystem and file
 hashes. The IMA class sets up IMA kernel boot flags if they are not enabled and
-when they are, mounts the `securityfs`.
+when they are, mounts the `securityfs`. This module can manage the IMA policy,
+although modifying the policy incorrectly could cause your system to become
+read-only.
 
 The TPM ecosystem has been designed to be difficult to automate. The difficulty
 has shown many downsides of using a tool like this module to manage your
@@ -63,17 +65,28 @@ This module is optimally designed for use within a larger SIMP ecosystem, but it
 
 --------------------------------------------------------------------------------
 
+--------------------------------------------------------------------------------
+> **WARNING**
+>
+> Inserting poorly formed or incorrect policy into the IMA policy file could
+> cause your system to become read-only. This can be temporarily remedied by a
+> reboot. This is the current case with the way the module manages the policy
+> and it is not recommended to use this section of the module at this time.
+
+--------------------------------------------------------------------------------
+
 This module will:
 * install `tpm-tools` and `trousers`
 * enable the `tcsd` service
 * (*OPTIONAL*) Take ownership of the TPM
   * The password will be in a flat file in `$vardir/simp`
 * (*OPTIONAL*) Enable IMA on the host
+  * (*OPTIONAL*) Manage the IMA policy (BROKEN - See Limitations)
 
 
 ### Setup Requirements
 
-In order to use the TPM module or a TPM in general, you must do the following:
+In order to use this module or a TPM in general, you must do the following:
 
 1. Enable the TPM in BIOS
 2. Set a user/admin BIOS password
@@ -121,6 +134,10 @@ Please refer to the inline documentation within each source file, or to the modu
 SIMP Puppet modules are generally intended for use on Red Hat Enterprise Linux and compatible distributions, such as CentOS. Please see the [`metadata.json` file](./metadata.json) for the most up-to-date list of supported operating systems, Puppet versions, and module dependencies.
 
 This module does not support clearing a previously owned TPM.
+
+### IMA
+
+The current RedHat implementation of IMA does not seem to work after inserting our default policy (generated example in `spec/files/default_ima_policy.conf`). It causes the system to become read-only, even though it is only using supported configuration elements. Please do not use this feature of the module yet.
 
 
 ## Development

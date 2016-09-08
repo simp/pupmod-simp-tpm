@@ -1,0 +1,37 @@
+<% # There can be no newlines in this file -%>
+# Magics can be found in kernel/include/uapi/linux/magic.h
+<% @magic_hash.sort.each do |magic,put| -%>
+<%   if put -%>
+# kernel fsmagic <%= magic %>
+dont_measure fsmagic=<%= magic %>
+dont_appraise fsmagic=<%= magic %>
+<%   end -%>
+<% end -%>
+# Do not measure all types that have the "logfile" SELinux attribute
+# You can use seinfo -alogfile -x to get an overview of all these types
+# Defaults can be found in security/integrity/ima/ima_policy.c
+<% from_list = {} -%>
+<% @dont_watch_list.each { |x| from_list[x] = true } if !@dont_watch_list.empty? -%>
+<% @sel_hash.merge!(from_list) -%>
+<% @sel_hash.sort.each do |con,put| -%>
+<%   if put -%>
+# selinux context <%= con %>
+dont_measure obj_type=<%= con %>
+dont_appraise obj_type=<%= con %>
+<%   end -%>
+<% end -%>
+# other defaults
+<% if @measure_bprm_check -%>
+measure func=BPRM_CHECK
+<% end -%>
+<% if @measure_file_mmap -%>
+measure func=FILE_MMAP mask=MAY_EXEC
+<% end -%>
+<% if @measure_root_read_files -%>
+measure func=FILE_CHECK mask=MAY_READ uid=0
+<% end -%>
+<% if @measure_module_check -%>
+measure func=MODULE_CHECK uid=0
+<% end -%>
+<% if @appraise_fowner -%>
+appraise fowner=0<% end -%>
