@@ -3,6 +3,10 @@
 #
 # @param enable [Boolean] If true, enable IMA on the system.
 #
+# @param manage_policy [Boolean] If true, the tpm::ima::policy class will be
+#   included. Please read the documentation for that claa heavily, as it can
+#   cause live filesystems to become read-only until a reboot.
+#
 # @param mount_dir [AbsolutePath] Where to mount ima securityfs
 #
 # @param ima_audit [Boolean]
@@ -21,18 +25,25 @@
 #   all programs exec'd, files mmap'd for exec, and all file opened
 #   for read by uid=0. Defaults to true.
 #
+# @param log_max_size [Number] The size of the
+#   /sys/kernel/security/ima/ascii_runtime_measurements, in bytes, that will
+#   cause a reboot notification will be sent to the user.
+#
 # @author Nick Markowski <namarkowski@keywcorp.com>
 # @author Trevor Vaughan <tvaughan@onyxpoint.com>
 #
 class tpm::ima (
-  $enable       = true,
-  $mount_dir    = '/sys/kernel/security',
-  $ima_audit    = true,
-  $ima_template = 'ima-ng',
-  $ima_hash     = 'sha1',
-  $ima_tcb      = true
+  $enable        = true,
+  $manage_policy = false,
+  $mount_dir     = '/sys/kernel/security',
+  $ima_audit     = true,
+  $ima_template  = 'ima-ng',
+  $ima_hash      = 'sha256',
+  $ima_tcb       = true,
+  $log_max_size  = 30000000
 ){
   validate_bool($enable)
+  validate_bool($manage_policy)
   validate_absolute_path($mount_dir)
   validate_bool($ima_audit)
   validate_array_member($ima_template, ['ima','ima-ng','ima-sig'])
@@ -59,17 +70,14 @@ class tpm::ima (
       value    => 'on',
       bootmode => 'normal'
     }
-
     kernel_parameter { 'ima_audit':
       value    => $ima_audit,
       bootmode => 'normal'
     }
-
     kernel_parameter { 'ima_template':
       value    => $ima_template,
       bootmode => 'normal'
     }
-
     kernel_parameter { 'ima_hash':
       value    => $ima_hash,
       bootmode => 'normal'
@@ -78,6 +86,18 @@ class tpm::ima (
     if $ima_tcb {
       kernel_parameter { 'ima_tcb':
         notify => Reboot_notify['ima']
+      }
+    }
+
+    # This feature will remain commented out until the generated policy
+    #  can be safely imported. As of now, it makes the system read-only
+    # if $manage_policy {
+    #   include '::tpm::ima::policy'
+    # }
+
+    if $::ima_log_size >= $log_max_size {
+      reboot_notify { 'ima_log':
+        reason => 'The IMA /sys/kernel/security/ima/ascii_runtime_measurements is filling up kernel memory. Please reboot to clear.'
       }
     }
   }
@@ -92,7 +112,7 @@ class tpm::ima (
     }
   }
 
-  reboot_notify { 'ima':
+  reboot_notify { 'ima_reboot':
     subscribe => [
       Kernel_parameter['ima'],
       Kernel_parameter['ima_audit'],

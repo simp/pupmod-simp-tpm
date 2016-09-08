@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# Init script for import_ima_rules
+#
+# chkconfig: 2345 95 99
+# description: Import IMA rules to the securityfs policy file at boot
+# processname: import_ima_rules
+# config: /etc/ima/policy.conf
+
+# Paths, variables, and system checks.
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Account for the various locations in different OSs
+
+conf=/etc/ima/policy.conf
+
+# If the config file doesn't exist, we can't import the rules
+[ -f ${conf} ] || exit 1
+
+RETVAL=0
+prog='import_ima_rules'
+
+start() {
+  echo -n $"Importing rules with ${prog}: "
+  if [[ -s /etc/ima/policy.conf ]]; then
+    /bin/cat /etc/ima/policy.conf > /sys/kernel/security/ima/policy
+  else
+    echo "could not find policy file /etc/ima/policy.conf"
+    return false
+  fi
+  RETVAL=$?
+  echo
+  return $RETVAL
+}
+
+stop() {
+  return true
+}
+
+restart() {
+  stop
+  start
+}
+
+case "$1" in
+  start)
+    $1
+    ;;
+  stop)
+    $1
+    ;;
+  restart)
+    $1
+    ;;
+  status)
+    return false
+  ;;
+    *)
+  echo $"Usage: $0 {start|stop|restart}"
+  exit 2
+esac
+
+exit $?

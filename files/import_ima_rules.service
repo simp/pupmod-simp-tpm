@@ -1,0 +1,8 @@
+[Unit]
+Description=Import the IMA rules into the IMA policy file in securityfs
+AssertFileNotEmpty=/etc/ima/policy.conf
+
+[Service]
+Type=oneshot
+ExecStart='/bin/cat /etc/ima/policy.conf > /sys/kernel/security/ima/policy'
+StandardOutput=journal

@@ -1,4 +1,0 @@
----
-tpm::take_ownership: true
-tpm::ownership::advanced_facts: true
-tpm::use_ima: true

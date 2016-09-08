@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'has_tpm', :type => :fact do
+describe 'ima_log_size', :type => :fact do
 
   before :each do
     Facter.clear
