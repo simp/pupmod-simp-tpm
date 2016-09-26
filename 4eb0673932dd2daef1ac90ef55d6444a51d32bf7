@@ -1,0 +1,176 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_056ed02e",
+        "filename": "README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-09-26T19:50:07Z",
+      "side": 1,
+      "message": "-",
+      "range": {
+        "startLine": 71,
+        "startChar": 18,
+        "endLine": 71,
+        "endChar": 19
+      },
+      "revId": "4eb0673932dd2daef1ac90ef55d6444a51d32bf7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_05dc90e2",
+        "filename": "files/import_ima_rules",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-09-26T19:50:07Z",
+      "side": 1,
+      "message": "$pidfile is never defined and there wouldn\u0027t be a PID after a cat execution.  Does any of this work in EL6 and is it idempotent in Puppet?",
+      "range": {
+        "startLine": 59,
+        "startChar": 17,
+        "endLine": 59,
+        "endChar": 24
+      },
+      "revId": "4eb0673932dd2daef1ac90ef55d6444a51d32bf7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a5704409",
+        "filename": "files/import_ima_rules.service",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-09-26T19:50:07Z",
+      "side": 1,
+      "message": "What would happen if this turned out to be an empty string?",
+      "range": {
+        "startLine": 6,
+        "startChar": 41,
+        "endLine": 6,
+        "endChar": 74
+      },
+      "revId": "4eb0673932dd2daef1ac90ef55d6444a51d32bf7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8579c0fe",
+        "filename": "manifests/ima/policy.pp",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-09-26T19:50:07Z",
+      "side": 1,
+      "message": "This smells like potential mischief",
+      "range": {
+        "startLine": 183,
+        "startChar": 75,
+        "endLine": 183,
+        "endChar": 81
+      },
+      "revId": "4eb0673932dd2daef1ac90ef55d6444a51d32bf7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_457f38df",
+        "filename": "manifests/ima/policy.pp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-09-26T19:50:07Z",
+      "side": 1,
+      "message": "This will fire when a reboot notification from any source is present unless the test checks for IMA-specific messages.",
+      "range": {
+        "startLine": 184,
+        "startChar": 55,
+        "endLine": 184,
+        "endChar": 80
+      },
+      "revId": "4eb0673932dd2daef1ac90ef55d6444a51d32bf7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_65659c43",
+        "filename": "manifests/ima/policy.pp",
+        "patchSetId": 2
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-09-26T19:50:07Z",
+      "side": 1,
+      "message": "(Following on from \"empty content\" question in import_ima_rules.service): Should we ensure this service is absent when we aren\u0027t managing IMA?",
+      "range": {
+        "startLine": 191,
+        "startChar": 11,
+        "endLine": 191,
+        "endChar": 61
+      },
+      "revId": "4eb0673932dd2daef1ac90ef55d6444a51d32bf7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a54724a2",
+        "filename": "spec/unit/facter/has_tpm_spec.rb",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-09-26T19:50:07Z",
+      "side": 1,
+      "message": "Can this be mocked?",
+      "revId": "4eb0673932dd2daef1ac90ef55d6444a51d32bf7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_65cc7c35",
+        "filename": "tests/common.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-09-26T19:50:07Z",
+      "side": 1,
+      "message": "The `tests/` directory in a puppet module has a special purpose (and is now deprecated in favor of the `examples/` directory: https://docs.puppet.com/puppet/latest/reference/modules_fundamentals.html#module-layout).  \n\nDid you intend for this file to be a an example or a fixture used for the spec tests?",
+      "revId": "4eb0673932dd2daef1ac90ef55d6444a51d32bf7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
