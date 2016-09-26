@@ -1,0 +1,28 @@
+Token #0 Info:
+	Label: IBM PKCS#11 TPM Token
+	Manufacturer: IBM Corp.
+	Model: TPM v1.1 Token
+	Serial Number: 123
+	Flags: 0x44D (RNG|LOGIN_REQUIRED|USER_PIN_INITIALIZED|CLOCK_ON_TOKEN|TOKEN_INITIALIZED)
+	Sessions: 0/-2
+	R/W Sessions: -1/-2
+	PIN Length: 4-8
+	Public Memory: 0xFFFFFFFF/0xFFFFFFFF
+	Private Memory: 0xFFFFFFFF/0xFFFFFFFF
+	Hardware Version: 1.0
+	Firmware Version: 1.0
+	Time: 18:33:07
+Token #1 Info:
+	Label: IBM PKCS#11 TPM Token
+	Manufacturer: Test Corp.
+	Model: TPM v1.1 Token
+	Serial Number: 123
+	Flags: 0x44D (RNG|LOGIN_REQUIRED|USER_PIN_INITIALIZED|CLOCK_ON_TOKEN|TOKEN_INITIALIZED)
+	Sessions: 0/-2
+	R/W Sessions: -1/-2
+	PIN Length: 4-8
+	Public Memory: 0xFFFFFFFF/0xFFFFFFFF
+	Private Memory: 0xFFFFFFFF/0xFFFFFFFF
+	Hardware Version: 1.0
+	Firmware Version: 1.0
+	Time: 18:33:07

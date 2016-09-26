@@ -118,15 +118,27 @@ tpm::ownership::owner_pass: 'badpass'
 tpm::ownership::srk_pass: ''
 ```
 
-To enable IMA, add this line to hiera:
+To enable IMA and the PKCS #11 interface, add this to hiera:
 
 ```yaml
 tpm::use_ima: true
+tpm::enable_pkcs_interface: true
 ```
+
+To enable the PKCS#11 interface, add the `tpm::pkcs11` class to your node and set the PINs in hiera:
+
+```yaml
+classes:
+  - tpm::pkcs11
+
+tpm::pkcs11::so_pin: '12345678'
+tpm::pkcs11::user_pin: '87654321'
+```
+
 
 ## Usage
 
-The type and provider provided in this module can be used as follows:
+The type and provider for tpm ownership provided in this module can be used as follows:
 
 ```puppet
 tpm_ownership { 'tpm0':
@@ -134,6 +146,16 @@ tpm_ownership { 'tpm0':
   owner_pass     => 'badpass',
   srk_pass       => 'badpass2',
   advanced_facts => true
+}
+```
+
+And the PKCS#11 slot type and provider can be used as follows:
+
+```puppet
+tpmtoken { 'TPM PKCS#11 token':
+  ensure   => present,
+  so_pin   => '12345678',
+  user_pin => '87654321'
 }
 ```
 
