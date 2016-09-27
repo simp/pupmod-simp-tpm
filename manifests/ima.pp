@@ -85,7 +85,7 @@ class tpm::ima (
 
     if $ima_tcb {
       kernel_parameter { 'ima_tcb':
-        notify => Reboot_notify['ima']
+        notify => Reboot_notify['ima_reboot']
       }
     }
 
@@ -104,7 +104,7 @@ class tpm::ima (
   else {
     kernel_parameter { [ 'ima_tcb' ]:
       ensure => 'absent',
-      notify => Reboot_notify['ima']
+      notify => Reboot_notify['ima_reboot']
     }
     kernel_parameter { [ 'ima', 'ima_audit', 'ima_template', 'ima_hash' ]:
       ensure   => 'absent',

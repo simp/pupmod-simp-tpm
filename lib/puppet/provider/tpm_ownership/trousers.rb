@@ -14,7 +14,7 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
 
   defaultfor :kernel => :Linux
 
-  commands :tpm_takeownership => '/sbin/tpm_takeownership'
+  commands :tpm_takeownership => 'tpm_takeownership'
 
   # Dump the owner password to a flat file in Puppet's `$vardir`
   #
@@ -41,7 +41,7 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
   # @param command [String] The command to interact with
   # @param stdin [Array<Regex, String>] List of pairs [regex, string] to print as stdin
   # @return [Boolean] <= 0 is true, anything else is false
-  def tpm_takeownership(expect_array, cmd = '/sbin/tpm_takeownership' )
+  def tpm_takeownership(expect_array, cmd = 'tpm_takeownership' )
     require 'expect'
     require 'pty'
 
@@ -53,11 +53,6 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
       expect_array.each do |reg,stdin|
         begin
           r.expect( reg, pty_timeout) do |s|
-            # if s.nil?
-            #   err('tpm_takeownership command timed out, killing process')
-            #   Process.kill(9, pid)
-            #   return false
-            # end
             w.puts stdin
             debug( [reg, stdin, s] )
           end

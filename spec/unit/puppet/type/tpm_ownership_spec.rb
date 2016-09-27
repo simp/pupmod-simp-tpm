@@ -42,17 +42,15 @@ describe Puppet::Type.type(:tpm_ownership) do
     end
   end
 
-  [:owner_pass, :srk_pass].each do |param|
-    it "should fail to run with only the #{param} field" do
-      # skip("TODO: Figure out how to require the #{param} parameter")
-      expect {
-       Puppet::Type.type(:tpm_ownership).new(
-         :name => 'tpm0',
-         param => 'badpass'
-       )
-     }.to raise_error(Puppet::ResourceError)
-    end
+  it 'should fail to run without the owner_pass field' do
+    expect {
+      Puppet::Type.type(:tpm_ownership).new(
+        :name => 'tpm0',
+      )
+    }.to raise_error(Puppet::ResourceError)
+  end
 
+  [:owner_pass, :srk_pass].each do |param|
     it 'should require a string for both passwords' do
       expect {
         Puppet::Type.type(:tpm_ownership).new(

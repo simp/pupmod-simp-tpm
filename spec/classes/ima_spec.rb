@@ -73,7 +73,7 @@ describe 'tpm::ima' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.not_to contain_file(params[:mount_dir]) }
-        it { is_expected.to contain_reboot_notify('ima') }
+        it { is_expected.to contain_reboot_notify('ima_reboot') }
         it { is_expected.to contain_kernel_parameter('ima').with_value('on') }
         it { is_expected.to contain_kernel_parameter('ima').with_bootmode('normal') }
         it { is_expected.to contain_kernel_parameter('ima_audit').with_value(false) }
@@ -89,7 +89,7 @@ describe 'tpm::ima' do
         let(:params) {{ :enable => false }}
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_reboot_notify('ima') }
+        it { is_expected.to contain_reboot_notify('ima_reboot') }
         it { is_expected.to contain_kernel_parameter('ima').with_ensure('absent') }
         it { is_expected.to contain_kernel_parameter('ima').with_bootmode('normal') }
         it { is_expected.to contain_kernel_parameter('ima_audit').with_ensure('absent') }
