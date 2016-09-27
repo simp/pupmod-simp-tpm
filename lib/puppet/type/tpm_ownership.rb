@@ -15,7 +15,9 @@
 require 'puppet/parameter/boolean'
 
 Puppet::Type.newtype(:tpm_ownership) do
-  @doc = "A type to manage ownership of a TPM. `owner_pass` and `srk_pass` are required.
+  @doc = "A type to manage ownership of a TPM. `owner_pass` is required, while `srk_pass`
+is only required if you aren't using Trusted Boot or the PKCS#11 interface. The
+SRK password is required to be null in order to sue those features.
 
 Example:
 
@@ -24,7 +26,6 @@ Example:
   tpm_ownership { 'tpm0':
     ensure     => present,
     owner_pass => 'badpass',
-    srk_pass   => 'badpass2'
   }
 "
 
@@ -48,12 +49,13 @@ Example:
   end
 
   newparam(:srk_pass) do
-    desc 'The SRK password of the TPM'
+    desc 'The Storage Root Key(SRK) password of the TPM'
     validate do |value|
       unless value.is_a?(String)
         raise(Puppet::Error, "$owner_pass must be a String, not '#{value.class}'")
       end
     end
+    defaultto '' # Empty string
   end
 
   newparam(:name, :namevar => true) do
@@ -76,8 +78,8 @@ Example:
   end
 
   validate do
-    if self[:owner_pass].nil? or self[:srk_pass].nil?
-      fail('Both passwords are required to use this type')
+    if self[:owner_pass].nil?
+      fail('Owner password is required to use this type')
     end
   end
 
