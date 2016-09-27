@@ -82,7 +82,17 @@ In order to use the TPM module or a TPM in general, you must do the following:
 
 ### Beginning with the TPM module
 
-Include the TPM class and set the passwords in hieradata:
+--------------------------------------------------------------------------------
+> **NOTE**
+>
+> Setting the SRK password to an empty string is not recommended for actual use,
+> but it is required for both Intel TXT (Trusted Boot) and the [PKCS#11
+> interface](http://trousers.sourceforge.net/pkcs11.html). If you aren't using
+> either of those technologies, please use a real password.
+
+--------------------------------------------------------------------------------
+
+Include the TPM class and set the passwords in hiera:
 
 ```yaml
 classes:
@@ -90,6 +100,9 @@ classes:
 
 tpm::take_ownership: true
 tpm::ownership::advanced_facts: true
+
+tpm::ownership::owner_pass: 'badpass'
+tpm::ownership::srk_pass: ''
 ```
 
 To enable IMA, add this line to hiera:

@@ -12,23 +12,6 @@ Facter.add('tpm') do
   confine :has_tpm => true
   # confine :true => ! (`puppet resource service tcsd | grep running`.eql? "")
 
-  # There is sometimes an unprinted unicode character captured from the command lines
-  #   in older versions of ruby, we need to do this encoding nonsense. In ruby 2.1+,
-  #   the String#scrub method can be used.
-  #
-  # @param [String] the string to be cleaned
-  # @return [String] string with non-acii characters removed
-  #
-  def clean_text(text)
-    encoding_options = {
-      :invalid           => :replace,  # Replace invalid byte sequences
-      :undef             => :replace,  # Replace anything not defined in ASCII
-      :replace           => '',        # Use a blank for those replacements
-      :universal_newline => true       # Always break lines with \n
-    }
-    text.encode(Encoding.find('ASCII'), encoding_options).gsub(/\u0000/, '')
-  end
-
   # Get the pubek from tpm_getpubek when the TPM is owned
   # @param [String] the owner password of the TPM
   # @return [String] the output of the command, or nil if it times out
@@ -124,7 +107,7 @@ Facter.add('tpm') do
       output['_status'] = 'Trousers is not running'
       return output
     else
-      version = YAML.load(clean_text(cmd_out))
+      version = YAML.load(cmd_out)
 
       # Format keys in a way that Facter will like
       begin
@@ -216,11 +199,7 @@ Facter.add('tpm') do
   end
 
   setcode do
-    if Facter.value(:os)['release']['major'] == 6
-      @sys_path = '/sys/class/misc/tpm0'
-    else
-      @sys_path = '/sys/class/tpm/tpm0'
-    end
+    @sys_path = '/sys/class/tpm/tpm0'
 
     out = Hash.new
 
