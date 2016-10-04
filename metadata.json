@@ -1,28 +1,34 @@
 {
-  "name":    "simp-tpm",
-  "version": "0.1.0",
-  "author":  "simp",
+  "name": "simp-tpm",
+  "version": "0.1.1",
+  "author": "simp",
   "summary": "manages TPMs and IMA (if your system supports it)",
   "license": "Apache-2.0",
-  "source":  "https://github.com/simp/pupmod-simp-tpm",
+  "source": "https://github.com/simp/pupmod-simp-tpm",
   "project_page": "https://github.com/simp/pupmod-simp-tpm",
-  "issues_url":   "https://simp-project.atlassian.net",
-  "tags": [ "simp", "tpm", "ima", "pkcs11" ],
+  "issues_url": "https://simp-project.atlassian.net",
+  "tags": [
+    "simp",
+    "tpm",
+    "ima",
+    "pkcs11"
+  ],
   "dependencies": [
     {
       "name": "herculesteam/augeasproviders",
-      "version_requirement": ">= 1.0.2"
+      "version_requirement": ">= 2.1.3 < 3.0.0"
     },
-    {  "name": "simp/simplib",
-      "version_requirement": ">= 1.0.0"
+    {
+      "name": "simp/simplib",
+      "version_requirement": ">= 1.3.1 < 2.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.1.0"
+      "version_requirement": ">= 4.9.0 < 5.0.0"
     },
     {
       "name": "simp/compliance_markup",
-      "version_requirement": ">= 1.0.0"
+      "version_requirement": ">= 1.0.1 < 2.0.0"
     }
   ],
   "operatingsystem_support": [
