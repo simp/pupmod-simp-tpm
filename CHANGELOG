@@ -1,8 +1,11 @@
-* Fri Sep 30 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.0-0
-- Added a feature to manage the PKCS#11 slot provided by the TPM
-- Also added a class that takes advantage of it
+* Wed Oct 5 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.0-0
+- Added ability to use `tpm_takeownership` well-known password options
 
-* Tue Sep 27 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.1.0-0
+* Fri Sep 30 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.0-0                                                                                                           
+- Added a feature to manage the PKCS#11 slot provided by the TPM                                                                                                              
+- Also added a class that takes advantage of it 
+
+* Tue Sep 27 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.0-0
 - Added functionality to take ownership of the TPM
 
 * Tue Mar 01 2016 Ralph Wright <ralph.wright@onyxpoint.com> - 0.0.1-10

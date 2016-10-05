@@ -15,7 +15,7 @@ describe 'tpm::ima' do
 
       let(:facts) do
         os_facts.merge({
-          :cmdline => { 'ima' => 'on' },
+          :cmdline      => { 'ima' => 'on' },
           :ima_log_size => 29000000
         })
       end
@@ -59,7 +59,6 @@ describe 'tpm::ima' do
         }}
         it do
           skip('This is commented out for compatability reasons, like read-only filesystems')
-          # require 'pry';binding.pry
           is_expected.to contain_class('::tpm::ima::policy')
         end
       end
@@ -68,6 +67,7 @@ describe 'tpm::ima' do
         let(:facts) do
           os_facts.merge({
             :cmdline => { 'foo' => 'bar' },
+            :ima_log_size => 29000000
           })
         end
 
