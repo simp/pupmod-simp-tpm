@@ -105,7 +105,9 @@ In order to use this module or a TPM in general, you must do the following:
 
 --------------------------------------------------------------------------------
 
-Include the TPM class and set the passwords in hiera:
+Include the TPM class and set the passwords in hiera. If either of the passwords
+are the string 'well-known', then the well known option will be added to the
+`tpm_takeownership` command used to take ownership of the TPM:
 
 ```yaml
 classes:
