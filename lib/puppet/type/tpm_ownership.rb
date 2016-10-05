@@ -19,6 +19,10 @@ Puppet::Type.newtype(:tpm_ownership) do
 is only required if you aren't using Trusted Boot or the PKCS#11 interface. The
 SRK password is required to be null in order to sue those features.
 
+If you need to use a 'well-known' password, make the password equal to the
+string 'well-known'. The provider will then use the `-z` or `-y` option when
+taking ownership of the TPM with `tpm_takeownership`.
+
 Example:
 
   include 'tpm'
