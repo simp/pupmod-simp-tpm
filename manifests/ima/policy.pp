@@ -141,17 +141,17 @@ class tpm::ima::policy (
 
   # magic reference is in Kernel documentation Documentation/ABI/testing/ima_policy
   $magic_hash = {
-    0x9fa0     => $dont_watch_proc,
-    0x62656572 => $dont_watch_sysfs,
-    0x64626720 => $dont_watch_debugfs,
-    0x01021994 => $dont_watch_tmpfs,
-    0x858458f6 => $dont_watch_ramfs,
-    0x73636673 => $dont_watch_securityfs,
-    0x1cd1     => $dont_watch_devpts,
-    0x42494e4d => $dont_watch_binfmtfs,
-    0xf97cff8c => $dont_watch_selinux,
-    0x6969     => $dont_watch_nfs,
-    0x27e0eb   => $dont_watch_cgroup,
+    '0x9fa0'     => $dont_watch_proc,
+    '0x62656572' => $dont_watch_sysfs,
+    '0x64626720' => $dont_watch_debugfs,
+    '0x01021994' => $dont_watch_tmpfs,
+    '0x858458f6' => $dont_watch_ramfs,
+    '0x73636673' => $dont_watch_securityfs,
+    '0x1cd1'     => $dont_watch_devpts,
+    '0x42494e4d' => $dont_watch_binfmtfs,
+    '0xf97cff8c' => $dont_watch_selinux,
+    '0x6969'     => $dont_watch_nfs,
+    '0x27e0eb'   => $dont_watch_cgroup,
   }
 
   $sel_hash = {

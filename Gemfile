@@ -27,9 +27,9 @@ group :test do
     gem 'simp-rake-helpers'
   end
   # puppet-strings does not support puppet < 3.7.X
-  if "#{ENV['PUPPET_VERSION']}".scan(/\d+/)[0] == '3' && "#{ENV['PUPPET_VERSION']}".scan(/\d+/)[1] >= '7'
+  # if "#{ENV['PUPPET_VERSION']}".scan(/\d+/)[0] == '3' && "#{ENV['PUPPET_VERSION']}".scan(/\d+/)[1] >= '7'
     gem 'puppet-strings'
-  end
+  # end
 end
 
 group :development do

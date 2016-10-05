@@ -1,3 +1,6 @@
+* Wed Oct 5 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.0-0
+- Added ability to use `tpm_takeownership` well-known password options
+
 * Tue Sep 27 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.0-0
 - Added functionality to take ownership of the TPM
 
