@@ -16,6 +16,24 @@
       "revId": "f539a06df4b0ad0768f93343591952c75bd0a22b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_13c6e89b",
+        "filename": "build/rpm_metadata/requires",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2016-10-10T15:24:13Z",
+      "side": 1,
+      "message": "Yes? (for IMA)",
+      "parentUuid": "baa041b7_b3774b8d",
+      "revId": "f539a06df4b0ad0768f93343591952c75bd0a22b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
