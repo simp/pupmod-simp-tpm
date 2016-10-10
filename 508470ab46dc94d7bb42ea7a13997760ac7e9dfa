@@ -16,6 +16,24 @@
       "revId": "508470ab46dc94d7bb42ea7a13997760ac7e9dfa",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_189ba718",
+        "filename": "spec/classes/init_spec.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 0,
+      "message": "It was testing things that are tested elsewhere, and out of the scope of this specific file.",
+      "parentUuid": "baa041b7_f8c6ca14",
+      "revId": "508470ab46dc94d7bb42ea7a13997760ac7e9dfa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }

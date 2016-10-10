@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_f89fe3ff",
+        "filename": "CHANGELOG",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b8304256",
+      "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_58f6d6d7",
         "filename": "lib/puppet/type/tpm_ownership.rb",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-10-07T13:42:59Z",
       "side": 1,
       "message": "Doesn\u0027t this default to an empty string? Please update description.",
+      "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d889bfcb",
+        "filename": "lib/puppet/type/tpm_ownership.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_58f6d6d7",
       "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_b886fbb6",
+        "filename": "lib/puppet/type/tpm_ownership.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_98269e65",
+      "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_381672f2",
         "filename": "lib/puppet/type/tpm_ownership.rb",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2016-10-07T13:42:59Z",
       "side": 1,
       "message": "\"while `srk-pass` is only necessary if you aren\u0027t using\"  may be better wording",
+      "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_988fb7cc",
+        "filename": "lib/puppet/type/tpm_ownership.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_381672f2",
       "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_788cf3d6",
+        "filename": "lib/puppet/type/tpm_ownership.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f8d24a33",
+      "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_d88c2637",
         "filename": "lib/puppet/type/tpm_ownership.rb",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2016-10-07T13:42:59Z",
       "side": 1,
       "message": "$owner_pass should be $srk_pass.  Do you have a spec test for this?",
+      "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_98a69752",
+        "filename": "lib/puppet/type/tpm_ownership.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 1,
+      "message": "Half of a test, I just checked for /must be a string/. Fixed.",
+      "parentUuid": "baa041b7_d88c2637",
       "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_3868abf4",
+        "filename": "lib/puppet/type/tpm_ownership.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 1,
+      "message": "The passwords are already stored in plaintext on any agent in the cached catalog, so this should just be the same. $vardir is readable only by root and puppet.",
+      "parentUuid": "baa041b7_186f2e61",
+      "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f82a4ae6",
         "filename": "metadata.json",
         "patchSetId": 1
@@ -132,6 +258,24 @@
       "writtenOn": "2016-10-07T13:42:59Z",
       "side": 1,
       "message": "Since 0.2.0 is not a tagged version (i.e., not released and pushed up to any rpm/puppet module hosting site), you do not have to bump the version number yet.",
+      "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_78a3d343",
+        "filename": "metadata.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1005361
+      },
+      "writtenOn": "2016-10-10T14:11:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f82a4ae6",
       "revId": "155db261417c7b99a41771f4b7b34c25f3d42557",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
