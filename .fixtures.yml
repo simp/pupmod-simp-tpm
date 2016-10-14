@@ -2,15 +2,19 @@
 fixtures:
   repositories:
     augeasproviders_core:
-      repo: "https://github.com/simp/augeasproviders_core"
-      branch: "simp-master"
+      branch: 5.X
+      repo: https://github.com/simp/augeasproviders_core
     augeasproviders_grub:
-      repo: "https://github.com/simp/augeasproviders_grub"
-      branch: "simp-master"
-    compliance_markup: "https://github.com/simp/pupmod-simp-compliance_markup"
-    simplib: "https://github.com/simp/pupmod-simp-simplib"
+      branch: 5.X
+      repo: https://github.com/simp/augeasproviders_grub
+    compliance_markup:
+      repo: https://github.com/simp/pupmod-simp-compliance_markup
+      branch: 5.X
+    simplib:
+      repo: https://github.com/simp/pupmod-simp-simplib
+      branch: 5.X
     stdlib:
-      repo: "https://github.com/simp/puppetlabs-stdlib"
-      branch: "simp-master"
+      branch: 5.X
+      repo: https://github.com/simp/puppetlabs-stdlib
   symlinks:
     tpm: "#{source_dir}"
