@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_9b24aa0e",
+        "filename": "lib/facter/ima_log_size.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1008746
+      },
+      "writtenOn": "2016-11-17T15:18:19Z",
+      "side": 1,
+      "message": "should return 0 if file does not exist",
+      "revId": "f83b312e13ce31dac7bd00a33d120a8c452000a3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
