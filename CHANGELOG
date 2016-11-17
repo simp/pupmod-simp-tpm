@@ -1,3 +1,7 @@
+* Tue Nov 17 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.1-0
+- Added a check to the ima_log_size fact to make sure that the file
+  needed exists before executing
+
 * Wed Oct 5 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.0-0
 - Added ability to use `tpm_takeownership` well-known password options
 
