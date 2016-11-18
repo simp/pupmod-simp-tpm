@@ -1,7 +1,7 @@
 {
   "name": "simp-tpm",
   "version": "0.2.1",
-  "author": "simp",
+  "author": "SIMP Team",
   "summary": "manages TPMs and IMA (if your system supports it)",
   "license": "Apache-2.0",
   "source": "https://github.com/simp/pupmod-simp-tpm",
@@ -25,10 +25,6 @@
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 4.9.0 < 5.0.0"
-    },
-    {
-      "name": "simp/compliance_markup",
-      "version_requirement": ">= 1.0.1 < 2.0.0"
     }
   ],
   "operatingsystem_support": [
