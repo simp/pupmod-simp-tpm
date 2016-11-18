@@ -1,3 +1,10 @@
+#  PE/SIMP versions
+#  app    pup  ruby
+# 2015.2  4.3  2.1.7
+# 2015.3  4.3  2.1.8
+# 2016.1  4.4  2.1.9
+# 2016.2  4.5  2.1.9
+# S6.0.0  4.7  2.1.9
 ---
 language: ruby
 sudo: true
@@ -11,55 +18,23 @@ script:
 notifications:
   email: false
 rvm:
-  - 2.0.0
   - 2.1.9
-  - 2.2.1
-  - 1.9.3
 env:
   global:
     - STRICT_VARIABLES=yes
     - TRUSTED_NODE_DATA=yes
   matrix:
-    - PUPPET_VERSION="~> 3.7.0"
-    - PUPPET_VERSION="~> 3.8.0"
-    - PUPPET_VERSION="~> 3.8.0" FUTURE_PARSER=yes
-    - PUPPET_VERSION="~> 4.4.0"
-    - PUPPET_VERSION="~> 4.5.0"
-    - PUPPET_VERSION="~> 4.6.1"
     - PUPPET_VERSION="~> 4.7.0"
+    - PUPPET_VERSION="~> 4.5.0"
+    - PUPPET_VERSION="~> 3.8.0"
+    - PUPPET_VERSION="~> 4.4.0"
+    - PUPPET_VERSION="~> 4.3.0"
+    - PUPPET_VERSION="~> 3.8.0" FUTURE_PARSER=yes
 matrix:
   fast_finish: true
   allow_failures:
-    - rvm: 1.9.3
-    - rvm: 2.2.1
-    - env: PUPPET_VERSION="~> 3.7.0"
-    - env: PUPPET_VERSION="~> 3.8.0" FUTURE_PARSER=yes
-    - env: PUPPET_VERSION="~> 4.4.0"
     - env: PUPPET_VERSION="~> 4.5.0"
-    - env: PUPPET_VERSION="~> 4.6.1"
-
-
-  exclude:
-  # Ruby 1.9.3
-  - rvm: 1.9.3
-    env: PUPPET_VERSION="~> 3.7.0"
-  - rvm: 1.9.3
-    env: PUPPET_VERSION="~> 4.4.0"
-  - rvm: 1.9.3
-    env: PUPPET_VERSION="~> 4.5.0"
-  - rvm: 1.9.3
-    env: PUPPET_VERSION="~> 4.6.1"
-
-  # Ruby 2.1.9
-  - rvm: 2.1.9
-    env: PUPPET_VERSION="~> 3.7.0"
-
-  # Ruby 2.2.1
-  - rvm: 2.2.1
-    env: PUPPET_VERSION="~> 3.7.0"
-  - rvm: 2.2.1
-    env: PUPPET_VERSION="~> 3.8.0"
-  - rvm: 2.2.1
-    env: PUPPET_VERSION="~> 4.4.0"
-  - rvm: 2.2.1
-    env: PUPPET_VERSION="~> 4.5.0"
+    - env: PUPPET_VERSION="~> 3.8.0"
+    - env: PUPPET_VERSION="~> 4.4.0"
+    - env: PUPPET_VERSION="~> 4.3.0"
+    - env: PUPPET_VERSION="~> 3.8.0" FUTURE_PARSER=yes

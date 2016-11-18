@@ -24,7 +24,6 @@ class tpm::ownership (
 ){
   validate_bool($advanced_facts)
 
-  compliance_map()
 
   # 20 is the max keylength in trousers
   $passgen_opts = {

@@ -49,7 +49,6 @@ class tpm::ima (
   validate_array_member($ima_template, ['ima','ima-ng','ima-sig'])
   validate_bool($ima_tcb)
 
-  compliance_map()
 
   if $enable {
     if $::cmdline['ima'] == 'on' {

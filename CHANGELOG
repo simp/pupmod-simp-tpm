@@ -1,3 +1,6 @@
+* Mon Nov 21 2016 SIMP-Team <https://groups.google.com/forum/#!forum/simp> - 1.0.0-0
+- Updated module for compliance markup API v1.0.0 compatibility.
+
 * Tue Nov 17 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.1-0
 - Added a check to the ima_log_size fact to make sure that the file
   needed exists before executing
