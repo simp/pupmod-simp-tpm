@@ -1,6 +1,13 @@
-* Tue Nov 17 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.1-0
+* Tue Nov 17 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.3.1-0
 - Added a check to the ima_log_size fact to make sure that the file
   needed exists before executing
+
+* Wed Oct 5 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.3.0-0
+- Added ability to use `tpm_takeownership` well-known password options
+
+* Fri Sep 30 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.3.0-0
+- Added a feature to manage the PKCS#11 slot provided by the TPM
+- Also added a class that takes advantage of it
 
 * Tue Sep 27 2016 Nick Miller <nick.miller@onyxpoint.com> - 0.2.0-0
 - Added functionality to take ownership of the TPM

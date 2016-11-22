@@ -59,15 +59,6 @@ describe 'tpm' do
         }) }
       end
 
-      context 'with use_ima => true' do
-        let(:params) {{ :use_ima => true }}
-
-        it { is_expected.to compile.with_all_deps }
-        it { is_expected.to create_class('tpm') }
-        it { is_expected.to contain_class('tpm::ima') }
-        it { is_expected.to contain_kernel_parameter('ima_audit').with_value('true') }
-      end
-
     end
   end
 end

@@ -72,6 +72,35 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
     end
   end
 
+  # Generate the arguments required to interact with tpm_takeownership.
+  #
+  # @return [Array,String] The first item returned will be an array of arrays,
+  #   representing an Expect interaction. Each subarray first contains a regex
+  #   of what to expect, and next contains the text to be typed in. The second
+  #   item being returned is the command that will be interacted with, with
+  #   proper arguments as decided by this function.
+  def generate_args
+    stdin      = []
+    cmd        = ['tpm_takeownership']
+    owner_pass = resource[:owner_pass]
+    srk_pass   = resource[:srk_pass]
+
+    if owner_pass != "well-known"
+      stdin << [ /owner password/i,   owner_pass ]
+      stdin << [ /Confirm password/i, owner_pass ]
+    else
+      cmd << '-y'
+    end
+
+    if srk_pass != "well-known"
+      stdin << [ /SRK password/i,     srk_pass   ]
+      stdin << [ /Confirm password/i, srk_pass   ]
+    else
+      cmd << '-z'
+    end
+    return stdin, cmd.join(' ')
+  end
+
   def exists?
     if resource[:advanced_facts]
       dump_owner_pass(Puppet[:vardir])
@@ -85,13 +114,9 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
   end
 
   def create
-    stdin = [
-      [ /owner password/i,   resource[:owner_pass] ],
-      [ /Confirm password/i, resource[:owner_pass] ],
-      [ /SRK password/i,     resource[:srk_pass]   ],
-      [ /Confirm password/i, resource[:srk_pass]   ],
-    ]
-    success = tpm_takeownership(stdin)
+    stdin, cmd = generate_args
+
+    success = tpm_takeownership( stdin, cmd )
 
     err('Taking ownership of the TPM failed.') unless success
   end
