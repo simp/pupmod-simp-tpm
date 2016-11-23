@@ -51,13 +51,13 @@ describe Puppet::Type.type(:tpm_ownership) do
   end
 
   [:owner_pass, :srk_pass].each do |param|
-    it 'should require a string for both passwords' do
+    it "should require a string for #{param}" do
       expect {
         Puppet::Type.type(:tpm_ownership).new(
           :name => 'tpm0',
           param => ['array','should','fail']
         )
-      }.to raise_error(/must be a String/)
+      }.to raise_error(/#{param.to_s} must be a String/)
     end
   end
 end

@@ -1,6 +1,6 @@
 {
   "name": "simp-tpm",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "author": "simp",
   "summary": "manages TPMs and IMA (if your system supports it)",
   "license": "Apache-2.0",

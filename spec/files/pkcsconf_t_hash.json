@@ -1,0 +1,38 @@
+[
+  {
+    "label": "IBM PKCS11 TPM Token",
+    "manufacturer": "IBM Corp.",
+    "model": "TPM v1.1 Token",
+    "serial_number": 123,
+    "flags": ["RNG", "LOGIN_REQUIRED", "USER_PIN_INITIALIZED", "CLOCK_ON_TOKEN", "TOKEN_INITIALIZED"],
+    "sessions": "0/-2",
+    "r/w_sessions": "-1/-2",
+    "pin_length": "4-8",
+    "public_memory": "0xFFFFFFFF/0xFFFFFFFF",
+    "private_memory": "0xFFFFFFFF/0xFFFFFFFF",
+    "hardware_version": 1.0,
+    "firmware_version": 1.0,
+    "time": 66787,
+    "flags_raw": "0x44D (RNG|LOGIN_REQUIRED|USER_PIN_INITIALIZED|CLOCK_ON_TOKEN|TOKEN_INITIALIZED)",
+    "name": "IBM PKCS11 TPM Token",
+    "ensure": "present"
+  },
+  {
+    "label": "IBM PKCS11 TPM Token",
+    "manufacturer": "Test Corp.",
+    "model": "TPM v1.1 Token",
+    "serial_number": 123,
+    "flags": ["RNG", "LOGIN_REQUIRED", "USER_PIN_INITIALIZED", "CLOCK_ON_TOKEN", "TOKEN_INITIALIZED"],
+    "sessions": "0/-2",
+    "r/w_sessions": "-1/-2",
+    "pin_length": "4-8",
+    "public_memory": "0xFFFFFFFF/0xFFFFFFFF",
+    "private_memory": "0xFFFFFFFF/0xFFFFFFFF",
+    "hardware_version": 1.0,
+    "firmware_version": 1.0,
+    "time": 66787,
+    "flags_raw": "0x44D (RNG|LOGIN_REQUIRED|USER_PIN_INITIALIZED|CLOCK_ON_TOKEN|TOKEN_INITIALIZED)",
+    "name": "IBM PKCS11 TPM Token",
+    "ensure": "present"
+  }
+]

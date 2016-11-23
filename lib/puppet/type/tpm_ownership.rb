@@ -2,22 +2,24 @@
 #
 # @!puppet.type.param owner_pass TPM owner password. Required.
 #
-# @!puppet.type.param srk_pass TPM SRK password. Required.
-#
-# @!puppet.type.param device TPM device identifier. Defaults to tpm0. Checks to
-#   make sure the device exists at /dev/*<id>*
+# @!puppet.type.param srk_pass TPM SRK password. Defaults to empty string.
 #
 # @!puppet.type.param advanced_facts If true, the provider will drop the owner
-#   password in a file in the puppet `$vardir` to be used in some facts.
+#   password in a file in the puppet `$vardir` to be used in the `tpm` fact
+#   from this module.
 #
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
 require 'puppet/parameter/boolean'
 
 Puppet::Type.newtype(:tpm_ownership) do
-  @doc = "A type to manage ownership of a TPM. `owner_pass` is required, while `srk_pass`
-is only required if you aren't using Trusted Boot or the PKCS#11 interface. The
-SRK password is required to be null in order to sue those features.
+  @doc = "A type to manage ownership of a TPM. `owner_pass` is required, while
+`srk-pass` is only necessary if you aren't using Trusted Boot or the PKCS#11
+interface. The SRK password must be  to be null in order to use those features.
+
+If you need to use a 'well-known' password, make the password equal to the
+string 'well-known'. The provider will then use the `-z` or `-y` option when
+taking ownership of the TPM with `tpm_takeownership`.
 
 Example:
 
@@ -43,7 +45,7 @@ Example:
     desc 'The owner password of the TPM'
     validate do |value|
       unless value.is_a?(String)
-        raise(Puppet::Error, "$owner_pass must be a String, not '#{value.class}'")
+        raise(Puppet::Error, "owner_pass must be a String, not '#{value.class}'")
       end
     end
   end
@@ -52,7 +54,7 @@ Example:
     desc 'The Storage Root Key(SRK) password of the TPM'
     validate do |value|
       unless value.is_a?(String)
-        raise(Puppet::Error, "$owner_pass must be a String, not '#{value.class}'")
+        raise(Puppet::Error, "srk_pass must be a String, not '#{value.class}'")
       end
     end
     defaultto '' # Empty string
