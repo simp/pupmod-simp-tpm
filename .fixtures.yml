@@ -8,8 +8,6 @@ fixtures:
       repo: https://github.com/simp/augeasproviders_grub
       branch: simp-master
     simplib: https://github.com/simp/pupmod-simp-simplib
-    stdlib:
-      repo: https://github.com/simp/puppetlabs-stdlib
-      branch: simp-master
+    stdlib: https://github.com/simp/puppetlabs-stdlib
   symlinks:
     tpm: "#{source_dir}"
