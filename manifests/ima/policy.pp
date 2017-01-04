@@ -1,143 +1,115 @@
-# https://wiki.gentoo.org/wiki/Integrity_Measurement_Architecture
-# Kernel documentation Documentation/ABI/testing/ima_policy or
-# https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/Documentation/ABI/testing/ima_policy?id=refs/tags/v3.10.103
+# Manage IMA Policy
 #
-# The term 'watch', as used here, means both IMA policy fields dont_measure
-#   and dont_appraise. Both lines will be dropped for each entry here.
+#   * The term 'watch', as used here, means both IMA policy fields dont_measure
+#     and dont_appraise. Both lines will be dropped for each entry here.
 #
-# @param manage [Boolean] Enable policy management
+# @see https://wiki.gentoo.org/wiki/Integrity_Measurement_Architecture
+# @see Kernel documentation Documentation/ABI/testing/ima_policy
+# @see https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/Documentation/ABI/testing/ima_policy?id=refs/tags/v3.10.103
 #
-# @param dont_watch_proc [Boolean] If true, disable IMA hashing of procfs
+# @param manage Enable policy management
+#
+# @param dont_watch_proc If true, disable IMA hashing of procfs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_sysfs [Boolean] If true, disable IMA hashing of sysfs
+# @param dont_watch_sysfs If true, disable IMA hashing of sysfs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_debugfs [Boolean] If true, disable IMA hashing of debugfs
+# @param dont_watch_debugfs If true, disable IMA hashing of debugfs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_tmpfs [Boolean] If true, disable IMA hashing of tmpfs
+# @param dont_watch_tmpfs If true, disable IMA hashing of tmpfs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_ramfs [Boolean] If true, disable IMA hashing of ramfs
+# @param dont_watch_ramfs If true, disable IMA hashing of ramfs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_securityfs [Boolean] If true, disable IMA hashing of securityfs
+# @param dont_watch_securityfs If true, disable IMA hashing of securityfs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_devpts [Boolean] If true, disable IMA hashing of /dev/pts
+# @param dont_watch_devpts If true, disable IMA hashing of /dev/pts
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_binfmtfs [Boolean] If true, disable IMA hashing of binfmtfs
+# @param dont_watch_binfmtfs If true, disable IMA hashing of binfmtfs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_selinux [Boolean] If true, disable IMA hashing of selinux fs
+# @param dont_watch_selinux If true, disable IMA hashing of selinux fs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_nfs [Boolean] If true, disable IMA hashing of nfs
+# @param dont_watch_nfs If true, disable IMA hashing of nfs
 #   filesystems, as noted by the kernel magic documentation above.
-# @param dont_watch_cgroup [Boolean] If true, disable IMA hashing of cgroup
+# @param dont_watch_cgroup If true, disable IMA hashing of cgroup
 #   filesystems, as noted by the kernel magic documentation above.
 #
-# @param dont_watch_initrc_var_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_initrc_var_log_t If true, don't watch selinux
 #   context initrc_var_log_t
-# @param dont_watch_rpm_var_cache_t [Boolean] If true, don't watch selinux
+# @param dont_watch_rpm_var_cache_t If true, don't watch selinux
 #   context rpm_var_cache_t
-# @param dont_watch_puppet_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_puppet_log_t If true, don't watch selinux
 #   context puppet_log_t
-# @param dont_watch_auditd_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_auditd_log_t If true, don't watch selinux
 #   context auditd_log_t
-# @param dont_watch_auth_cache_t [Boolean] If true, don't watch selinux
+# @param dont_watch_auth_cache_t If true, don't watch selinux
 #   context auth_cache_t
-# @param dont_watch_fsadm_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_fsadm_log_t If true, don't watch selinux
 #   context fsadm_log_t
-# @param dont_watch_rsync_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_rsync_log_t If true, don't watch selinux
 #   context rsync_log_t
-# @param dont_watch_getty_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_getty_log_t If true, don't watch selinux
 #   context getty_log_t
-# @param dont_watch_nscd_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_nscd_log_t If true, don't watch selinux
 #   context nscd_log_t
-# @param dont_watch_cron_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_cron_log_t If true, don't watch selinux
 #   context cron_log_t
-# @param dont_watch_lastlog_t [Boolean] If true, don't watch selinux
+# @param dont_watch_lastlog_t If true, don't watch selinux
 #   context lastlog_t
-# @param dont_watch_var_log_t [Boolean] If true, don't watch selinux
+# @param dont_watch_var_log_t If true, don't watch selinux
 #   context var_log_t
-# @param dont_watch_wtmp_t [Boolean] If true, don't watch selinux
+# @param dont_watch_wtmp_t If true, don't watch selinux
 #   context wtmp_t
 #
-# @param dont_watch_list [Array] A list of selinux contexts that shouldn't be
+# @param dont_watch_list A list of selinux contexts that shouldn't be
 #   watched, merged with all of the parameters above
 #
-# @param measure_root_read_files [Boolean] Monitor all files opened by root
-# @param measure_file_mmap [Boolean] Monitor all files mmapped executable in file_mmap
-# @param measure_bprm_check [Boolean] Monitor all executables in bprm_check
-# @param measure_module_check [Boolean]
-# @param appraise_fowner [Boolean] Appraises all files owned by root
+# @param measure_root_read_files Monitor all files opened by root
+# @param measure_file_mmap Monitor all files mmapped executable in file_mmap
+# @param measure_bprm_check Monitor all executables in bprm_check
+# @param measure_module_check
+# @param appraise_fowner Appraises all files owned by root
 #
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
 class tpm::ima::policy (
-  $manage = false,
+  Boolean $manage = false,
 
   # magic filesystems, default settings
-  $dont_watch_proc       = true,
-  $dont_watch_sysfs      = true,
-  $dont_watch_debugfs    = true,
-  $dont_watch_tmpfs      = true,
-  $dont_watch_ramfs      = true,
-  $dont_watch_securityfs = true,
+  Boolean $dont_watch_proc       = true,
+  Boolean $dont_watch_sysfs      = true,
+  Boolean $dont_watch_debugfs    = true,
+  Boolean $dont_watch_tmpfs      = true,
+  Boolean $dont_watch_ramfs      = true,
+  Boolean $dont_watch_securityfs = true,
   # magic, additional settings
-  $dont_watch_devpts     = true,
-  $dont_watch_binfmtfs   = true,
-  $dont_watch_selinux    = true,
-  $dont_watch_nfs        = true,
-  $dont_watch_cgroup     = true,
+  Boolean $dont_watch_devpts     = true,
+  Boolean $dont_watch_binfmtfs   = true,
+  Boolean $dont_watch_selinux    = true,
+  Boolean $dont_watch_nfs        = true,
+  Boolean $dont_watch_cgroup     = true,
 
   # selinux contexts
-  $dont_watch_initrc_var_log_t = true,
-  $dont_watch_rpm_var_cache_t  = true,
-  $dont_watch_puppet_log_t     = true,
-  $dont_watch_auditd_log_t     = true,
-  $dont_watch_auth_cache_t     = true,
-  $dont_watch_fsadm_log_t      = true,
-  $dont_watch_rsync_log_t      = true,
-  $dont_watch_getty_log_t      = true,
-  $dont_watch_nscd_log_t       = true,
-  $dont_watch_cron_log_t       = true,
-  $dont_watch_lastlog_t        = true,
-  $dont_watch_var_log_t        = true,
-  $dont_watch_wtmp_t           = true,
-  $dont_watch_list = [],
+  Boolean $dont_watch_initrc_var_log_t = true,
+  Boolean $dont_watch_rpm_var_cache_t  = true,
+  Boolean $dont_watch_puppet_log_t     = true,
+  Boolean $dont_watch_auditd_log_t     = true,
+  Boolean $dont_watch_auth_cache_t     = true,
+  Boolean $dont_watch_fsadm_log_t      = true,
+  Boolean $dont_watch_rsync_log_t      = true,
+  Boolean $dont_watch_getty_log_t      = true,
+  Boolean $dont_watch_nscd_log_t       = true,
+  Boolean $dont_watch_cron_log_t       = true,
+  Boolean $dont_watch_lastlog_t        = true,
+  Boolean $dont_watch_var_log_t        = true,
+  Boolean $dont_watch_wtmp_t           = true,
+  Array[String] $dont_watch_list = [],
 
   # other defaults
-  $measure_root_read_files = true,
-  $measure_file_mmap       = true,
-  $measure_bprm_check      = true,
-  $measure_module_check    = true,
-  $appraise_fowner         = true,
+  Boolean $measure_root_read_files = true,
+  Boolean $measure_file_mmap       = true,
+  Boolean $measure_bprm_check      = true,
+  Boolean $measure_module_check    = true,
+  Boolean $appraise_fowner         = true,
 ){
-  validate_bool($dont_watch_proc)
-  validate_bool($dont_watch_sysfs)
-  validate_bool($dont_watch_debugfs)
-  validate_bool($dont_watch_tmpfs)
-  validate_bool($dont_watch_ramfs)
-  validate_bool($dont_watch_securityfs)
-  validate_bool($dont_watch_devpts)
-  validate_bool($dont_watch_binfmtfs)
-  validate_bool($dont_watch_selinux)
-  validate_bool($dont_watch_nfs)
-  validate_bool($dont_watch_cgroup)
-  validate_bool($dont_watch_initrc_var_log_t)
-  validate_bool($dont_watch_rpm_var_cache_t)
-  validate_bool($dont_watch_puppet_log_t)
-  validate_bool($dont_watch_auditd_log_t)
-  validate_bool($dont_watch_auth_cache_t)
-  validate_bool($dont_watch_fsadm_log_t)
-  validate_bool($dont_watch_rsync_log_t)
-  validate_bool($dont_watch_getty_log_t)
-  validate_bool($dont_watch_nscd_log_t)
-  validate_bool($dont_watch_cron_log_t)
-  validate_bool($dont_watch_lastlog_t)
-  validate_bool($dont_watch_var_log_t)
-  validate_bool($dont_watch_wtmp_t)
-  validate_array($dont_watch_list)
-  validate_bool($measure_root_read_files)
-  validate_bool($measure_file_mmap)
-  validate_bool($measure_bprm_check)
-  validate_bool($measure_module_check)
-  validate_bool($appraise_fowner)
 
   # magic reference is in Kernel documentation Documentation/ABI/testing/ima_policy
   $magic_hash = {
@@ -191,7 +163,7 @@ class tpm::ima::policy (
       require => File['/etc/ima/policy.conf'],
     }
 
-    if member($::init_systems, 'systemd') {
+    if member($facts['init_systems'], 'systemd') {
       file { '/usr/lib/systemd/system/import_ima_rules.service':
         ensure => file,
         mode   => '0644',
@@ -217,7 +189,7 @@ class tpm::ima::policy (
     }
   }
   else {
-    if member($::init_systems, 'systemd') {
+    if member($facts['init_systems'], 'systemd') {
       file { '/usr/lib/systemd/system/import_ima_rules.service':
         ensure => absent,
       }

@@ -1,31 +1,30 @@
 # Sets up IMA kernel boot flags if they are not enabled, and mounts the
 # securityfs when they are.
 #
-# @param enable [Boolean] If true, enable IMA on the system.
+# @param enable If true, enable IMA on the system.
 #
-# @param manage_policy [Boolean] If true, the tpm::ima::policy class will be
+# @param manage_policy If true, the tpm::ima::policy class will be
 #   included. Please read the documentation for that claa heavily, as it can
 #   cause live filesystems to become read-only until a reboot.
 #
-# @param mount_dir [AbsolutePath] Where to mount ima securityfs
+# @param mount_dir Where to mount ima securityfs
 #
-# @param ima_audit [Boolean]
+# @param ima_audit
 #   Audit control.  Can be set to:
 #     true  - Enable additional integrity auditing messages
 #     false - Enable integrity auditing messages (default)
 #
-# @param ima_template [String]
+# @param ima_template
 #   A pre-defined IMA measurement template format.
-#   Can be one of ima, ima-ng, ima-sig. Defaults to ima-ng.
 #
-# @param ima_hash [String]
+# @param ima_hash
 #   The list of supported hashes can be found in crypto/hash_info.h
 #
-# @param ima_tcb [Boolean] Toggle the TCB policy.  This means IMA will measure
+# @param ima_tcb Toggle the TCB policy.  This means IMA will measure
 #   all programs exec'd, files mmap'd for exec, and all file opened
 #   for read by uid=0. Defaults to true.
 #
-# @param log_max_size [Number] The size of the
+# @param log_max_size The size of the
 #   /sys/kernel/security/ima/ascii_runtime_measurements, in bytes, that will
 #   cause a reboot notification will be sent to the user.
 #
@@ -33,25 +32,18 @@
 # @author Trevor Vaughan <tvaughan@onyxpoint.com>
 #
 class tpm::ima (
-  $enable        = true,
-  $manage_policy = false,
-  $mount_dir     = '/sys/kernel/security',
-  $ima_audit     = true,
-  $ima_template  = 'ima-ng',
-  $ima_hash      = 'sha256',
-  $ima_tcb       = true,
-  $log_max_size  = 30000000
+  Boolean              $enable        = true,
+  Boolean              $manage_policy = false,
+  Stdlib::AbsolutePath $mount_dir     = '/sys/kernel/security',
+  Boolean              $ima_audit     = true,
+  Tpm::Ima::Template   $ima_template  = 'ima-ng',
+  String               $ima_hash      = 'sha256',
+  Boolean              $ima_tcb       = true,
+  Integer              $log_max_size  = 30000000
 ){
-  validate_bool($enable)
-  validate_bool($manage_policy)
-  validate_absolute_path($mount_dir)
-  validate_bool($ima_audit)
-  validate_array_member($ima_template, ['ima','ima-ng','ima-sig'])
-  validate_bool($ima_tcb)
-
 
   if $enable {
-    if $::cmdline['ima'] == 'on' {
+    if $facts['cmdline']['ima'] == 'on' {
       mount { $mount_dir:
         ensure   => mounted,
         atboot   => true,
@@ -94,7 +86,7 @@ class tpm::ima (
     #   include '::tpm::ima::policy'
     # }
 
-    if $::ima_log_size >= $log_max_size {
+    if $facts['ima_log_size'] >= $log_max_size {
       reboot_notify { 'ima_log':
         reason => 'The IMA /sys/kernel/security/ima/ascii_runtime_measurements is filling up kernel memory. Please reboot to clear.'
       }
