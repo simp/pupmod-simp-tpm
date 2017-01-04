@@ -1,6 +1,6 @@
 # Provides utilities for interacting with a TPM
 #
-# @param use_ima Toggles IMA on or off.
+# @param ima Toggles IMA on or off.
 #
 # @param take_ownership Enable to allow Puppet to take ownership
 #   of the TPM.

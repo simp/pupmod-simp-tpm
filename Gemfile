@@ -10,6 +10,7 @@ group :test do
   gem 'puppet', ENV.fetch('PUPPET_VERSION',  '~>4')
   gem 'rspec'
   gem 'rspec-puppet'
+  gem 'puppet-strings'
   gem 'hiera-puppet-helper'
   gem 'puppetlabs_spec_helper'
   gem 'metadata-json-lint'
@@ -24,7 +25,6 @@ group :development do
   gem 'travis-lint'
   gem 'travish'
   gem 'puppet-blacksmith'
-  gem 'puppet-strings'
   gem 'guard-rake'
   gem 'pry'
   gem 'pry-doc'

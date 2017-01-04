@@ -1,9 +1,11 @@
-# https://wiki.gentoo.org/wiki/Integrity_Measurement_Architecture
-# Kernel documentation Documentation/ABI/testing/ima_policy or
-# https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/Documentation/ABI/testing/ima_policy?id=refs/tags/v3.10.103
+# Manage IMA Policy
 #
-# @note The term 'watch', as used here, means both IMA policy fields dont_measure
-#   and dont_appraise. Both lines will be dropped for each entry here.
+#   * The term 'watch', as used here, means both IMA policy fields dont_measure
+#     and dont_appraise. Both lines will be dropped for each entry here.
+#
+# @see https://wiki.gentoo.org/wiki/Integrity_Measurement_Architecture
+# @see Kernel documentation Documentation/ABI/testing/ima_policy
+# @see https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/Documentation/ABI/testing/ima_policy?id=refs/tags/v3.10.103
 #
 # @param manage Enable policy management
 #
