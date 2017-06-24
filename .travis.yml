@@ -11,23 +11,43 @@ language: ruby
 sudo: false
 cache: bundler
 before_script:
-- bundle update
-bundler_args: "--without development system_tests"
+  - bundle update
+bundler_args: --without development system_tests
 before_install: rm Gemfile.lock || true
 script:
-- bundle exec rake test
+  - bundle exec rake test
 notifications:
   email: false
 rvm:
-- 2.1.9
+  - 2.1.9
 env:
   global:
-  - STRICT_VARIABLES=yes
+    - STRICT_VARIABLES=yes
   matrix:
-  - PUPPET_VERSION="~> 4.8.2"
-  - PUPPET_VERSION="~> 4.10.0"
-  - PUPPET_VERSION="~> 4.9.2"
-  - PUPPET_VERSION="~> 4.7.0"
+    - PUPPET_VERSION="~> 4.8.2"
+    - PUPPET_VERSION="~> 4.10.0"
+    - PUPPET_VERSION="~> 4.9.2"
+    - PUPPET_VERSION="~> 4.7.0"
 matrix:
   fast_finish: true
 
+before_deploy:
+  - 'bundle exec rake metadata_lint'
+  - "export PUPMOD_METADATA_VERSION=`ruby -r json -e \"puts JSON.parse(File.read('metadata.json')).fetch('version')\"`"
+  - '[[ $TRAVIS_TAG =~ ^${PUPMOD_METADATA_VERSION}$ ]]'
+deploy:
+  - provider: puppetforge
+    user: simp
+    password:
+        secure: "hdbyFQBTla0VwwkSxcAbAfl89H8dow5gXw/LULS7HfqaQ45EpwuHiQWDxuXY0ZJspt4U+kKfnkLwGB0kGWVzUmc+totrAFABVq/0FQSUDwTfMWU1GN47WqQZ4lZIcYXoIrIXVJxw0llESQfDHvmG+aDiS7XXF4AZPkg+HCqXVEwGsu2AU7hjsOi6BZkTTO2AuJUTtlkaTLIiARBx2iP6u/66J1+HquRiZorHs8FGAQrVHtLKalBzLJCtUrzw7ee+26m4aY6k1crqV3ABugJgZeB0rvsUPEhFHz1m4c3g0vshSw3Z8CrNgBk25kTPTCBGS6EcR7835NYAgNWy9HpRoX99wdzU4MLhj2IU1t0ImfAcpMSNYPlTnGIgMWfIAfvw+k+wl+/oTtk7f7/I2H4QUGWWIJCWQtb2QzhH1vRc4kx3D4EB+zl4aHtXyGSYgIDwC1C5TMzBWuTuORTZ0jT1fzIuSTbyoFdZtqDoBQ5dE3rNP7KU5bjljpey4JcLBpsxPeEQsXWtkNgJ7GxTXwBJxK2ByWcU6v7V6iA7fPONMmxuneWTH7kJ/+lomFcrn1agW5SkhZri24Q1dWiVpGOq0xrjyyGU08ChinIu15lyVkcu1PTYxRg0bldarDtsMVG5hAG0aGxUcAxKZfb6aMY1Nr5AylxHXyUQb0LrbQCHB+0="
+    on:
+      tags: true
+      rvm: 2.1.9
+      condition: '$FORGE_PUBLISH = true'
+  - provider: releases
+    api_key:
+        secure: "CR3Ta4CWIlkguxULCdWu10WCRtwuZ5wvezZ8L33QUGNDujALSapznU633ngYG0HneW4WzC1vuVf1Io7kFSYAAnuQB8XgU+/EX4Tk3KgIGZyM6NyujJ89RawyNitOFmQyZJr5O3nwusU04P3+UWjhoqAOvJ8Elu6vQEla7GkO4ngfsJJ1igkVyknlbxeiS8pO9eh2Iw0HIUBatA32OY6rb9l5AxKRJ0HhnZitxPVemQZ4muXRjjpsa/kdl9qWpjm7Tp6dpH18Tjvn9IGNvS+c58ltfd9MyDCNPG76mUuQnvHdCpk9J7Avi7xZDSS9oPQCvWtUblAQrv5yOpEBAcIiouoE2ZbyVPanRH/QnULlFs5Hz3Ya5jmfoSDYa186CYdfLIzcHC7Wzq5GDKCnyCHbz7iCzeIgG14iY/3pSesuZ1iNw+eCxpkQAr/DzCKhKsbgBGaQuDuuhfa5TuaY7fapYkfTFzMIdsfS5gLIeuOYGdMChvNJgf7FfJsF5O8y1ZAW30RW39ZEjFzHDXgQzMUzlp9zRHU4a0eg4m0O4QXsRW8r059QPIY9hbB68njKC5V0H0SttzUsUsmbFALmeWT6JiY3AmD0BgabuFu9RXNtPlruO26ik4gXqDZdPElDI4BFhWT9xONCJkVHIAYzWp3yx+oQJmgyUrpYPvXJx0JCM1A="
+    skip_cleanup: true
+    on:
+      tags: true
+      condition: '$FORGE_PUBLISH = true'
