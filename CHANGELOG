@@ -1,3 +1,6 @@
+* Thu Jul 06 2017 Liz Nemsick <lnemsick.simp@gmail.com> - 1.0.1-0
+- Update puppet dependency and remove OBE pe dependency in metadata.json
+
 * Wed Jan 04 2017 Nick Miller <nick.miller@onyxpoint.com> - 1.0.0-0
 - Strongly type module
 
