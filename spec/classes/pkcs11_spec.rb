@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe 'tpm::pkcs11' do
-  context 'supported operating systems' do
-    on_supported_os.each do |os, facts|
+  on_supported_os.each do |os, facts|
 
+    context 'default options' do
       it { is_expected.to create_class('tpm::pkcs11') }
       it { is_expected.to create_package('opencryptoki') }
       it { is_expected.to create_package('opencryptoki-tpmtok') }
@@ -12,8 +12,8 @@ describe 'tpm::pkcs11' do
         :ensure => 'running',
         :enable => true
       }) }
-
     end
+
   end
 
 end

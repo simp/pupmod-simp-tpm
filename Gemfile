@@ -7,7 +7,8 @@ gem_sources.each { |gem_source| source gem_source }
 
 group :test do
   gem 'rake'
-  gem 'puppet', ENV.fetch('PUPPET_VERSION',  '~> 4.0')
+  gem 'puppet', ENV.fetch('PUPPET_VERSION', '~> 4.0')
+  gem 'facter', ENV.fetch('FACTER_VERSION', '~> 2.4.0')
   gem 'rspec'
   gem 'rspec-puppet'
   gem 'hiera-puppet-helper'

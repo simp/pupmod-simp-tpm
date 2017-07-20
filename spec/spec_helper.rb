@@ -84,7 +84,7 @@ RSpec.configure do |c|
     :production => {
       #:fqdn           => 'production.rspec.test.localdomain',
       :path           => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
-      :concat_basedir => '/tmp'
+      :concat_basedir => '/tmp',
     }
   }
 

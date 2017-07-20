@@ -7,6 +7,7 @@ fixtures:
     augeasproviders_grub:
       repo: https://github.com/simp/augeasproviders_grub
       branch: simp-master
+    rsync: https://github.com/simp/pupmod-simp-rsync
     simplib: https://github.com/simp/pupmod-simp-simplib
     stdlib: https://github.com/simp/puppetlabs-stdlib
   symlinks:
