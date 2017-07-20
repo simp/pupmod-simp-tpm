@@ -20,15 +20,16 @@ describe 'tpm::tboot' do
         it { is_expected.to contain_class('tpm::tboot::policy') } #\
           # .that_notifies("Class['tpm::tboot::grub']") }
         it { is_expected.to contain_class('tpm::tboot::grub') } #\
-          # .that_notifies("Reboot_notify['launch tboot']") }
-        it { is_expected.to contain_reboot_notify('launch tboot') }
+          # .that_notifies("Reboot_notify['Launch tboot']") }
+        it { is_expected.to contain_reboot_notify('Launch tboot') }
 
         if os_facts[:os][:release][:major].to_i == 7
           it { is_expected.to contain_class('tpm::tboot::grub::grub2') }
-          it { is_expected.to contain_file('/etc/grub.d/20_linux_tboot') }
+          it { is_expected.to contain_file('/root/txt/20_linux_tboot.diff') }
           it { is_expected.to contain_grub_config('GRUB_CMDLINE_TBOOT').with_value(['logging=serial,memory,vga']) }
           it { is_expected.to contain_grub_config('GRUB_CMDLINE_LINUX_TBOOT').with_value(['intel_iommu=on']) }
           it { is_expected.to contain_grub_config('GRUB_TBOOT_POLICY_DATA').with_value('list.data') }
+          it { is_expected.to contain_exec('Patch 20_linux_tboot') }
           it { is_expected.to contain_exec('Update grub config') }
         else
           it { is_expected.to contain_class('tpm::tboot::grub::grub1') }

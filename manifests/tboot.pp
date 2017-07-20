@@ -13,7 +13,7 @@ class tpm::tboot (
 ) {
   include 'tpm'
 
-  reboot_notify { 'launch tboot': reason => 'tboot has been enabled, please reboot and complete a measured launch.' }
+  reboot_notify { 'Launch tboot': reason => 'tboot has been enabled, please reboot and complete a measured launch.' }
 
   file { '/root/txt/': ensure => directory }
 
@@ -25,6 +25,6 @@ class tpm::tboot (
   -> Class['tpm::tboot::sinit']
   -> Class['tpm::tboot::policy']
   ~> Class['tpm::tboot::grub']
-  ~> Reboot_notify['launch tboot']
+  ~> Reboot_notify['Launch tboot']
 
 }

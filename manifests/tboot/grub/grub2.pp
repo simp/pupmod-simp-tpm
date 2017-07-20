@@ -5,9 +5,15 @@ class tpm::tboot::grub::grub2 {
   $tboot_boot_options      = $tpm::tboot::tboot_boot_options
   $additional_boot_options = $tpm::tboot::additional_boot_options
 
-  file { '/etc/grub.d/20_linux_tboot':
+  file { '/root/txt/20_linux_tboot.diff':
     ensure  => file,
-    content => file('tpm/20_linux_tboot'),
+    content => file('tpm/20_linux_tboot.diff')
+  }
+
+  exec { 'Patch 20_linux_tboot':
+    command => '/bin/patch -Bf /etc/grub.d/20_linux_tboot /root/txt/20_linux_tboot.diff',
+    unless  => "/usr/bin/grep 'Modified by SIMP' /etc/grub.d/20_linux_tboot",
+    require => File['/root/txt/20_linux_tboot.diff'],
     notify  => Exec['Update grub config']
   }
 
@@ -23,8 +29,7 @@ class tpm::tboot::grub::grub2 {
     require     => [
       Grub_config['GRUB_CMDLINE_TBOOT'],
       Grub_config['GRUB_CMDLINE_LINUX_TBOOT'],
-      Grub_config['GRUB_TBOOT_POLICY_DATA'],
-      File['/etc/grub.d/20_linux_tboot']
+      Grub_config['GRUB_TBOOT_POLICY_DATA']
     ]
   }
 
