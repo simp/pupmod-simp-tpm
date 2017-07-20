@@ -20,12 +20,12 @@ This module manages a TPM, including taking ownership and enabling IMA. You must
 take ownership of a TPM to load and unload certs, use it as a PKCS #11
 interface, or to use SecureBoot or IMA.
 
-The [Integrity Management Architecture (IMA)](https://sourceforge.net/p/linux-ima/wiki/Home/) subsystem is a tool that
-uses the TPM to verify integrity of the system, based on filesystem and file
-hashes. The IMA class sets up IMA kernel boot flags if they are not enabled and
-when they are, mounts the `securityfs`. This module can manage the IMA policy,
-although modifying the policy incorrectly could cause your system to become
-read-only.
+The [Integrity Management Architecture (IMA)](https://sourceforge.net/p/linux-ima/wiki/Home/)
+subsystem is a tool that uses the TPM to verify integrity of the system, based
+on filesystem and file hashes. The IMA class sets up IMA kernel boot flags if
+they are not enabled and when they are, mounts the `securityfs`. This module can
+manage the IMA policy, although modifying the policy incorrectly could cause
+your system to become read-only.
 
 The TPM ecosystem has been designed to be difficult to automate. The difficulty
 has shown many downsides of using a tool like this module to manage your
@@ -76,12 +76,13 @@ This module is optimally designed for use within a larger SIMP ecosystem, but it
 --------------------------------------------------------------------------------
 
 This module will:
-* install `tpm-tools` and `trousers`
-* enable the `tcsd` service
+* Install `tpm-tools` and `trousers`
+* Enable the `tcsd` service
 * (*OPTIONAL*) Take ownership of the TPM
   * The password will be in a flat file in `$vardir/simp`
 * (*OPTIONAL*) Enable IMA on the host
   * (*OPTIONAL*) Manage the IMA policy (BROKEN - See Limitations)
+* (*OPTIONAL*) Install `tboot`, create policy, and add grub entry
 
 
 ### Setup Requirements
@@ -98,7 +99,7 @@ In order to use this module or a TPM in general, you must do the following:
 --------------------------------------------------------------------------------
 > **NOTE**
 >
-> Setting the SRK password to an empty string is not recommended for actual use,
+> Using the 'well-known' SRK password is not recommended for actual use,
 > but it is required for both Intel TXT (Trusted Boot) and the [PKCS#11
 > interface](http://trousers.sourceforge.net/pkcs11.html). If you aren't using
 > either of those technologies, please use a real password.
@@ -116,8 +117,8 @@ classes:
 tpm::take_ownership: true
 tpm::ownership::advanced_facts: true
 
-tpm::ownership::owner_pass: 'badpass'
-tpm::ownership::srk_pass: ''
+tpm::ownership::owner_pass: 'twentycharacters0000'
+tpm::ownership::srk_pass: 'well-known'
 ```
 
 To enable IMA and the PKCS #11 interface, add this to hiera:
@@ -137,21 +138,32 @@ tpm::pkcs11::so_pin: '12345678'
 tpm::pkcs11::user_pin: '87654321'
 ```
 
+To start with Trusted Boot, add the `tpm::tboot` class to your node.
+
+```yaml
+classes:
+  - tpm::tboot
+```
+
 
 ## Usage
+
+### Ownership
 
 The type and provider for tpm ownership provided in this module can be used as follows:
 
 ```puppet
 tpm_ownership { 'tpm0':
   ensure         => present,
-  owner_pass     => 'badpass',
-  srk_pass       => 'badpass2',
+  owner_pass     => 'well-known',
+  srk_pass       => 'well-known',
   advanced_facts => true
 }
 ```
 
-And the PKCS#11 slot type and provider can be used as follows:
+### PKCS#11
+
+The PKCS#11 slot type and provider can be enabled as follows:
 
 ```puppet
 tpmtoken { 'TPM PKCS#11 token':
@@ -160,6 +172,25 @@ tpmtoken { 'TPM PKCS#11 token':
   user_pin => '87654321'
 }
 ```
+
+### Trusted Boot
+
+This module should be able to create the policy required to allow the machine to
+complete a measured launch.
+
+1. Download the appropriate SINIT for your platform from the [Intel website](https://software.intel.com/en-us/articles/intel-trusted-execution-technology)
+2. Extract the zip and put it on a webserver somewhere or in a profile module.
+3. Set the following data in hiera:
+
+```yaml
+---
+tpm::tboot::sinit_name: 2nd_gen_i5_i7_SINIT_51.BIN
+tpm::tboot::sinit_source: 'puppet:///profiles/2nd_gen_i5_i7_SINIT_51.BIN'
+tpm::tboot::owner_password: "%{alias('tpm::ownership::owner_pass')}"
+```
+
+4. Reboot into the tboot grub entry
+
 
 ## Reference
 
