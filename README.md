@@ -138,7 +138,8 @@ tpm::pkcs11::so_pin: '12345678'
 tpm::pkcs11::user_pin: '87654321'
 ```
 
-To start with Trusted Boot, add the `tpm::tboot` class to your node.
+To start with Trusted Boot, add the `tpm::tboot` class to your node. Then follow
+the directions below carefully.
 
 ```yaml
 classes:
@@ -184,13 +185,15 @@ complete a measured launch.
 
 ```yaml
 ---
-tpm::tboot::sinit_name: 2nd_gen_i5_i7_SINIT_51.BIN
-tpm::tboot::sinit_source: 'puppet:///profiles/2nd_gen_i5_i7_SINIT_51.BIN'
+tpm::tboot::sinit_name: 2nd_gen_i5_i7_SINIT_51.BIN # the appropriate BIN
+tpm::tboot::sinit_source: 'puppet:///profiles/2nd_gen_i5_i7_SINIT_51.BIN' # where ever you choose to stash this
 tpm::tboot::owner_password: "%{alias('tpm::ownership::owner_pass')}"
 ```
 
-4. Reboot into the tboot grub entry
-
+4. Reboot into the Grub option that specifies 'no policy', booting into a tboot session
+5. Let puppet run again at boot
+6. Reboot into the normal tboot boot option
+7. Check the `tboot` fact for a measured launch: `puppet facts | grep measured_launch` or just run `txt-stat`
 
 ## Reference
 

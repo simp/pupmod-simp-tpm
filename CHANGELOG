@@ -1,3 +1,7 @@
+* Mon Aug 07 2017 Nick Miller <nick.miller@onyxpoint.com> - 1.1.0-0
+- Added tboot support. See tpm::tboot for details
+- Added documentation for providers to make puppet strings happy
+
 * Thu Jul 06 2017 Liz Nemsick <lnemsick.simp@gmail.com> - 1.0.1-0
 - Update puppet dependency and remove OBE pe dependency in metadata.json
 

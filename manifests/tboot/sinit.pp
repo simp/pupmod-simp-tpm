@@ -1,4 +1,6 @@
 # Install the sinit for your platform
+# This class is controlled by `tpm::tboot`
+#
 class tpm::tboot::sinit {
   assert_private()
 
@@ -29,13 +31,5 @@ class tpm::tboot::sinit {
       }
     }
 
-    file { "/boot/${sinit_name}":
-      ensure  => file,
-      source  => "/root/txt/sinit/${sinit_name}",
-      require => [
-        Rsync['tboot'],
-        File["/root/txt/sinit/${sinit_name}"]
-      ]
-    }
   }
 }

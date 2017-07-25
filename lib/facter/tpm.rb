@@ -25,16 +25,21 @@ Facter.add('tpm') do
 
     begin
       Timeout::timeout(15) do
-        Puppet.debug('running tpm_getpubek')
-        PTY.spawn('/sbin/tpm_getpubek') do |r,w,pid|
-          w.sync = true
-          begin
-            r.expect( /owner password/i, 15 ) { |s| w.puts owner_pass }
-            r.each { |line| out << line }
-          rescue Errno::EIO
-            # just until the end of the IO stream
+        if owner_pass == 'well-known'
+          Puppet.debug('running tpm_getpubek using well-known option')
+          Facter::Core::Execution.execute('tpm_getpubek -z')
+        else
+          Puppet.debug('running tpm_getpubek')
+          PTY.spawn('/sbin/tpm_getpubek') do |r,w,pid|
+            w.sync = true
+            begin
+              r.expect( /owner password/i, 15 ) { |s| w.puts owner_pass }
+              r.each { |line| out << line }
+            rescue Errno::EIO
+              # just until the end of the IO stream
+            end
+            Process.wait(pid)
           end
-          Process.wait(pid)
         end
       end
     rescue Timeout::Error
