@@ -1,0 +1,209 @@
+Intel(r) TXT Configuration Registers:
+	STS: 0x00018091
+	    senter_done: TRUE
+	    sexit_done: FALSE
+	    mem_config_lock: FALSE
+	    private_open: TRUE
+	    locality_1_open: TRUE
+	    locality_2_open: TRUE
+	ESTS: 0x00
+	    txt_reset: FALSE
+	E2STS: 0x0000000000000006
+	    secrets: TRUE
+	ERRORCODE: 0x00000000
+	DIDVID: 0x00000001b0018086
+	    vendor_id: 0x8086
+	    device_id: 0xb001
+	    revision_id: 0x1
+	FSBIF: 0x0000000000000000
+	QPIIF: 0x000000009d003000
+	SINIT.BASE: 0xcaf00000
+	SINIT.SIZE: 131072B (0x20000)
+	HEAP.BASE: 0xcaf20000
+	HEAP.SIZE: 917504B (0xe0000)
+	DPR: 0x00000000cb000041
+	    lock: TRUE
+	    top: 0xcb000000
+	    size: 4MB (4194304B)
+	PUBLIC.KEY:
+	    99 9c 2b ef 5f c4 d8 82 77 43 42 10 f4 ae d4 02
+	    95 0d 33 33 50 b6 1c 3d db ff a1 6f 3f d5 d3 d1
+
+***********************************************************
+	 TXT measured launch: TRUE
+	 secrets flag set: TRUE
+***********************************************************
+TBOOT log:
+	 max_size=32706
+	 zip_count=0
+	 curr_pos=23772
+	 buf:
+TBOOT: ******************* TBOOT *******************
+TBOOT:    2016-05-18 12:00 -0800 1.9.4
+TBOOT: *********************************************
+TBOOT: command line: logging=serial,memory,vga vga_delay=1 min_ram=0x2000000
+TBOOT: IA32_FEATURE_CONTROL_MSR: 0000ff07
+TBOOT: CPU is SMX-capable
+TBOOT: CPU is VMX-capable
+TBOOT: SMX is enabled
+TBOOT: TXT chipset and all needed capabilities present
+TBOOT: IA32_FEATURE_CONTROL_MSR: 0000ff07
+TBOOT: CPU is SMX-capable
+TBOOT: CPU is VMX-capable
+TBOOT: SMX is enabled
+TBOOT: TXT chipset and all needed capabilities present
+TBOOT: BSP is cpu 0
+TBOOT: original e820 map:
+TBOOT: 	0000000000000000 - 0000000000091800  (1)
+TBOOT: 	0000000000091800 - 00000000000a0000  (2)
+TBOOT: 	00000000000e0000 - 0000000000100000  (2)
+TBOOT: 	0000000000100000 - 0000000020000000  (1)
+TBOOT: 	0000000020000000 - 0000000020200000  (2)
+TBOOT: 	0000000020200000 - 0000000040000000  (1)
+TBOOT: 	0000000040000000 - 0000000040200000  (2)
+TBOOT: 	0000000040200000 - 00000000ca5f8000  (1)
+TBOOT: 	00000000ca5f8000 - 00000000ca63c000  (2)
+TBOOT: 	00000000ca63c000 - 00000000ca9b7000  (1)
+TBOOT: 	00000000ca9b7000 - 00000000ca9e7000  (2)
+TBOOT: 	00000000ca9e7000 - 00000000cabe7000  (4)
+TBOOT: 	00000000cabe7000 - 00000000cabff000  (3)
+TBOOT: 	00000000cabff000 - 00000000cac00000  (1)
+TBOOT: 	00000000cb800000 - 00000000cfa00000  (2)
+TBOOT: 	00000000fed1c000 - 00000000fed20000  (2)
+TBOOT: 	00000000ffc00000 - 00000000ffc20000  (2)
+TBOOT: 	0000000100000000 - 000000042e000000  (1)
+TBOOT: checking if module  is an SINIT for this platform...
+TBOOT: chipset production fused: 1
+TBOOT: chipset ids: vendor: 0x8086, device: 0xb001, revision: 0x1
+TBOOT: processor family/model/stepping: 0x206a7
+TBOOT: platform id: 0x4000000000000
+TBOOT: 	 1 ACM chipset id entries:
+TBOOT: 	     vendor: 0x8086, device: 0xb001, flags: 0x1, revision: 0x1, extended: 0x0
+TBOOT: 	 2 ACM processor id entries:
+TBOOT: 	     fms: 0x206a0, fms_mask: 0xfff3ff0, platform_id: 0x10000000000000, platform_mask: 0x1c000000000000
+TBOOT: 	     fms: 0x206a0, fms_mask: 0xfff3ff0, platform_id: 0x4000000000000, platform_mask: 0x1c000000000000
+TBOOT: SINIT matches platform
+TBOOT: TXT.SINIT.BASE: 0xcaf00000
+TBOOT: TXT.SINIT.SIZE: 0x20000 (131072)
+TBOOT: copied SINIT (size=d000) to 0xcaf00000
+TBOOT: AC mod base alignment OK
+TBOOT: AC mod size OK
+TBOOT: AC module header dump for SINIT:
+TBOOT: 	 type: 0x2 (ACM_TYPE_CHIPSET)
+TBOOT: 	 subtype: 0x0
+TBOOT: 	 length: 0xa1 (161)
+TBOOT: 	 version: 0
+TBOOT: 	 chipset_id: 0xb001
+TBOOT: 	 flags: 0x0
+TBOOT: 		 pre_production: 0
+TBOOT: 		 debug_signed: 0
+TBOOT: 	 vendor: 0x8086
+TBOOT: 	 date: 0x20110902
+TBOOT: 	 size*4: 0xd000 (53248)
+TBOOT: 	 txt_svn: 0x00000001
+TBOOT: 	 se_svn: 0x00000000
+TBOOT: 	 code_control: 0x0
+TBOOT: 	 entry point: 0x00000008:000034be
+TBOOT: 	 scratch_size: 0x8f (143)
+TBOOT: 	 info_table:
+TBOOT: 		 uuid: {0x7fc03aaa, 0x46a7, 0x18db, 0xac2e,
+		{0x69, 0x8f, 0x8d, 0x41, 0x7f, 0x5a}}
+TBOOT: 		     ACM_UUID_V3
+TBOOT: 		 chipset_acm_type: 0x1 (SINIT)
+TBOOT: 		 version: 4
+TBOOT: 		 length: 0x2c (44)
+TBOOT: 		 chipset_id_list: 0x4ec
+TBOOT: 		 os_sinit_data_ver: 0x5
+TBOOT: 		 min_mle_hdr_ver: 0x00020000
+TBOOT: 		 capabilities: 0x0000000e
+TBOOT: 		     rlp_wake_getsec: 0
+TBOOT: 		     rlp_wake_monitor: 1
+TBOOT: 		     ecx_pgtbl: 1
+TBOOT: 		     stm: 1
+TBOOT: 		     pcr_map_no_legacy: 0
+TBOOT: 		     pcr_map_da: 0
+TBOOT: 		     platform_type: 0
+TBOOT: 		     max_phy_addr: 0
+TBOOT: 		 acm_ver: 51
+TBOOT: 	 chipset list:
+TBOOT: 		 count: 1
+TBOOT: 		 entry 0:
+TBOOT: 		     flags: 0x1
+TBOOT: 		     vendor_id: 0x8086
+TBOOT: 		     device_id: 0xb001
+TBOOT: 		     revision_id: 0x1
+TBOOT: 		     extended_id: 0x0
+TBOOT: 	 processor list:
+TBOOT: 		 count: 2
+TBOOT: 		 entry 0:
+TBOOT: 		     fms: 0x206a0
+TBOOT: 		     fms_mask: 0xfff3ff0
+TBOOT: 		     platform_id: 0x10000000000000
+TBOOT: 		     platform_mask: 0x1c000000000000
+TBOOT: 		 entry 1:
+TBOOT: 		     fms: 0x206a0
+TBOOT: 		     fms_mask: 0xfff3ff0
+TBOOT: 		     platform_id: 0x4000000000000
+TBOOT: 		     platform_mask: 0x1c000000000000
+TBOOT: SGX:verify_IA32_se_svn_status is called
+TBOOT: SGX is not enabled, cpuid.ebx: 0x0
+TBOOT: TPM: FIFO_INF Locality 0 is open
+TBOOT: TPM: discrete TPM1.2 Family 0x0
+TBOOT: TPM is ready
+TBOOT: TPM nv_locked: TRUE
+TBOOT: TPM timeout values: A: 750, B: 750, C: 750, D: 750
+TBOOT: Wrong timeout B, fallback to 2000
+TBOOT: Wrong timeout C, fallback to 75000
+TBOOT: reading Verified Launch Policy from TPM NV...
+TBOOT: 	:256 bytes read
+TBOOT: policy:
+TBOOT: 	 version: 2
+TBOOT: 	 policy_type: TB_POLTYPE_CONT_NON_FATAL
+TBOOT: 	 hash_alg: TB_HALG_SHA1
+TBOOT: 	 policy_control: 00000001 (EXTEND_PCR17)
+TBOOT: 	 num_entries: 2
+TBOOT: 	 policy entry[0]:
+TBOOT: 		 mod_num: 0
+TBOOT: 		 pcr: none
+TBOOT: 		 hash_type: TB_HTYPE_IMAGE
+TBOOT: 		 num_hashes: 1
+TBOOT: 		 hashes[0]: 73 db 24 76 c8 ee 74 15 6a 62 a0 9a 7c bf f0 4e 16 4b 61 e5
+TBOOT: 	 policy entry[1]:
+TBOOT: 		 mod_num: 1
+TBOOT: 		 pcr: 19
+TBOOT: 		 hash_type: TB_HTYPE_IMAGE
+TBOOT: 		 num_hashes: 1
+TBOOT: 		 hashes[0]: 54 80 ca 06 d3 8d 8e 4d a9 9e 67 b7 bc fe 86 8c f4 9e 43 e8
+TBOOT: IA32_FEATURE_CONTROL_MSR: 0000ff07
+TBOOT: CPU is SMX-capable
+TBOOT: CPU is VMX-capable
+TBOOT: SMX is enabled
+TBOOT: TXT chipset and all needed capabilities present
+TBOOT: TXT.ERRORCODE: 0x0
+TBOOT: TXT.ESTS: 0x0
+TBOOT: TXT.E2STS: 0x0
+TBOOT: IA32_FEATURE_CONTROL_MSR: 0000ff07
+TBOOT: CPU is SMX-capable
+TBOOT: CPU is VMX-capable
+TBOOT: SMX is enabled
+TBOOT: TXT chipset and all needed capabilities present
+TBOOT: TXT.HEAP.BASE: 0xcaf20000
+TBOOT: TXT.HEAP.SIZE: 0xe0000 (917504)
+TBOOT: bios_data (@0xcaf20008, 0x56):
+TBOOT: 	 version: 4
+TBOOT: 	 bios_sinit_size: 0x0 (0)
+TBOOT: 	 lcp_pd_base: 0x0
+TBOOT: 	 lcp_pd_size: 0x0 (0)
+TBOOT: 	 num_logical_procs: 8
+TBOOT: 	 flags: 0x00000000
+TBOOT: 	 ext_data_elts[]:
+TBOOT: 		 BIOS_SPEC_VER:
+TBOOT: 		     major: 0x1
+TBOOT: 		     minor: 0x9
+TBOOT: 		     rev: 0x0
+TBOOT: 		 ACM:
+TBOOT: 		     num_acms: 1
+TBOOT: 		     acm_addrs[0]: 0xfffb8000
+TBOOT: IA32_FEATURE_CONTROL_MSR: 0000ff07
+TBOOT: CPU is SMX-capable
+TBOOT: CPU is VMX-capable
