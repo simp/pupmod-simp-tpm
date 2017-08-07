@@ -49,9 +49,9 @@ fi
 cd /root/txt/
 
 # clean nvram
-tpmnv_relindex -p "$PASSWORD" -i 0x20000001
-tpmnv_relindex -p "$PASSWORD" -i 0x20000002
-tpmnv_relindex -p "$PASSWORD" -i owner
+tpmnv_relindex -p "$PASSWORD" -i 0x20000001 || true
+tpmnv_relindex -p "$PASSWORD" -i 0x20000002 || true
+tpmnv_relindex -p "$PASSWORD" -i owner      || true
 
 # Clean up the files before we start!  vl.pol is simply appended to, not
 # written over - might as well clean up everything else, too.
