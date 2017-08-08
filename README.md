@@ -138,14 +138,7 @@ tpm::pkcs11::so_pin: '12345678'
 tpm::pkcs11::user_pin: '87654321'
 ```
 
-To start with Trusted Boot, add the `tpm::tboot` class to your node. Then follow
-the directions below carefully.
-
-```yaml
-classes:
-  - tpm::tboot
-```
-
+To start with Trusted Boot follow the directions below carefully.
 
 ## Usage
 
@@ -179,6 +172,8 @@ tpmtoken { 'TPM PKCS#11 token':
 This module should be able to create the policy required to allow the machine to
 complete a measured launch.
 
+1. Make sure the TPM owner password is 20 characters long and the SRK password
+  is 'well-known', equivalent to `tpm_takeownership -z`
 1. Download the appropriate SINIT for your platform from the [Intel website](https://software.intel.com/en-us/articles/intel-trusted-execution-technology)
 2. Extract the zip and put it on a webserver somewhere or in a profile module.
 3. Set the following data in hiera:

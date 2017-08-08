@@ -47,8 +47,8 @@ class tpm::tboot (
 
   Class['tpm']
   -> Class['tpm::tboot::sinit']
-  ~> Class['tpm::tboot::grub']
   ~> Class['tpm::tboot::policy']
+  ~> Class['tpm::tboot::grub']
   ~> Reboot_notify['Launch tboot']
 
 }

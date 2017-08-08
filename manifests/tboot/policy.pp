@@ -18,7 +18,8 @@ class tpm::tboot::policy {
     if ! $facts['tboot']['measured_launch'] and $facts['tboot']['tboot_session'] {
       exec { 'Generate and install tboot policy':
         command => "/usr/bin/sh ${policy_script} ${owner_password}",
-        tries   => 1
+        tries   => 1,
+        notify  => Exec['Update grub config']
       }
     }
   }
