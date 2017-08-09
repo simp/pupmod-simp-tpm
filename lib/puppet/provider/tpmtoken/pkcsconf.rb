@@ -1,7 +1,5 @@
-#
-# @author Nick Miller <nick.miller@onyxpoint.com>
-#
 Puppet::Type.type(:tpmtoken).provide :pkcsconf do
+  desc 'Initialize the TPM PKCS#11 interface'
 
   confine :has_tpm => true
 

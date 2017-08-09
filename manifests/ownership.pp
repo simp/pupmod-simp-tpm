@@ -22,13 +22,6 @@ class tpm::ownership (
   Optional[String] $srk_pass       = undef,
   Boolean          $advanced_facts = false
 ){
-  validate_bool($advanced_facts)
-
-
-  # 20 is the max keylength in trousers
-  $passgen_opts = {
-    'length'     => 20
-  }
 
   tpm_ownership { 'tpm0':
     ensure         => present,

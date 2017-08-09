@@ -1,0 +1,85 @@
+Intel(r) TXT Configuration Registers:
+	STS: 0x00018091
+	    senter_done: TRUE
+	    sexit_done: FALSE
+	    mem_config_lock: FALSE
+	    private_open: TRUE
+	    locality_1_open: TRUE
+	    locality_2_open: TRUE
+	ESTS: 0x00
+	    txt_reset: FALSE
+	E2STS: 0x0000000000000006
+	    secrets: TRUE
+	ERRORCODE: 0x00000000
+	DIDVID: 0x00000001b0018086
+	    vendor_id: 0x8086
+	    device_id: 0xb001
+	    revision_id: 0x1
+	FSBIF: 0x0000000000000000
+	QPIIF: 0x000000009d003000
+	SINIT.BASE: 0xcaf00000
+	SINIT.SIZE: 131072B (0x20000)
+	HEAP.BASE: 0xcaf20000
+	HEAP.SIZE: 917504B (0xe0000)
+	DPR: 0x00000000cb000041
+	    lock: TRUE
+	    top: 0xcb000000
+	    size: 4MB (4194304B)
+	PUBLIC.KEY:
+	    99 9c 2b ef 5f c4 d8 82 77 43 42 10 f4 ae d4 02
+	    95 0d 33 33 50 b6 1c 3d db ff a1 6f 3f d5 d3 d1
+
+***********************************************************
+	 TXT measured launch: FALSE
+	 secrets flag set: FALSE
+***********************************************************
+TBOOT log:
+	 max_size=32706
+	 zip_count=0
+	 curr_pos=23772
+	 buf:
+TBOOT: ******************* TBOOT *******************
+TBOOT:    2016-05-18 12:00 -0800 1.9.4
+TBOOT: *********************************************
+TBOOT: command line: logging=serial,memory,vga vga_delay=1 min_ram=0x2000000
+TBOOT: IA32_FEATURE_CONTROL_MSR: 0000ff07
+TBOOT: CPU is SMX-capable
+TBOOT: CPU is VMX-capable
+TBOOT: SMX is enabled
+TBOOT: TXT chipset and all needed capabilities present
+TBOOT: IA32_FEATURE_CONTROL_MSR: 0000ff07
+TBOOT: CPU is SMX-capable
+TBOOT: CPU is VMX-capable
+TBOOT: SMX is enabled
+TBOOT: TXT chipset and all needed capabilities present
+TBOOT: BSP is cpu 0
+TBOOT: original e820 map:
+TBOOT: 	0000000000000000 - 0000000000091800  (1)
+TBOOT: 	0000000000091800 - 00000000000a0000  (2)
+TBOOT: 	00000000000e0000 - 0000000000100000  (2)
+TBOOT: 	0000000000100000 - 0000000020000000  (1)
+TBOOT: 	0000000020000000 - 0000000020200000  (2)
+TBOOT: 	0000000020200000 - 0000000040000000  (1)
+TBOOT: 	0000000040000000 - 0000000040200000  (2)
+TBOOT: 	0000000040200000 - 00000000ca5f8000  (1)
+TBOOT: 	00000000ca5f8000 - 00000000ca63c000  (2)
+TBOOT: 	00000000ca63c000 - 00000000ca9b7000  (1)
+TBOOT: 	00000000ca9b7000 - 00000000ca9e7000  (2)
+TBOOT: 	00000000ca9e7000 - 00000000cabe7000  (4)
+TBOOT: 	00000000cabe7000 - 00000000cabff000  (3)
+TBOOT: 	00000000cabff000 - 00000000cac00000  (1)
+TBOOT: 	00000000cb800000 - 00000000cfa00000  (2)
+TBOOT: 	00000000fed1c000 - 00000000fed20000  (2)
+TBOOT: 	00000000ffc00000 - 00000000ffc20000  (2)
+TBOOT: 	0000000100000000 - 000000042e000000  (1)
+TBOOT: checking if module  is an SINIT for this platform...
+TBOOT: chipset production fused: 1
+TBOOT: chipset ids: vendor: 0x8086, device: 0xb001, revision: 0x1
+TBOOT: processor family/model/stepping: 0x206a7
+TBOOT: platform id: 0x4000000000000
+TBOOT: 	 1 ACM chipset id entries:
+TBOOT: 	     vendor: 0x8086, device: 0xb001, flags: 0x1, revision: 0x1, extended: 0x0
+TBOOT: 	 2 ACM processor id entries:
+TBOOT: 	     fms: 0x206a0, fms_mask: 0xfff3ff0, platform_id: 0x10000000000000, platform_mask: 0x1c000000000000
+TBOOT: 	     fms: 0x206a0, fms_mask: 0xfff3ff0, platform_id: 0x4000000000000, platform_mask: 0x1c000000000000
+TBOOT: SINIT matches platform

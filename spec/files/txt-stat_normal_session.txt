@@ -1,0 +1,36 @@
+Intel(r) TXT Configuration Registers:
+	STS: 0x00000002
+	    senter_done: FALSE
+	    sexit_done: TRUE
+	    mem_config_lock: FALSE
+	    private_open: FALSE
+	    locality_1_open: FALSE
+	    locality_2_open: FALSE
+	ESTS: 0x00
+	    txt_reset: FALSE
+	E2STS: 0x0000000000000004
+	    secrets: FALSE
+	ERRORCODE: 0x00000000
+	DIDVID: 0x00000001b0018086
+	    vendor_id: 0x8086
+	    device_id: 0xb001
+	    revision_id: 0x1
+	FSBIF: 0x0000000000000000
+	QPIIF: 0x000000009d003000
+	SINIT.BASE: 0x00000000
+	SINIT.SIZE: 0B (0x0)
+	HEAP.BASE: 0x00000000
+	HEAP.SIZE: 0B (0x0)
+	DPR: 0x0000000000000000
+	    lock: FALSE
+	    top: 0x00000000
+	    size: 0MB (0B)
+	PUBLIC.KEY:
+	    99 9c 2b ef 5f c4 d8 82 77 43 42 10 f4 ae d4 02
+	    95 0d 33 33 50 b6 1c 3d db ff a1 6f 3f d5 d3 d1
+
+***********************************************************
+	 TXT measured launch: FALSE
+	 secrets flag set: FALSE
+***********************************************************
+unable to find TBOOT log
