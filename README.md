@@ -173,10 +173,10 @@ This module should be able to create the policy required to allow the machine to
 complete a measured launch.
 
 1. Make sure the TPM owner password is 20 characters long and the SRK password
-  is 'well-known', equivalent to `tpm_takeownership -z`
-1. Download the appropriate SINIT for your platform from the [Intel website](https://software.intel.com/en-us/articles/intel-trusted-execution-technology)
-2. Extract the zip and put it on a webserver somewhere or in a profile module.
-3. Set the following data in hiera:
+   is 'well-known', equivalent to `tpm_takeownership -z`
+2. Download the appropriate SINIT for your platform from the [Intel website](https://software.intel.com/en-us/articles/intel-trusted-execution-technology)
+3. Extract the zip and put it on a webserver somewhere or in a profile module.
+4. Set the following data in hiera:
 
 ```yaml
 ---
@@ -185,10 +185,19 @@ tpm::tboot::sinit_source: 'puppet:///profiles/2nd_gen_i5_i7_SINIT_51.BIN' # wher
 tpm::tboot::owner_password: "%{alias('tpm::ownership::owner_pass')}"
 ```
 
-4. Reboot into the Grub option that specifies 'no policy', booting into a tboot session
-5. Let puppet run again at boot
-6. Reboot into the normal tboot boot option
-7. Check the `tboot` fact for a measured launch: `puppet facts | grep measured_launch` or just run `txt-stat`
+5. Include the `tpm::tboot` class:
+
+```yaml
+---
+classes:
+  - tpm
+  - tpm::tboot
+```
+
+6. Reboot into the Grub option that specifies 'no policy', booting into a tboot session
+7. Let puppet run again at boot
+8. Reboot into the normal tboot boot option
+9. Check the `tboot` fact for a measured launch: `puppet facts | grep measured_launch` or just run `txt-stat`
 
 ## Reference
 
