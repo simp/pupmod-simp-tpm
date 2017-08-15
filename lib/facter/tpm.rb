@@ -10,58 +10,56 @@
 #
 Facter.add('tpm') do
   confine :has_tpm => true
-  # confine :true => ! (`puppet resource service tcsd | grep running`.eql? "")
+  confine do
+    Facter::Core::Execution.which('tpm_version')
+  end
 
   # Get the pubek from tpm_getpubek when the TPM is owned
   # @param [String] the owner password of the TPM
   # @return [String] the output of the command, or nil if it times out
   #
-  def get_pubek_owned(owner_pass)
+  def get_pubek_owned(owner_pass, cmd = '/sbin/tpm_getpubek')
     require 'expect'
     require 'pty'
-    require 'timeout'
 
-    out = []
+    out = ''
 
     begin
-      Timeout::timeout(15) do
-        if owner_pass == 'well-known'
-          Puppet.debug('running tpm_getpubek using well-known option')
-          Facter::Core::Execution.execute('tpm_getpubek -z')
-        else
-          Puppet.debug('running tpm_getpubek')
-          PTY.spawn('/sbin/tpm_getpubek') do |r,w,pid|
-            w.sync = true
-            begin
-              r.expect( /owner password/i, 15 ) { |s| w.puts owner_pass }
-              r.each { |line| out << line }
-            rescue Errno::EIO
-              # just until the end of the IO stream
-            end
-            Process.wait(pid)
+      if owner_pass == 'well-known'
+        Puppet.debug('running tpm_getpubek using well-known option')
+        out = Facter::Core::Execution.execute('tpm_getpubek -z', :timeout => 15)
+      else
+        Puppet.debug('running tpm_getpubek')
+        ary = []
+        PTY.spawn(cmd) do |r,w,pid|
+          w.sync = true
+          begin
+            r.expect( /owner password/i, 15 ) { |s| w.puts owner_pass }
+            r.each { |line| ary << line }
+          rescue Errno::EIO
+            # just until the end of the IO stream
           end
+          Process.wait(pid)
         end
+        out = ary.join("\n")
       end
-    rescue Timeout::Error
-      return nil
+    rescue Facter::Core::Execution::ExecutionFailure
+      Puppet.debug('tpm_getpubek timed out!')
+      out = nil
     end
 
-    # get rid of title line and return if the exit code is 0
-    out.drop(1).join if $? == 0
+    out
   end
 
   # Get the pubek from tpm_getpubek when the TPM isn't owned
   # @return [String] the output of the command, or nil if it times out
   #
   def get_pubek_unowned
-    require 'timeout'
-
     begin
-      status = Timeout::timeout(15) do
-        Puppet.debug('running tpm_getpubek')
-        Facter::Core::Execution.execute('tpm_getpubek')
-      end
-    rescue Timeout::Error
+      Puppet.debug('running tpm_getpubek')
+      status = Facter::Core::Execution.execute('tpm_getpubek', :timeout => 15)
+    rescue Facter::Core::Execution::ExecutionFailure
+      Puppet.debug('tpm_getpubek timed out!')
       status = 'error: tpm_getpubek timed out'
     end
 
@@ -72,15 +70,12 @@ Facter.add('tpm') do
   # @return [String] the output of the command, or nil if it times out
   #
   def tpm_version
-    require 'timeout'
-
     begin
-      status = Timeout::timeout(15) do
-        Puppet.debug('running tpm_version')
-        Facter::Core::Execution.execute('tpm_version')
-      end
-    rescue Timeout::Error
-      return nil
+      Puppet.debug('running tpm_version')
+      status = Facter::Core::Execution.execute('tpm_version', :timeout => 15)
+    rescue Facter::Core::Execution::ExecutionFailure
+      Puppet.debug('tpm_version timed out!')
+      status = nil
     end
 
     status
@@ -128,7 +123,7 @@ Facter.add('tpm') do
     output
   end
 
-  # @return [Hash] information about the TPM from /sys/class/{misc,tpm}/tpm0/
+  # @return [Hash] information about the TPM from /sys/class/tpm/tpm0/
   #
   def status
     require 'yaml'
@@ -176,7 +171,7 @@ Facter.add('tpm') do
       out['_status'] = 'success: tpm unowned'
     else
       if File.exists?(pass_file)
-        owner_pass = Facter::Core::Execution.execute("cat #{pass_file} 2>/dev/null")
+        owner_pass = Facter::Core::Execution.execute("cat #{pass_file} 2> /dev/null")
         if owner_pass.eql? ""
           out['_status'] = 'error: the password file is empty'
           return out
