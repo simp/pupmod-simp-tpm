@@ -41,6 +41,19 @@ describe 'tpm::tboot' do
             GRUB_TBOOT_POLICY_DATA="list.data"
           EOF
             ) }
+          it 'should lock the default packages' do
+            contain_yum__versionlock('*:kernel-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-bigmem-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-enterprise-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-smp-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-debug-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-unsupported-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-source-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-devel-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-PAE-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-PAE-debug-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-modules-*-*.*').with_ensure('present')
+          end
         else
           # it { is_expected.to contain_class('tpm::tboot::grub::grub1') }
           it { is_expected.to compile.and_raise_error(/does not currently support Grub 0.99-1.0/) }
@@ -118,6 +131,22 @@ describe 'tpm::tboot' do
           it { is_expected.not_to contain_exec('Generate and install tboot policy') }
         else
           it { is_expected.to compile.and_raise_error(/does not currently support Grub 0.99-1.0/) }
+        end
+      end
+
+      context 'lock kernel packages => false' do
+        it 'should not lock the default packages' do
+          contain_yum__versionlock('*:kernel-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-bigmem-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-enterprise-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-smp-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-debug-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-unsupported-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-source-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-devel-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-PAE-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-PAE-debug-*-*.*').with_ensure('absent')
+          contain_yum__versionlock('*:kernel-modules-*-*.*').with_ensure('absent')
         end
       end
 
