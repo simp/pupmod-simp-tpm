@@ -25,7 +25,7 @@ env:
     - STRICT_VARIABLES=yes
   matrix:
     - PUPPET_VERSION="~> 4.8.2" FORGE_PUBLISH=true
-    - PUPPET_VERSION="~> 5.0.1"
+    - PUPPET_VERSION="~> 5.0"
     - PUPPET_VERSION="~> 4.10.0"
     - PUPPET_VERSION="~> 4.9.2"
     - PUPPET_VERSION="~> 4.7.0"
