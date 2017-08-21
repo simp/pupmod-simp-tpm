@@ -2,6 +2,7 @@
 # This class is controlled by `tpm::tboot`
 #
 class tpm::tboot::grub {
+  assert_private()
 
   $sinit_name    = $tpm::tboot::sinit_name
 

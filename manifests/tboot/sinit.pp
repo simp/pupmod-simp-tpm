@@ -12,7 +12,9 @@ class tpm::tboot::sinit {
 
   # if the sinit is not built into the bios...
   if $sinit_name {
-    file { '/root/txt/sinit': ensure => directory }
+    file { '/root/txt/sinit':
+      ensure => directory
+    }
 
     if $sinit_source == 'rsync' {
       rsync { 'tboot':
