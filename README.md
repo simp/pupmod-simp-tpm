@@ -199,6 +199,22 @@ classes:
 8. Reboot into the normal tboot boot option
 9. Check the `tboot` fact for a measured launch: `puppet facts | grep measured_launch` or just run `txt-stat`
 
+#### Locking the kernel
+
+The `tpm::tboot` class will use the `yum::versionlock` define from the
+`voxpupuli/yum` module to make sure the version of the kernel that the tboot
+policy was created with doesn't get upgraded without the user knowing. To
+disable this, set the `tpm::tboot::lock_kernel_packages` parameter to `false`.
+
+This module does provide a script to upgrade the policy, though it shouldn't be
+run from Puppet. To update your verified launch policy, do the following steps:
+
+1. `yum update kernel`
+2. `grub2-mkconfig -o /etc/grub2.cfg`
+3. `sh /root/txt/txt/update_tboot_policy.sh <owner password>`
+
+And reboot!
+
 ## Reference
 
 Please refer to the inline documentation within each source file, or to the module's generated YARD documentation for reference material.

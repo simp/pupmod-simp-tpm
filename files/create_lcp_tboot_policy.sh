@@ -37,7 +37,7 @@ fi
 if [[ -f /etc/default/grub-tboot ]]; then
     source /etc/default/grub-tboot
 else
-    GRUB_CMDLINE_TBOOT="logging=serial,memory,vga"
+    GRUB_CMDLINE_TBOOT="logging=serial,memory,vga min_ram=0x2000000"
 fi
 
 # Clean up the files after we're done?

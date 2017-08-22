@@ -38,6 +38,8 @@ class tpm::tboot (
   Array[String]        $additional_boot_options = ['intel_iommu=on'],
   Stdlib::AbsolutePath $policy_script           = '/root/txt/create_lcp_boot_policy.sh',
   String               $policy_script_source    = 'puppet:///modules/tpm/create_lcp_tboot_policy.sh',
+  Stdlib::AbsolutePath $update_script           = '/root/txt/update_tboot_policy.sh',
+  String               $update_script_source    = 'puppet:///modules/tpm/update_tboot_policy.sh',
   String               $package_ensure          = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
 ) {
   include 'tpm'

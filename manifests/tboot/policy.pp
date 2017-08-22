@@ -7,10 +7,17 @@ class tpm::tboot::policy {
   $owner_password       = $tpm::tboot::owner_password
   $policy_script        = $tpm::tboot::policy_script
   $policy_script_source = $tpm::tboot::policy_script_source
+  $update_script        = $tpm::tboot::update_script
+  $update_script_source = $tpm::tboot::update_script_source
 
   file { $policy_script:
     ensure => file,
     source => $policy_script_source
+  }
+
+  file { $update_script:
+    ensure => file,
+    source => $update_script_source
   }
 
   # if the last boot wasn't measured, but we did boot with the tboot kernel
