@@ -8,7 +8,11 @@
 # This script will update the tboot policy
 # for a Measured Launch Environment (mle) and write the policy to the NVRAM on
 # the Trusted Platform Module (tpm) on the mobo.
+#
+# For complete details, and a cure for insomnia, read the complete documents
+# policy_v2.txt and lcptools2.txt found in /usr/share/doc/tboot-1.7.0/.
 
+set -e
 
 if [ $UID -ne 0 ]; then
     echo "This can only be executed as root.  Aborting."
@@ -29,51 +33,61 @@ if [ `echo -n $PASSWORD | wc -c` -ne 20 ]; then
     exit 1
 fi
 
+# Grab tboot kernel params from the grub files
+if [[ -f /etc/default/grub-tboot ]]; then
+    source /etc/default/grub-tboot
+else
+    GRUB_CMDLINE_TBOOT="logging=serial,memory,vga min_ram=0x2000000"
+fi
+
 # Clean up the files after we're done?
 CLEAN_UP=false
 
 if [[ ! -d /root/txt ]]; then
   mkdir /root/txt
 fi
-cd /root/txt
+cd /root/txt/
+
+# clean nvram
+# tpmnv_relindex -p "$PASSWORD" -i 0x20000001 || true
 
 # Clean up the files before we start!  vl.pol is simply appended to, not
 # written over - might as well clean up everything else, too.
 rm -f vl.pol
 
-# g. Generate the tboot policy to control expected kernel and initrd:
+echo "g. Generate the tboot policy to control expected kernel and initrd"
 tb_polgen --create --type nonfatal vl.pol
-
-# which kernel is the default kernel
-#m=`grep default /boot/grub/grub.conf  | awk -F= '{print $2}'`
-m=`uname -r`
-
-# add 1 'cause we're zero based counting
-#let n=m+1
 
 # set the boot CMD_LINE
 # tboot and grub v1 don't play well together (e.g., an extra space between
 # cli options can cause tboot to fail), we need to use sed instead of awk.
 # Apparently this is not an issue with grub2
-#CMD_LINE="`grep vmlinuz-[23] /boot/grub/grub.conf | head -n${n} | tail -n1 | awk '{for (i=1; i<=NF; i++) $i = $(i+2); NF; print}'`"
-
-#CMD_LINE="`grep vmlinuz-[23] /boot/grub/grub.conf | head -n${n} | tail -n1 | sed -e 's/^[ \t]*//' | cut -d\  -f3-`"
 CMD_LINE="`cat /proc/cmdline | cut -d ' ' -f 1 --complement` intel_iommu=on"
 
 # set the kernel image
-#KERNEL_IMG="`grep vmlinuz-[23] /boot/grub/grub.conf | head -n${n} | tail -n1 | awk '{print $2}'`"
 KERNEL_IMG=`ls /boot/ | grep vmlinuz-[23] | head -n1`
+KERNEL_PATH="/boot/${KERNEL_IMG}"
 
 # set the initramfs image
-#INITRAMFS_IMG="`grep initramfs-[23] /boot/grub/grub.conf | head -n${n} | tail -n1 | awk '{print $2}'`"
 INITRAMFS_IMG=`ls /boot/ | grep initramfs-[23] | head -n1`
+INITRAMFS_PATH="/boot/${INITRAMFS_IMG}"
 
 # finally, create the policy for the images
-tb_polgen --add --num 0 --pcr none --hash image --cmdline "$CMD_LINE" --image /boot/${KERNEL_IMG} vl.pol
-tb_polgen --add --num 1 --pcr 19 --hash image --cmdline "" --image /boot/${INITRAMFS_IMG} vl.pol
+tb_polgen --add --num 0 --pcr none --hash image --cmdline "$CMD_LINE" --image ${KERNEL_PATH} vl.pol
+tb_polgen --add --num 1 --pcr 19 --hash image --cmdline "" --image ${INITRAMFS_PATH} vl.pol
 
-# l. Write the tboot policy (from vl.pol) into the NV index:
+echo "l. Write the tboot policy (from vl.pol) into the NV index"
 lcp_writepol -i 0x20000001 -f vl.pol -p "$PASSWORD"
+
+echo ""
+echo "--------------------------------------------------------------------------------"
+echo ""
+echo "Updated policy based on these parameters:"
+echo "    owner password:  supplied"
+echo "    tboot cmdline:   ${GRUB_CMDLINE_TBOOT}"
+echo "    kernel cmdline:  ${CMD_LINE}"
+echo "    kernel image:    ${KERNEL_PATH}"
+echo "    initramfs image: ${INITRAMFS_PATH}"
 
 if [ $CLEAN_UP = "true" ]; then
     rm -f vl.pol

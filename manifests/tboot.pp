@@ -2,6 +2,8 @@
 #
 # @param intermediate_grub_entry Provide a tboot Grub entry with no policy, for bootstrapping
 # @param purge_boot_entries Remove other, nontrusted boot entries from Grub
+# @param lock_kernel_packages Lock kernel related packages in YUM, to avoid accidentally invalidating the launch policy
+# @param kernel_packages_to_lock List of kernel related packages to lock
 # @param sinit_name Name of the SINIT policy file, usually ending in `*.BIN`
 # @param sinit_source Puppet `file` resouce source arrtibute for the SINIT binary
 #   @example The binary was manually copied over to `/root/BIN`, so this entry was set to `file:///root/BIN`
@@ -21,6 +23,11 @@
 class tpm::tboot (
   Boolean              $intermediate_grub_entry = true,
   Boolean              $purge_boot_entries      = false,
+  Boolean              $lock_kernel_packages    = true,
+  Array[String]        $kernel_packages_to_lock = [ 'kernel','kernel-bigmem','kernel-enterprise',
+                                                    'kernel-smp','kernel-debug','kernel-unsupported',
+                                                    'kernel-source','kernel-devel','kernel-PAE',
+                                                    'kernel-PAE-debug','kernel-modules' ],
   Optional[String]     $sinit_name              = undef,
   Optional[String]     $sinit_source            = simplib::lookup('simp_options::rsync', { 'default_value' => undef }),
   String               $rsync_source            = "tboot_${::environment}/",
@@ -31,19 +38,28 @@ class tpm::tboot (
   Array[String]        $additional_boot_options = ['intel_iommu=on'],
   Stdlib::AbsolutePath $policy_script           = '/root/txt/create_lcp_boot_policy.sh',
   String               $policy_script_source    = 'puppet:///modules/tpm/create_lcp_tboot_policy.sh',
+  Stdlib::AbsolutePath $update_script           = '/root/txt/update_tboot_policy.sh',
+  String               $update_script_source    = 'puppet:///modules/tpm/update_tboot_policy.sh',
   String               $package_ensure          = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
 ) {
   include 'tpm'
 
-  reboot_notify { 'Launch tboot': reason => 'tboot policy has been written, please reboot to complete a verified launch' }
+  reboot_notify { 'Launch tboot':
+    reason => 'tboot policy has been written, please reboot to complete a verified launch'
+  }
 
-  file { '/root/txt/': ensure => directory }
+  file { '/root/txt/':
+    ensure => directory
+  }
 
-  package { 'tboot': ensure => $package_ensure }
+  package { 'tboot':
+    ensure => $package_ensure
+  }
 
   include 'tpm::tboot::sinit'
   include 'tpm::tboot::policy'
   include 'tpm::tboot::grub'
+  include 'tpm::tboot::lock_kernel'
 
   Class['tpm']
   -> Class['tpm::tboot::sinit']
