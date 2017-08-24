@@ -1,46 +1,11 @@
 require 'spec_helper'
 require 'pry'
 
-# if ENV['MOCK_FACTER'].to_s =~ /true/
-module Facter
-  class Fact
-    def initialize()
-      @confines = []
-    end
-    def confine(args = {})
-      @confines << args
-    end
-    def setcode(&block)
-      @code = yield
-    end
-    # def run()
-    #   return @code.call()
-    # end
-  end
-  def self.add(name, &block)
-    $facts = {}
-    obj = Facter::Fact.new()
-    obj.instance_eval(&block)
-    $facts[name] = obj
-  end
-end
-load('lib/facter/tpm.rb')
-
-
 describe 'tpm', :type => :fact do
-
-  before :all do
-    ENV['MOCK_FACTER'] = 'true'
-  end
-  after :all do
-    ENV['MOCK_FACTER'] = nil
-  end
-
   before :each do
     Facter.clear
     Facter.clear_messages
   end
-  let(:obj) { $facts['tpm'] }
 
   # context 'has_tpm fact is false' do
   #   it 'should return nil' do
@@ -72,23 +37,39 @@ describe 'tpm', :type => :fact do
 
   ####### METHOD TESTING #########
 
-  describe 'get_pubek_owned' do
-    context 'with a well-known owner password' do
-      it 'should return the results from the tpm_getpubek command' do
-        out = File.read('spec/files/tpm/tpm_getpubek.txt')
-        Facter::Core::Execution.stubs(:execute).with('tpm_getpubek -z', :timeout => 15).returns out
-        expect(obj.get_pubek_owned('well-known')).to eq out
-      end
+  require 'facter/tpm/util'
+
+  describe Facter::TPM::Util do
+
+    before(:each) do
+      Facter::Core::Execution.stubs(:execute).with('tpm_version', :timeout => 15).returns File.read('spec/files/tpm/tpm_version.txt')
+
+      sys_path = 'spec/files/tpm/'
+
+
+      @tpm_fact = Facter::TPM::Util.new(sys_path)
     end
-    context 'with a normal owner password' do
-      it 'should interact with the tpm_getpubek command' do
-        out = File.read('spec/files/tpm/tpm_getpubek.txt')
-        expect(obj.get_pubek_owned('badpass', 'spec/files/tpm/mock_tpm_getpubek.rb')).to eq out
+
+    describe '.get_pubek_owned' do
+      context 'with a well-known owner password' do
+        it 'should return the results from the tpm_getpubek command' do
+          out = File.read('spec/files/tpm/tpm_getpubek.txt')
+          Facter::Core::Execution.stubs(:execute).with('tpm_getpubek -z', :timeout => 15).returns out
+
+          expect(@tpm_fact.send(:get_pubek_owned, 'well-known')).to eq out
+        end
+      end
+
+      context 'with a normal owner password' do
+        it 'should interact with the tpm_getpubek command' do
+          out = File.read('spec/files/tpm/tpm_getpubek.txt')
+          expect(obj.get_pubek_owned('badpass', 'spec/files/tpm/mock_tpm_getpubek.rb')).to eq out
+        end
       end
     end
   end
 
-  describe 'get_pubek_unowned' do
+  describe '.get_pubek_unowned' do
     it 'should return the results from the tpm_getpubek command' do
       out = File.read('spec/files/tpm/tpm_getpubek.txt')
       Facter::Core::Execution.stubs(:execute).with('tpm_getpubek', :timeout => 15).returns out
@@ -96,7 +77,7 @@ describe 'tpm', :type => :fact do
     end
   end
 
-  describe 'tpm_version' do
+  describe '.tpm_version' do
     it 'should return the value of the command' do
       out = File.read('spec/files/tpm/tpm_version.txt')
       Facter::Core::Execution.stubs(:execute).with('tpm_version', :timeout => 15).returns out
@@ -104,7 +85,7 @@ describe 'tpm', :type => :fact do
     end
   end
 
-  describe 'version' do
+  describe '.version' do
     context 'tpm_version exists' do
       before(:each) do
         obj.stubs(:tpm_version).returns File.read('spec/files/tpm/tpm_version.txt')
@@ -123,7 +104,7 @@ describe 'tpm', :type => :fact do
         )
       end
     end
-    context 'tpm_version does not exist' do
+    context '.tpm_version does not exist' do
       before(:each) do
         obj.stubs(:tpm_version).returns nil
       end
@@ -133,7 +114,7 @@ describe 'tpm', :type => :fact do
     end
   end
 
-  describe 'status' do
+  describe '.status' do
     sysstub = Dir.glob('spec/files/tpm/device/*')
     before(:each) do
       Dir.stubs(:glob).with('/sys/class/tpm/tpm0/device/*').returns sysstub
@@ -163,10 +144,9 @@ describe 'tpm', :type => :fact do
         'temp_deactivated', 'timeouts', 'uevent',
       )
     end
-
   end
 
-  describe 'pubek' do
+  describe '.pubek' do
     context 'tpm is not enabled' do
       let(:params) {{ 'enabled' => 0, 'owned' => 0 }}
       it 'should have a negavtive _status message' do
@@ -224,6 +204,4 @@ describe 'tpm', :type => :fact do
       end
     end
   end
-
-
 end
