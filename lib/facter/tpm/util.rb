@@ -195,7 +195,7 @@ module Facter
           out['_status'] = 'error: trousers is not running, the tpm is not enabled, or the password in the password file is incorrect'
         else
           pubek = YAML.load(raw.gsub(/\t/,' '*4).split("\n").drop(1).join("\n"))
-          pubek['Public Key'].gsub!(/ /, '')
+          pubek['Public Key'].to_s.gsub!(/ /, '')
           pubek['raw'] = raw
           out.merge!( Hash[pubek.map{ |k,v| [k.downcase.gsub(/ /, '_'), v] }] )
           out['_status'] = 'success: raw parsed'
