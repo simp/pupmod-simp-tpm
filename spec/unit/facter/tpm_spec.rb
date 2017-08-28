@@ -114,7 +114,6 @@ describe 'tpm', :type => :fact do
         expect(@tpm_fact.send(:status).keys).not_to include('options')
       end
       it 'should have structured values for pcrs' do
-        # binding.pry
         expect(@tpm_fact.send(:status)['pcrs']).not_to be nil
         expect(@tpm_fact.send(:status)['pcrs'].keys).to include("pcr-00")
         expect(@tpm_fact.send(:status)['pcrs'].keys).to include("pcr-20")

@@ -1,5 +1,8 @@
 * Thu Aug 17 2017 Nick Miller <nick.miller@onyxpoint.com> - 1.1.1-0
-- add tests for tpm fact
+- add tests for following facts:
+  - tpm
+  - ima_log_size
+  - has_tpm
 - confine tpm fact on the existance of the `tpm-tools` package
 - migrate to the built in facter timeout
 
