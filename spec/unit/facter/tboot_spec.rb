@@ -7,9 +7,9 @@ describe 'tboot', :type => :fact do
     Facter.clear_messages
   end
 
-  normal_session   = File.read('spec/files/txt-stat_normal_session.txt')
-  tboot_session    = File.read('spec/files/txt-stat_tboot_session.txt')
-  measured_session = File.read('spec/files/txt-stat_measured_session.txt')
+  normal_session   = File.read('spec/files/tboot/txt-stat_normal_session.txt')
+  tboot_session    = File.read('spec/files/tboot/txt-stat_tboot_session.txt')
+  measured_session = File.read('spec/files/tboot/txt-stat_measured_session.txt')
 
   context 'has_tpm fact is false' do
     before(:each) { Facter.fact(:has_tpm).stubs(:value).returns(false) }
