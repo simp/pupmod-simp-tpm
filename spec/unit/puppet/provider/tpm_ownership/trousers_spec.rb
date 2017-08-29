@@ -92,7 +92,6 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
         })
       }
       it 'should generate patterns for owner and srk passwords' do
-        # require 'pry';binding.pry
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([

@@ -34,7 +34,7 @@
       "version_requirement": ">= 4.13.1 < 5.0.0"
     },
     {
-      "name": "voxpupuli/yum",
+      "name": "puppet/yum",
       "version_requirement": ">= 2.0.0 < 3.0.0"
     }
   ],
