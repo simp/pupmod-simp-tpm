@@ -9,6 +9,7 @@ describe 'tpm', :type => :fact do
 
   context 'has_tpm fact is false' do
     it 'should return nil' do
+      File.stubs(:exists?).with('/dev/tpm0').returns false
       expect(Facter.fact(:tpm).value).to eq nil
     end
   end
