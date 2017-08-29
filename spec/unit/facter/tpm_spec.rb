@@ -9,15 +9,15 @@ describe 'tpm', :type => :fact do
 
   context 'has_tpm fact is false' do
     it 'should return nil' do
-      File.stubs(:exists?).with('/dev/tpm0').returns false
+      Facter.fact(:has_tpm).stubs(:value).returns(false)
       expect(Facter.fact(:tpm).value).to eq nil
     end
   end
 
   context 'has_tpm fact is true, but tpm-tools package is not installed' do
-    Facter.fact(:has_tpm).stubs(:value).returns(true)
-    Facter::Core::Execution.stubs(:which).with('tpm_version').returns nil
     it 'should return nil' do
+      Facter.fact(:has_tpm).stubs(:value).returns(true)
+      Facter::Core::Execution.stubs(:which).with('tpm_version').returns nil
       expect(Facter.fact(:tpm).value).to eq nil
     end
   end
@@ -26,11 +26,17 @@ describe 'tpm', :type => :fact do
     before(:each) do
       Facter.fact(:has_tpm).stubs(:value).returns(true)
       Facter::Core::Execution.stubs(:which).with('txt-stat').returns nil
-      Facter::Core::Execution.stubs(:which).with('tpm_version').returns true
+
+      # Just need something that actually exists on the current FS
+      Facter::Core::Execution.stubs(:which).with('tpm_version').returns Dir.pwd
     end
+
     it 'should be a structured fact with the prescribed structure' do
-      fact = Facter.fact(:tpm).value
-      expect(fact).to include('status','version','pubek','sys_path')
+      require 'facter/tpm/util'
+
+      fact = Facter::TPM::Util.new('spec/files/tpm')
+      Facter::TPM::Util.stubs(:new).with('/sys/class/tpm/tpm0').returns fact
+      expect(Facter.fact(:tpm).value).to include('status','version','pubek','sys_path')
     end
   end
 
