@@ -3,7 +3,7 @@
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
 Puppet::Type.newtype(:tpmtoken) do
-  @doc = "THis type will manage the PKCS #11 interface provided by opencryptoki,
+  @doc = "This type will manage the PKCS #11 interface provided by opencryptoki,
 and backed my the TPM.
 
 Example:

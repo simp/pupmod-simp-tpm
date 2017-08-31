@@ -33,14 +33,6 @@ Example:
 
   feature :take_ownership, "The ability to take ownership of a TPM"
 
-  ensurable
-
-  def pre_run_check
-    if !Facter.value(:has_tpm)
-      raise Puppet::Error, "Host doesn't have a TPM"
-    end
-  end
-
   newparam(:owner_pass) do
     desc 'The owner password of the TPM'
     validate do |value|
@@ -57,7 +49,7 @@ Example:
         raise(Puppet::Error, "srk_pass must be a String, not '#{value.class}'")
       end
     end
-    defaultto '' # Empty string
+    defaultto 'well-known'
   end
 
   newparam(:name, :namevar => true) do
@@ -72,17 +64,37 @@ Example:
     defaultto 'false'
   end
 
+
+  newproperty(:owned) do
+    desc 'Ownership status of the TPM'
+    newvalue(:true)
+    newvalue(:false)
+  end
+
+  newproperty(:active) do
+    desc 'Active status of the TPM'
+    newvalue(:true)
+    newvalue(:false)
+  end
+
+  newproperty(:enabled) do
+    desc 'Enabled status of the TPM'
+    newvalue(:true)
+    newvalue(:false)
+  end
+
+  newproperty(:tpm_version) do
+    desc 'Hardware version of the TPM'
+    newvalue(1.2)
+    newvalue(2.0)
+  end
+
+
   autorequire(:package) do
     [ 'trousers','tpm-tools' ]
   end
   autorequire(:service) do
     'tcsd'
-  end
-
-  validate do
-    if self[:owner_pass].nil?
-      fail('Owner password is required to use this type')
-    end
   end
 
 end
