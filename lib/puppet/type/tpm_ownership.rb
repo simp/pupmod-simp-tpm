@@ -33,6 +33,7 @@ Example:
 
   feature :take_ownership, "The ability to take ownership of a TPM"
 
+
   newparam(:owner_pass) do
     desc 'The owner password of the TPM'
     validate do |value|
@@ -67,26 +68,25 @@ Example:
 
   newproperty(:owned) do
     desc 'Ownership status of the TPM'
-    newvalue(:true)
-    newvalue(:false)
+    newvalues(true,false)
+    def insync?(is)
+      provider.owned
+    end
   end
 
   newproperty(:active) do
     desc 'Active status of the TPM'
-    newvalue(:true)
-    newvalue(:false)
+    newvalues(true,false)
   end
 
   newproperty(:enabled) do
     desc 'Enabled status of the TPM'
-    newvalue(:true)
-    newvalue(:false)
+    newvalues(true,false)
   end
 
   newproperty(:tpm_version) do
     desc 'Hardware version of the TPM'
-    newvalue(1.2)
-    newvalue(2.0)
+    newvalues(1.2,2.0)
   end
 
 
