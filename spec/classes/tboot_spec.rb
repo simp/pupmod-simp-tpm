@@ -53,6 +53,7 @@ describe 'tpm::tboot' do
             contain_yum__versionlock('*:kernel-PAE-*-*.*').with_ensure('present')
             contain_yum__versionlock('*:kernel-PAE-debug-*-*.*').with_ensure('present')
             contain_yum__versionlock('*:kernel-modules-*-*.*').with_ensure('present')
+            contain_yum__versionlock('*:kernel-headers-*-*.*').with_ensure('present')
           end
         else
           # it { is_expected.to contain_class('tpm::tboot::grub::grub1') }
