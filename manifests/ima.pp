@@ -4,7 +4,7 @@
 # @param enable If true, enable IMA on the system.
 #
 # @param manage_policy If true, the tpm::ima::policy class will be
-#   included. Please read the documentation for that claa heavily, as it can
+#   included. Please read the documentation for that class heavily, as it can
 #   cause live filesystems to become read-only until a reboot.
 #
 # @param mount_dir Where to mount ima securityfs
@@ -80,9 +80,11 @@ class tpm::ima (
       }
     }
 
-    if $manage_policy {
-      include '::tpm::ima::policy'
-    }
+    # This feature will remain commented out until the generated policy
+    #  can be safely imported. As of now, it makes the system read-only
+    # if $manage_policy {
+    #   include '::tpm::ima::policy'
+    # }
 
     if $facts['ima_log_size'] >= $log_max_size {
       reboot_notify { 'ima_log':

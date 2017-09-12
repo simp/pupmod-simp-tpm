@@ -1,4 +1,4 @@
-[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html) [![Build Status](https://travis-ci.org/simp/pupmod-simp-tpm.svg)](https://travis-ci.org/simp/pupmod-simp-tpm) [![SIMP compatibility](https://img.shields.io/badge/SIMP%20compatibility-4.2.*%2F5.1.*-orange.svg)](https://img.shields.io/badge/SIMP%20compatibility-4.2.*%2F5.1.*-orange.svg)
+[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html) [![Build Status](https://travis-ci.org/simp/pupmod-simp-tpm.svg)](https://travis-ci.org/simp/pupmod-simp-tpm)
 
 #### Table of Contents
 
@@ -238,7 +238,8 @@ It causes the system to become read-only, even though it is only using supported
 configuration elements. The module will be updated soon with more sane defaults
 to allow for at least the minimal amount of a system to be measured.
 
-Try setting these parameters to get started:
+To get started, include the `tpm::ima::policy` class and set these parameters.
+From there, they can be changed to `true` on one by one:
 
 ```yaml
 tpm::ima::policy::measure_root_read_files: false
