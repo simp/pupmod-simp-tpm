@@ -27,7 +27,7 @@ class tpm::tboot (
   Array[String]        $kernel_packages_to_lock = [ 'kernel','kernel-bigmem','kernel-enterprise',
                                                     'kernel-smp','kernel-debug','kernel-unsupported',
                                                     'kernel-source','kernel-devel','kernel-PAE',
-                                                    'kernel-PAE-debug','kernel-modules' ],
+                                                    'kernel-PAE-debug','kernel-modules', 'kernel-headers' ],
   Optional[String]     $sinit_name              = undef,
   Optional[String]     $sinit_source            = simplib::lookup('simp_options::rsync', { 'default_value' => undef }),
   String               $rsync_source            = "tboot_${::environment}/",
