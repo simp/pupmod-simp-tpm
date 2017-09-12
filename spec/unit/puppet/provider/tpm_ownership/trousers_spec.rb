@@ -173,21 +173,4 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
       expect(provider.class.read_sys(mock_sys)).to eq(expected)
     end
   end
-
-  # describe 'exists?' do
-  #   it 'detect TPM is unowned' do
-  #     expect(provider.exists?).to be_falsey
-  #   end
-  # end
-
-  # describe 'create' do
-  #
-  # end
-
-  # describe 'destroy' do
-  #   it 'should log alert and not do anything' do
-  #     expect(provider.destroy).to be_instance_of(Puppet::Util::Log)
-  #   end
-  # end
-
 end

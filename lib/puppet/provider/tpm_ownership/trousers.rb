@@ -16,8 +16,6 @@ Puppet::Type.type(:tpm_ownership).provide(:trousers) do
 
   commands :tpm_takeownership => 'tpm_takeownership'
 
-  # mk_resource_methods
-
   def initialize(value={})
     super(value)
     @property_flush = {}
