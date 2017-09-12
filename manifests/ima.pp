@@ -80,11 +80,9 @@ class tpm::ima (
       }
     }
 
-    # This feature will remain commented out until the generated policy
-    #  can be safely imported. As of now, it makes the system read-only
-    # if $manage_policy {
-    #   include '::tpm::ima::policy'
-    # }
+    if $manage_policy {
+      include '::tpm::ima::policy'
+    }
 
     if $facts['ima_log_size'] >= $log_max_size {
       reboot_notify { 'ima_log':

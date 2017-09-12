@@ -217,23 +217,40 @@ And reboot!
 
 ## Reference
 
-Please refer to the inline documentation within each source file, or to the module's generated YARD documentation for reference material.
+Please refer to the inline documentation within each source file, or to the
+module's generated YARD documentation for reference material.
 
 
 ## Limitations
 
-SIMP Puppet modules are generally intended for use on Red Hat Enterprise Linux and compatible distributions, such as CentOS. Please see the [`metadata.json` file](./metadata.json) for the most up-to-date list of supported operating systems, Puppet versions, and module dependencies.
+SIMP Puppet modules are generally intended for use on Red Hat Enterprise Linux
+and compatible distributions, such as CentOS. Please see the
+[`metadata.json` file](./metadata.json) for the most up-to-date list of
+supported operating systems, Puppet versions, and module dependencies.
 
 This module does not support clearing a previously owned TPM.
 
 ### IMA
 
-The current RedHat implementation of IMA does not seem to work after inserting our default policy (generated example in `spec/files/default_ima_policy.conf`). It causes the system to become read-only, even though it is only using supported configuration elements. Please do not use this feature of the module yet.
+The current RedHat implementation of IMA does not seem to work after inserting
+our default policy (generated example in `spec/files/default_ima_policy.conf`).
+It causes the system to become read-only, even though it is only using supported
+configuration elements. The module will be updated soon with more sane defaults
+to allow for at least the minimal amount of a system to be measured.
 
+Try setting these parameters to get started:
+
+```yaml
+tpm::ima::policy::measure_root_read_files: false
+tpm::ima::policy::measure_file_mmap: false
+tpm::ima::policy::measure_bprm_check: false
+tpm::ima::policy::measure_module_check: false
+tpm::ima::policy::appraise_fowner: false
+```
 
 ## Development
 
-Please read our [Contribution Guide](https://simp-project.atlassian.net/wiki/display/SD/Contributing+to+SIMP) and visit our [developer wiki](https://simp-project.atlassian.net/wiki/display/SD/SIMP+Development+Home).
+Please read our [Contribution Guide](https://simp.readthedocs.io/en/master/contributors_guide/Contribution_Procedure.html)
 
 
 ### Acceptance tests
@@ -243,12 +260,3 @@ Please read our [Contribution Guide](https://simp-project.atlassian.net/wiki/dis
 stability, and it requires quite a few patches to libvirt, associated
 emulation software, Beaker, and Vagrant before acceptance tests for this module become feasible. Read
 our [progress so far on the issue](https://simp-project.atlassian.net/wiki/x/CgAVAg).
-
-This module will include [Beaker](https://github.com/puppetlabs/beaker) acceptance tests using the SIMP [Beaker Helpers](https://github.com/simp/rubygem-simp-beaker-helpers).  By default the tests will use [Vagrant](https://www.vagrantup.com/) with [VirtualBox](https://www.virtualbox.org) as a back-end; Vagrant and VirtualBox must both be installed to run these tests without modification. To execute the tests, when written, run the following:
-
-```shell
-bundle install
-bundle exec rake beaker:suites
-```
-
-Please refer to the [SIMP Beaker Helpers documentation](https://github.com/simp/rubygem-simp-beaker-helpers/blob/master/README.md) for more information.
