@@ -4,7 +4,7 @@
 # @param enable If true, enable IMA on the system.
 #
 # @param manage_policy If true, the tpm::ima::policy class will be
-#   included. Please read the documentation for that class heavily, as it can
+#   included. Please read the documentation for that class **carefully**, as it can
 #   cause live filesystems to become read-only until a reboot.
 #
 # @param mount_dir Where to mount ima securityfs
