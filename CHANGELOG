@@ -5,6 +5,8 @@
   - has_tpm
 - confine tpm fact on the existance of the `tpm-tools` package
 - migrate to the built in facter timeout
+- IMA improvements
+  - Updated the README to be more helpful
 - Lock `kernel-headers` now, as well as the previous kernel packages
 
 * Mon Aug 07 2017 Nick Miller <nick.miller@onyxpoint.com> - 1.1.0-0
