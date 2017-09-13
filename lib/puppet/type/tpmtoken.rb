@@ -1,10 +1,10 @@
-# Ininitalize and manage certs in the TPM PKCS #11 interface
+# Initialize and manage certs in the TPM PKCS #11 interface
 #
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
 Puppet::Type.newtype(:tpmtoken) do
   @doc = "This type will manage the PKCS #11 interface provided by opencryptoki,
-and backed my the TPM.
+and backed by the TPM.
 
 Example:
   include 'tpm'
