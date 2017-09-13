@@ -1,5 +1,5 @@
 Puppet::Type.type(:tpm_ownership).provide(:trousers) do
-  desc 'The trousers provider for the tpm_ownership type used `tcsd`-provided
+  desc 'The trousers provider for the tpm_ownership type uses `tcsd`-provided
     commands to take ownership of tpm0. Trousers does not allow the user
     to provide a TPM on another path.
 
