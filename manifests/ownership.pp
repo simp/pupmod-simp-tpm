@@ -22,13 +22,13 @@ class tpm::ownership (
   String           $owner_pass     = passgen( "${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
   Optional[String] $srk_pass       = undef,
   Boolean          $advanced_facts = false
-){
+) {
 
   tpm_ownership { 'tpm0':
     owned          => $owned,
     owner_pass     => $owner_pass,
     srk_pass       => $srk_pass,
-    advanced_facts => $advanced_facts
+    advanced_facts => $advanced_facts,
   }
 
 }

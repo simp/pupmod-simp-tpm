@@ -26,7 +26,7 @@ Example:
   include 'tpm'
 
   tpm_ownership { 'tpm0':
-    ensure     => present,
+    owned      => true,
     owner_pass => 'badpass',
   }
 "
@@ -68,25 +68,7 @@ Example:
 
   newproperty(:owned) do
     desc 'Ownership status of the TPM'
-    newvalues(true,false)
-    def insync?(is)
-      provider.owned
-    end
-  end
-
-  newproperty(:active) do
-    desc 'Active status of the TPM'
-    newvalues(true,false)
-  end
-
-  newproperty(:enabled) do
-    desc 'Enabled status of the TPM'
-    newvalues(true,false)
-  end
-
-  newproperty(:tpm_version) do
-    desc 'Hardware version of the TPM'
-    newvalues(1.2,2.0)
+    newvalues(:true,:false)
   end
 
 

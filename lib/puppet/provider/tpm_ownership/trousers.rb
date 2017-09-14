@@ -103,15 +103,12 @@ Puppet::Type.type(:tpm_ownership).provide(:trousers) do
   end
 
   def self.read_sys(sys_glob = '/sys/class/tpm/*')
-    t = { 1 => true, 0 => false }
+    t = { 1 => :true, 0 => :false }
     Dir.glob(sys_glob).collect do |tpm_path|
       debug(tpm_path)
       {
-        :name        => File.basename(tpm_path),
-        :active      => t[File.read(File.join(tpm_path,'device','active')).to_i],
-        :owned       => t[File.read(File.join(tpm_path,'device','owned')).to_i],
-        :enabled     => t[File.read(File.join(tpm_path,'device','enabled')).to_i],
-        :tpm_version => File.readlines(File.join(tpm_path,'device','caps'))[1].split(':')[1].to_f,
+        name:  File.basename(tpm_path),
+        owned: t[File.read(File.join(tpm_path,'device','owned')).to_i],
       }
     end
   end
@@ -119,7 +116,7 @@ Puppet::Type.type(:tpm_ownership).provide(:trousers) do
 
   def self.instances
     read_sys.collect do |tpm|
-      debug("Adding tpm #{tpm[:name]}")
+      debug("Adding tpm: #{tpm[:name]}")
       new(tpm)
     end
   end
@@ -133,44 +130,33 @@ Puppet::Type.type(:tpm_ownership).provide(:trousers) do
   end
 
   def owned=(should)
-    debug 'got to owned='
-    @property_flush[:owned] = true
+    debug 'Setting property_flush to should'
+    if should == :false
+      warning 'This module does not support disowning the tpm'
+      @property_flush[:owned] = :true
+    else
+      @property_flush[:owned] = should
+    end
   end
 
   def owned
-    debug 'tpm existing?'
     if resource[:advanced_facts]
       debug "Dumping tpm owner password"
       dump_owner_pass(Puppet[:vardir])
     end
+    debug 'Value from /sys/class/tpm/tpm*/device/owned'
     @property_hash[:owned]
   end
 
-  def active
-    debug 'found active'
-    @property_hash[:active]
-  end
-
-  def enabled
-    debug 'found enabled'
-    @property_hash[:enabled]
-  end
-
-  def tpm_version
-    debug 'found tpm_version'
-    @property_hash[:tpm_version]
-  end
 
   def flush
-    debug 'flushing tpm'
-    if @property_flush[:owned] == true and @property_hash[:owned] == false
+    debug 'Flushing tpm_ownership'
+    if @property_flush[:owned] == :true and @property_hash[:owned] == :false
       expect, cmd = generate_args
-      debug 'expect input' + expect.inspect
-      debug 'tpm_takeownership command' + cmd.inspect
-
+      debug 'Expect input: ' + expect.inspect
+      debug 'tpm_takeownership command: ' + cmd.inspect
       tpm_takeownership(expect, cmd)
-
-      @property_hash[:owned] = true
+      @property_hash[:owned] = :true
     end
   end
 

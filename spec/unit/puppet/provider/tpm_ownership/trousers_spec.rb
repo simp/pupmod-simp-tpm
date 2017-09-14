@@ -164,11 +164,8 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
     it 'should construct an instances hash from /sys/class/tpm' do
       mock_sys = 'spec/files/tpm/'
       expected = [{
-        :name        => 'tpm',
-        :active      => true,
-        :owned       => true,
-        :enabled     => true,
-        :tpm_version => 1.2,
+        :name  => 'tpm',
+        :owned => :true,
       }]
       expect(provider.class.read_sys(mock_sys)).to eq(expected)
     end
