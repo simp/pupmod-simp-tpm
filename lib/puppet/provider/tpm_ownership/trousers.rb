@@ -132,7 +132,7 @@ Puppet::Type.type(:tpm_ownership).provide(:trousers) do
   def owned=(should)
     debug 'Setting property_flush to should'
     if should == :false
-      warning 'This module does not support disowning the tpm'
+      warning 'tpm_ownership does not support disowning the tpm'
       @property_flush[:owned] = :true
     else
       @property_flush[:owned] = should
