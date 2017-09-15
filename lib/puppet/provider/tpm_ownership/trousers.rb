@@ -1,5 +1,5 @@
-Puppet::Type.type(:tpm_ownership).provide :trousers do
-  desc 'The trousers provider for the tpm_ownership type used `tcsd`-provided
+Puppet::Type.type(:tpm_ownership).provide(:trousers) do
+  desc 'The trousers provider for the tpm_ownership type uses `tcsd`-provided
     commands to take ownership of tpm0. Trousers does not allow the user
     to provide a TPM on another path.
 
@@ -8,13 +8,18 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
   has_feature :take_ownership
 
   confine :has_tpm => true
-  # confine :tpm do |value|
-  #   value['status']['enabled'] == 1
+  # confine do
+  #   File.read(File.join(tpm_path,'device','enabled')).to_i == 1
   # end
 
   defaultfor :kernel => :Linux
 
   commands :tpm_takeownership => 'tpm_takeownership'
+
+  def initialize(value={})
+    super(value)
+    @property_flush = {}
+  end
 
   # Dump the owner password to a flat file in Puppet's `$vardir`
   #
@@ -65,11 +70,7 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
     exit_code = $?
     debug( ['exit code', exit_code] )
 
-    if exit_code.exitstatus == 0
-      return true
-    else
-      return false
-    end
+    exit_code.exitstatus == 0 ? true : false
   end
 
   # Generate the arguments required to interact with tpm_takeownership.
@@ -85,14 +86,14 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
     owner_pass = resource[:owner_pass]
     srk_pass   = resource[:srk_pass]
 
-    if owner_pass != "well-known"
+    if owner_pass != 'well-known'
       stdin << [ /owner password/i,   owner_pass ]
       stdin << [ /Confirm password/i, owner_pass ]
     else
       cmd << '-y'
     end
 
-    if srk_pass != "well-known"
+    if srk_pass != 'well-known'
       stdin << [ /SRK password/i,     srk_pass   ]
       stdin << [ /Confirm password/i, srk_pass   ]
     else
@@ -101,28 +102,62 @@ Puppet::Type.type(:tpm_ownership).provide :trousers do
     return stdin, cmd.join(' ')
   end
 
-  def exists?
+  def self.read_sys(sys_glob = '/sys/class/tpm/*')
+    t = { 1 => :true, 0 => :false }
+    Dir.glob(sys_glob).collect do |tpm_path|
+      debug(tpm_path)
+      {
+        name:  File.basename(tpm_path),
+        owned: t[File.read(File.join(tpm_path,'device','owned')).to_i],
+      }
+    end
+  end
+
+
+  def self.instances
+    read_sys.collect do |tpm|
+      debug("Adding tpm: #{tpm[:name]}")
+      new(tpm)
+    end
+  end
+
+  def self.prefetch(resources)
+    instances.each do |prov|
+      if resource = resources[prov.name]
+        resource.provider = prov
+      end
+    end
+  end
+
+  def owned=(should)
+    debug 'Setting property_flush to should'
+    if should == :false
+      warning 'tpm_ownership does not support disowning the tpm'
+      @property_flush[:owned] = :true
+    else
+      @property_flush[:owned] = should
+    end
+  end
+
+  def owned
     if resource[:advanced_facts]
+      debug "Dumping tpm owner password"
       dump_owner_pass(Puppet[:vardir])
     end
+    debug 'Value from /sys/class/tpm/tpm*/device/owned'
+    @property_hash[:owned]
+  end
 
-    if Facter.value(:tpm)['status']['owned'] == 1
-      return true
-    else
-      return false
+
+  def flush
+    debug 'Flushing tpm_ownership'
+    if @property_flush[:owned] == :true and @property_hash[:owned] == :false
+      expect, cmd = generate_args
+      debug 'Expect input: ' + expect.inspect
+      debug 'tpm_takeownership command: ' + cmd.inspect
+      tpm_takeownership(expect, cmd)
+      @property_hash[:owned] = :true
     end
-  end
-
-  def create
-    stdin, cmd = generate_args
-
-    success = tpm_takeownership( stdin, cmd )
-
-    err('Taking ownership of the TPM failed.') unless success
-  end
-
-  def destroy
-    alert('Clearing the TPM is not supported in Puppet due to the risk of data loss')
   end
 
 end

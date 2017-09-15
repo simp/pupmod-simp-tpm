@@ -6,15 +6,14 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
   let(:provider) { resource.provider }
 
   let(:tpm_fact) {
-    # JSON.load(File.read(File.expand_path('spec/files/tpm_fact.json'), File.dirname(__FILE__)))
     JSON.load(File.read(File.expand_path('spec/files/tpm_fact.json')))
   }
 
   let(:resource) {
     Puppet::Type.type(:tpm_ownership).new({
       :name       => 'tpm0',
-      :owner_pass => 'badpass',
-      :srk_pass   => 'badpass2',
+      :owner_pass => 'twentycharacters0000',
+      :srk_pass   => 'twentycharacters1111',
       :provider   => 'trousers'
     })
   }
@@ -22,18 +21,13 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
 
   before :each do
     Puppet.stubs(:[]).with(:vardir).returns('/tmp')
-
-    FileUtils.stubs(:mkdir).returns(true)
-    FileUtils.stubs(:chown).returns(true)
-
     Facter.stubs(:value).with(:has_tpm).returns(true)
     Facter.stubs(:value).with(:tpm).returns(tpm_fact)
-    # Facter.stubs(:[]).with(:tpm).with(value).returns(tpm_fact)
-    Facter.stubs(:value).with(:kernel).returns(true)
+    FileUtils.stubs(:chown).with('root','root', '/tmp/simp').returns true
   end
 
   after :each do
-    ENV['MOCK_TIMEOUT'] =  nil
+    ENV['MOCK_TIMEOUT'] = nil
   end
 
 
@@ -41,23 +35,27 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
     let(:resource) {
       Puppet::Type.type(:tpm_ownership).new({
         :name            => 'tpm0',
-        :owner_pass      => 'badpass',
-        :srk_pass        => 'badpass2',
+        :owner_pass      => 'twentycharacters0000',
+        :srk_pass        => 'twentycharacters1111',
         :advanced_facts  => true,
         :provider        => 'trousers'
       })
     }
-
-    context 'with advanced_facts => true' do
-      it 'should drop off the password file' do
-        loc = '/tmp'
-        expect(provider.dump_owner_pass(loc)).to match(/badpass/)
-        expect(File.exists?("#{loc}/simp/tpm_ownership_owner_pass")).to be_truthy
-      end
+    let(:loc) { '/tmp' }
+    after :each do
+      file = "#{loc}/simp/tpm_ownership_owner_pass"
+      FileUtils.rm(file) if File.exists? file
     end
+
     context 'with advanced_facts => false' do
       it 'should not do a thing' do
-
+        expect(File.exists?("#{loc}/simp/tpm_ownership_owner_pass")).to be_falsey
+      end
+    end
+    context 'with advanced_facts => true' do
+      it 'should drop off the password file' do
+        expect(provider.dump_owner_pass(loc)).to match(/twentycharacters0000/)
+        expect(File.exists?("#{loc}/simp/tpm_ownership_owner_pass")).to be_truthy
       end
     end
   end
@@ -86,8 +84,8 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
       let(:resource) {
         Puppet::Type.type(:tpm_ownership).new({
           :name       => 'tpm0',
-          :owner_pass => 'badpass',
-          :srk_pass   => 'badpass2',
+          :owner_pass => 'twentycharacters0000',
+          :srk_pass   => 'twentycharacters1111',
           :provider   => 'trousers'
         })
       }
@@ -95,10 +93,10 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-          [ /owner password/i,   'badpass'  ],
-          [ /Confirm password/i, 'badpass'  ],
-          [ /SRK password/i,     'badpass2' ],
-          [ /Confirm password/i, 'badpass2' ],
+          [ /owner password/i,   'twentycharacters0000'  ],
+          [ /Confirm password/i, 'twentycharacters0000'  ],
+          [ /SRK password/i,     'twentycharacters1111' ],
+          [ /Confirm password/i, 'twentycharacters1111' ],
         ])
         expect(cmd).to eq('tpm_takeownership')
       end
@@ -109,7 +107,7 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
         Puppet::Type.type(:tpm_ownership).new({
           :name       => 'tpm0',
           :owner_pass => 'well-known',
-          :srk_pass   => 'badpass2',
+          :srk_pass   => 'twentycharacters1111',
           :provider   => 'trousers'
         })
       }
@@ -117,8 +115,8 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-          [ /SRK password/i,     'badpass2' ],
-          [ /Confirm password/i, 'badpass2' ],
+          [ /SRK password/i,     'twentycharacters1111' ],
+          [ /Confirm password/i, 'twentycharacters1111' ],
         ])
         expect(cmd).to eq('tpm_takeownership -y')
       end
@@ -128,7 +126,7 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
       let(:resource) {
         Puppet::Type.type(:tpm_ownership).new({
           :name       => 'tpm0',
-          :owner_pass => 'badpass',
+          :owner_pass => 'twentycharacters0000',
           :srk_pass   => 'well-known',
           :provider   => 'trousers'
         })
@@ -137,8 +135,8 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-          [ /owner password/i,   'badpass'  ],
-          [ /Confirm password/i, 'badpass'  ],
+          [ /owner password/i,   'twentycharacters0000'  ],
+          [ /Confirm password/i, 'twentycharacters0000'  ],
         ])
         expect(cmd).to eq('tpm_takeownership -z')
       end
@@ -162,20 +160,14 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
     end
   end
 
-  describe 'exists?' do
-    it 'detect TPM is unowned' do
-      expect(provider.exists?).to be_falsey
+  describe 'read_sys' do
+    it 'should construct an instances hash from /sys/class/tpm' do
+      mock_sys = 'spec/files/tpm/'
+      expected = [{
+        :name  => 'tpm',
+        :owned => :true,
+      }]
+      expect(provider.class.read_sys(mock_sys)).to eq(expected)
     end
   end
-
-  # describe 'create' do
-  #
-  # end
-
-  describe 'destroy' do
-    it 'should log alert and not do anything' do
-      expect(provider.destroy).to be_instance_of(Puppet::Util::Log)
-    end
-  end
-
 end

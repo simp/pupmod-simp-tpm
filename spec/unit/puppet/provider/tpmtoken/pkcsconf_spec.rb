@@ -53,7 +53,7 @@ describe Puppet::Type.type(:tpmtoken).provider(:pkcsconf) do
 
   describe 'instances' do
     it 'should take output from pkcsconf -t and turn it into a hash' do
-      expect(provider.class.read_tokens).to eql(pkcsconf_t_hash)
+      expect(provider.class.read_tokens).to eq(pkcsconf_t_hash)
     end
   end
 
