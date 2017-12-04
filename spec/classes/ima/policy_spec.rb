@@ -32,7 +32,7 @@ describe 'tpm::ima::policy' do
             :enable  => false,
           }) }
         else
-          it { is_expected.to create_file('/usr/lib/systemd/system/import_ima_rules.service').with_ensure('absent') }
+          it { is_expected.to create_file('/etc/systemd/system/import_ima_rules.service').with_ensure('absent') }
           it { is_expected.to create_service('import_ima_rules.service').with.with({
             :ensure  => 'stopped',
             :enable  => false,
@@ -58,7 +58,7 @@ describe 'tpm::ima::policy' do
             :enable  => true,
           }) }
         else
-          it { is_expected.to create_file('/usr/lib/systemd/system/import_ima_rules.service').with_mode('0644') }
+          it { is_expected.to create_file('/etc/systemd/system/import_ima_rules.service').with_mode('0644') }
           it { is_expected.to create_service('import_ima_rules.service').with.with({
             :ensure  => 'running',
             :enable  => true,

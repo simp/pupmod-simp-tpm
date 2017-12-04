@@ -8,49 +8,81 @@
 # PE 2017.2   4.10  2.1.9  TBD
 ---
 language: ruby
-sudo: false
 cache: bundler
-before_script:
-  - bundle update
+sudo: false
+
 bundler_args: --without development system_tests --path .vendor
-before_install: rm Gemfile.lock || true
-script:
-  - bundle exec rake test
+
 notifications:
   email: false
-rvm:
-  - 2.1.9
-env:
-  global:
-    - STRICT_VARIABLES=yes
-  matrix:
-    - PUPPET_VERSION="~> 4.8.2" FORGE_PUBLISH=true
-    - PUPPET_VERSION="~> 5.0"
-    - PUPPET_VERSION="~> 4.10.0"
-    - PUPPET_VERSION="~> 4.9.2"
-    - PUPPET_VERSION="~> 4.7.0"
-matrix:
-  fast_finish: true
 
-before_deploy:
-  - 'bundle exec rake metadata_lint'
-  - 'bundle exec rake clobber'
-  - 'bundle exec rake spec_clean'
-  - "export PUPMOD_METADATA_VERSION=`ruby -r json -e \"puts JSON.parse(File.read('metadata.json')).fetch('version')\"`"
-  - '[[ $TRAVIS_TAG =~ ^simp-${PUPMOD_METADATA_VERSION}$|^${PUPMOD_METADATA_VERSION}$ ]]'
-deploy:
-  - provider: puppetforge
-    user: simp
-    password:
-        secure: "eiAI6Z+uuADFkYqh51agwR45cXa/pcBicHMx9Efq3sGy3iq/WkhVzjD/EO0ZRYqNhVgjUe/eyUzeYnTWsq78U495zOgd04mAGvYs+Ueq0fMpU3fllHNWg4xeaZ3DGpRMHAbeZ9nw3F3x3kRQCEsNghnu4FlEGHVxwmmbeK0JKCwwQ/7poS9IFmoRujK/pgEiSXsyTE6hOeEf8aiO7ghvL2I3qIGU7CApbiJkwNWsDCf4gDGWATVzVMtT1L85sXRtv5O0VtVogKMt0MBfts81hOVdhtvQgFIDrGX+URbuohKMrEhbPklHHyHgatC2fZHY1yy4N1hR51dyuUyd59sDCpFHlKUyC7AWUmO2fsTGHkzXnmRzTNJqlros+CcBi1D7rqRclfi66FIOfN1XAf1BRnoWwy7GTtqjQM1xmMGFAM32i7uDWT7hoL0QwfPeQY5nvEXEaWs0zIQEaoxyHLwJAN2PvyFvjWQMOu+boxEH5qRFV8XhBz5CLgRSr4iG0iXDHCNCZgBObrgKXM0H43AfnwACzxAClrYK+jRXZ1bz+eif5INrdWGkuRxq03HEvvsGP8LUwHo4voNrX8hD8KIymbqa7jnrutEdMQNR/Pm4MBZtEK26QScu7Kag8MEmyGDHamdic1uiwXYYyijfn9NQ5evzArY+5Gr9BNO2KVXz7KA="
-    on:
-      tags: true
+addons:
+  apt:
+    packages:
+      - rpm
+
+before_install:
+  - rm -f Gemfile.lock
+
+jobs:
+  include:
+    - stage: spec
+      rvm: 2.4.1
+      env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 5"
+      script:
+        - bundle exec rake check:dot_underscore
+        - bundle exec rake check:test_file
+        - bundle exec rake pkg:check_version
+        - bundle exec rake lint
+        - bundle exec rake metadata_lint
+        - bundle exec rake compare_latest_tag
+        - bundle exec puppet module build
+
+    - stage: spec
+      rvm: 2.4.1
+      env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 5.0"
+      script:
+        - bundle exec rake spec
+
+    - stage: spec
       rvm: 2.1.9
-      condition: '($SKIP_FORGE_PUBLISH != true) && ($FORGE_PUBLISH = true)'
-  - provider: releases
-    api_key:
-        secure: "tGyCDd+ubF2I+mUfxghaQYwfrZdObAa0DJyfsXKNW7QNVx906wDantLWQGq+j7JHAvIiskygEdK/W/wJDjDvuBFhbDmq4Tl3ZmIbcQ/Qb9RG5YiiWEE9BZXZgYgwg2dLIzZQqzMnBHz27hlfesHPQ6RzRPETjq3qndh1nBBVB2+VehSqiMRXHHEHahP0xQ338aEROwePS5H2OZqg/Ur7VEIcKFdgdhVoy2I7Gd7ECrua3EqyZReljDz9Ftlqhh6c6cGbPskBb4BI96OdynjAAE2t9jFKYQ1FNH7bmwCLRaUA4lp6cZMMIYhTyXJfaMmWC8Sm55kMa4rDGWpLOH6TsR2aWDyGeqp2pNYw3DmuJxTX4bL/R4Klz0SVKuDPG2tNncrFjGuM18Nhhfpo5MvAlXMgizBisuYNgRdiii9RRxhEWoUDB2OQ2UVC24L60xK5Lh2iLZbvrDKQfY3VtneEwtN5cjYOvAu1dR/z488ghNIs1mQmd0wuzvQfYNbiz/NbXN9gT6Tobbq3YFnysxGMnVizK8XTAhJ2AfrUUkQHKJCqGgzB4FwHES1ZUhofMlLvIDxPEKrJmr1s7BCbtD1TissODDtsgrVIFkImeidV60X/u1J1V2Ash5lqYnJ0AC0ojlMI98wUHas9nk4CzgTdLmUL5AcPv4Y6QN2RBjdI+FY="
-    skip_cleanup: true
-    on:
-      tags: true
-      condition: '($SKIP_FORGE_PUBLISH != true) && ($FORGE_PUBLISH = true)'
+      env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 4.10.0"
+      script:
+        - bundle exec rake spec
+
+    - stage: spec
+      rvm: 2.1.9
+      env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 4.9.2"
+      script:
+        - bundle exec rake spec
+
+    - stage: spec
+      rvm: 2.1.9
+      env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 4.7.0"
+      script:
+        - bundle exec rake spec
+
+    # This needs to be last since we have an acceptance test
+    - stage: deploy
+      rvm: 2.4.1
+      script:
+        - true
+      before_deploy:
+        - "export PUPMOD_METADATA_VERSION=`ruby -r json -e \"puts JSON.parse(File.read('metadata.json')).fetch('version')\"`"
+        - '[[ $TRAVIS_TAG =~ ^simp-${PUPMOD_METADATA_VERSION}$|^${PUPMOD_METADATA_VERSION}$ ]]'
+      deploy:
+        - provider: releases
+          api_key:
+            secure: "tGyCDd+ubF2I+mUfxghaQYwfrZdObAa0DJyfsXKNW7QNVx906wDantLWQGq+j7JHAvIiskygEdK/W/wJDjDvuBFhbDmq4Tl3ZmIbcQ/Qb9RG5YiiWEE9BZXZgYgwg2dLIzZQqzMnBHz27hlfesHPQ6RzRPETjq3qndh1nBBVB2+VehSqiMRXHHEHahP0xQ338aEROwePS5H2OZqg/Ur7VEIcKFdgdhVoy2I7Gd7ECrua3EqyZReljDz9Ftlqhh6c6cGbPskBb4BI96OdynjAAE2t9jFKYQ1FNH7bmwCLRaUA4lp6cZMMIYhTyXJfaMmWC8Sm55kMa4rDGWpLOH6TsR2aWDyGeqp2pNYw3DmuJxTX4bL/R4Klz0SVKuDPG2tNncrFjGuM18Nhhfpo5MvAlXMgizBisuYNgRdiii9RRxhEWoUDB2OQ2UVC24L60xK5Lh2iLZbvrDKQfY3VtneEwtN5cjYOvAu1dR/z488ghNIs1mQmd0wuzvQfYNbiz/NbXN9gT6Tobbq3YFnysxGMnVizK8XTAhJ2AfrUUkQHKJCqGgzB4FwHES1ZUhofMlLvIDxPEKrJmr1s7BCbtD1TissODDtsgrVIFkImeidV60X/u1J1V2Ash5lqYnJ0AC0ojlMI98wUHas9nk4CzgTdLmUL5AcPv4Y6QN2RBjdI+FY="
+          skip_cleanup: true
+          on:
+            tags: true
+            condition: '($SKIP_FORGE_PUBLISH != true)'
+        - provider: puppetforge
+          user: simp
+          password:
+            secure: "eiAI6Z+uuADFkYqh51agwR45cXa/pcBicHMx9Efq3sGy3iq/WkhVzjD/EO0ZRYqNhVgjUe/eyUzeYnTWsq78U495zOgd04mAGvYs+Ueq0fMpU3fllHNWg4xeaZ3DGpRMHAbeZ9nw3F3x3kRQCEsNghnu4FlEGHVxwmmbeK0JKCwwQ/7poS9IFmoRujK/pgEiSXsyTE6hOeEf8aiO7ghvL2I3qIGU7CApbiJkwNWsDCf4gDGWATVzVMtT1L85sXRtv5O0VtVogKMt0MBfts81hOVdhtvQgFIDrGX+URbuohKMrEhbPklHHyHgatC2fZHY1yy4N1hR51dyuUyd59sDCpFHlKUyC7AWUmO2fsTGHkzXnmRzTNJqlros+CcBi1D7rqRclfi66FIOfN1XAf1BRnoWwy7GTtqjQM1xmMGFAM32i7uDWT7hoL0QwfPeQY5nvEXEaWs0zIQEaoxyHLwJAN2PvyFvjWQMOu+boxEH5qRFV8XhBz5CLgRSr4iG0iXDHCNCZgBObrgKXM0H43AfnwACzxAClrYK+jRXZ1bz+eif5INrdWGkuRxq03HEvvsGP8LUwHo4voNrX8hD8KIymbqa7jnrutEdMQNR/Pm4MBZtEK26QScu7Kag8MEmyGDHamdic1uiwXYYyijfn9NQ5evzArY+5Gr9BNO2KVXz7KA="
+          on:
+            tags: true
+            rvm: 2.4.1
+            condition: '($SKIP_FORGE_PUBLISH != true)'

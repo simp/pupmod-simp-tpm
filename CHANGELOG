@@ -1,3 +1,7 @@
+* Mon Dec 04 2017 Nick Miller <nick.miller@onyxpoint.com> - 1.1.1-0
+- Updated to support Puppet 5
+- Moved the IMA policy systemd unit to /etc/systemd
+
 * Thu Aug 17 2017 Nick Miller <nick.miller@onyxpoint.com> - 1.1.0-0
 - Improvments to the facts:
   - Add tests for following facts:
