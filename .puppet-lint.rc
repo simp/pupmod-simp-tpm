@@ -2,5 +2,4 @@
 --relative
 --no-class_inherits_from_params_class-check
 --no-140chars-check
---no-empty_string-check
 --no-trailing_comma-check
