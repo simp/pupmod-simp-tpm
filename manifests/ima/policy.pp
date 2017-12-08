@@ -164,7 +164,7 @@ class tpm::ima::policy (
     }
 
     if member($facts['init_systems'], 'systemd') {
-      file { '/usr/lib/systemd/system/import_ima_rules.service':
+      file { '/etc/systemd/system/import_ima_rules.service':
         ensure => file,
         mode   => '0644',
         source => 'puppet:///modules/tpm/import_ima_rules.service'
@@ -172,7 +172,7 @@ class tpm::ima::policy (
       service { 'import_ima_rules.service':
         ensure  => running,
         enable  => true,
-        require => File['/usr/lib/systemd/system/import_ima_rules.service']
+        require => File['/etc/systemd/system/import_ima_rules.service']
       }
     }
     else {
@@ -190,7 +190,7 @@ class tpm::ima::policy (
   }
   else {
     if member($facts['init_systems'], 'systemd') {
-      file { '/usr/lib/systemd/system/import_ima_rules.service':
+      file { '/etc/systemd/system/import_ima_rules.service':
         ensure => absent,
       }
       service { 'import_ima_rules.service':

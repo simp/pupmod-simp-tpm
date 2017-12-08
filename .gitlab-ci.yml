@@ -1,97 +1,75 @@
-#
 ---
-puppet-syntax: 
-  stage: test
-  tags: 
-    - docker
-  image: ruby:2.1
-  script: 
-    - bundle install
+.cache_bundler: &cache_bundler
+  cache:
+    untracked: true
+    key: "$CI_BUILD_REF_NAME"
+    paths:
+      - '.vendor'
+      - 'vendor'
+
+.setup_bundler_env: &setup_bundler_env
+  before_script:
+    - gem install bundler
+    - rm -f Gemfile.lock
+    - bundle install --no-binstubs --path .vendor "${FLAGS[@]}"
+
+.static_tests: &static_tests
+  script:
     - bundle exec rake syntax
-puppet-lint: 
-  stage: test
-  tags: 
-    - docker
-  image: ruby:2.1
-  script: 
-    - bundle install
     - bundle exec rake lint
-puppet-metadata: 
-  stage: test
-  tags: 
-    - docker
-  image: ruby:2.1
-  script: 
-    - bundle install
-    - bundle exec rake metadata
-unit-test-ruby-2.1:
-  stage: test
-  tags: 
-    - docker
-  image: ruby:2.1
-  script: 
-    - bundle install
+    - bundle exec rake check:dot_underscore
+    - bundle exec rake check:test_file
+    - bundle exec rake pkg:check_version
+    - bundle exec rake compare_latest_tag
     - bundle exec rake spec
-unit-test-ruby-2.2:
-  stage: test
-  tags: 
+
+stages:
+  - unit
+  - acceptance
+  - deploy
+
+# Puppet 4
+puppet-gemfile:
+  stage: unit
+  tags:
     - docker
-  image: ruby:2.2
-  allow_failure: true
-  script: 
-    - bundle install
-    - bundle exec rake spec
-unit-test-ruby-2.3:
-  stage: test
-  tags: 
-    - docker
-  image: ruby:2.3
-  allow_failure: true
-  script: 
-    - bundle install
-    - bundle exec rake spec
+  image: ruby:2.1.9
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *static_tests
 
 # For PE LTS Support
 # See: https://puppet.com/misc/puppet-enterprise-lifecycle
-puppet4.7-syntax: 
-  stage: test
-  tags: 
+puppet-4.7:
+  stage: unit
+  tags:
     - docker
-  image: ruby:2.1
-  script: 
-    - PUPPET_VERSION=4.7 bundle install
-    - PUPPET_VERSION=4.7 bundle exec rake syntax
-unit-test-puppet4.7-ruby-2.1:
-  stage: test
-  tags: 
-    - docker
-  image: ruby:2.1
-  script: 
-    - PUPPET_VERSION=4.7 bundle install
-    - PUPPET_VERSION=4.7 bundle exec rake spec
-unit-test-puppet4.7-ruby-2.2:
-  stage: test
-  tags: 
-    - docker
-  image: ruby:2.2
-  allow_failure: true
-  script: 
-    - PUPPET_VERSION=4.7 bundle install
-    - PUPPET_VERSION=4.7 bundle exec rake spec
-unit-test-puppet4.7-ruby-2.3:
-  stage: test
-  tags: 
-    - docker
-  image: ruby:2.3
-  allow_failure: true
-  script: 
-    - PUPPET_VERSION=4.7 bundle install
-    - PUPPET_VERSION=4.7 bundle exec rake spec
+  image: ruby:2.1.9
+  variables:
+    PUPPET_VERSION: '4.7'
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *static_tests
 
-acceptance-test: 
-  stage: test
-  tags: 
-    - beaker
-  script: 
-    - bundle install --no-binstubs --path=vendor
-    - bundle exec rake acceptance
+puppet-5:
+  stage: unit
+  tags:
+    - docker
+  image: ruby:2.4
+  variables:
+    PUPPET_VERSION: '5.0'
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *static_tests
+
+
+# default:
+#   stage: acceptance
+#   tags:
+#     - beaker
+#   <<: *cache_bundler
+#   <<: *setup_bundler_env
+#   variables:
+#     PUPPET_VERSION: '4.10'
+#   script:
+#     - bundle exec rake beaker:suites
