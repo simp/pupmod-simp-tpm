@@ -170,7 +170,7 @@ class tpm::ima::policy (
         source => 'puppet:///modules/tpm/import_ima_rules.service'
       }
       service { 'import_ima_rules.service':
-        ensure  => running,
+        ensure  => stopped,
         enable  => true,
         require => File['/etc/systemd/system/import_ima_rules.service']
       }
