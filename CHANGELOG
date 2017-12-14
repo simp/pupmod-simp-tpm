@@ -1,7 +1,8 @@
 * Mon Dec 04 2017 Nick Miller <nick.miller@onyxpoint.com> - 1.1.1-0
 - Updated to support Puppet 5
 - IMA policy service
-  - Moved to systemd unit file from /usr/systemd to /etc/systemd
+  - Moved the import_ima_rules systemd unit file from /usr/systemd to /etc/systemd
+    on systemd based systems
   - Service is now stopped, but enabled, so will only take affect at reboot,
     not during puppet run
 
