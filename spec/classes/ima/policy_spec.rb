@@ -60,7 +60,7 @@ describe 'tpm::ima::policy' do
         else
           it { is_expected.to create_file('/etc/systemd/system/import_ima_rules.service').with_mode('0644') }
           it { is_expected.to create_service('import_ima_rules.service').with.with({
-            :ensure  => 'running',
+            :ensure  => 'stopped',
             :enable  => true,
           }) }
         end

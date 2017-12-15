@@ -170,7 +170,9 @@ class tpm::ima::policy (
         source => 'puppet:///modules/tpm/import_ima_rules.service'
       }
       service { 'import_ima_rules.service':
-        ensure  => running,
+        # This service is of type one-shot, meaning it isn't able to be running
+        # It is left stopped and enabled to make sure it only runs once at boot
+        ensure  => stopped,
         enable  => true,
         require => File['/etc/systemd/system/import_ima_rules.service']
       }
@@ -182,6 +184,8 @@ class tpm::ima::policy (
         source => 'puppet:///modules/tpm/import_ima_rules'
       }
       service { 'import_ima_rules':
+        # This service is of type one-shot, meaning it isn't able to be running
+        # It is left stopped and enabled to make sure it only runs once at boot
         ensure  => stopped,
         enable  => true,
         require => File['/etc/init.d/import_ima_rules']
