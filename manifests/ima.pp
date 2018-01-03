@@ -76,15 +76,15 @@ class tpm::ima (
 
     if $ima_tcb {
       kernel_parameter { 'ima_tcb':
-        notify => Reboot_notify['ima_reboot']
+        notify   => Reboot_notify['ima_reboot'],
+        bootmode => 'normal'
       }
     }
 
-    # This feature will remain commented out until the generated policy
-    #  can be safely imported. As of now, it makes the system read-only
-    # if $manage_policy {
-    #   include '::tpm::ima::policy'
-    # }
+    # Be very careful with this class it could make the system read-only
+    if $manage_policy {
+      include '::tpm::ima::policy'
+    }
 
     if $facts['ima_log_size'] >= $log_max_size {
       reboot_notify { 'ima_log':
@@ -93,9 +93,9 @@ class tpm::ima (
     }
   }
   else {
-    kernel_parameter { [ 'ima_tcb' ]:
-      ensure => 'absent',
-      notify => Reboot_notify['ima_reboot']
+    kernel_parameter { 'ima_tcb':
+      ensure   => 'absent',
+      bootmode => 'normal'
     }
     kernel_parameter { [ 'ima', 'ima_audit', 'ima_template', 'ima_hash' ]:
       ensure   => 'absent',
@@ -106,6 +106,7 @@ class tpm::ima (
   reboot_notify { 'ima_reboot':
     subscribe => [
       Kernel_parameter['ima'],
+      Kernel_parameter['ima_tcb'],
       Kernel_parameter['ima_audit'],
       Kernel_parameter['ima_template'],
       Kernel_parameter['ima_hash']
