@@ -62,7 +62,7 @@ class tpm::ima (
       bootmode => 'normal'
     }
     kernel_parameter { 'ima_audit':
-      value    => $ima_audit,
+      value    => bool2str($ima_audit),
       bootmode => 'normal'
     }
     kernel_parameter { 'ima_template':
@@ -86,9 +86,11 @@ class tpm::ima (
       include '::tpm::ima::policy'
     }
 
-    if $facts['ima_log_size'] >= $log_max_size {
-      reboot_notify { 'ima_log':
-        reason => 'The IMA /sys/kernel/security/ima/ascii_runtime_measurements is filling up kernel memory. Please reboot to clear.'
+    if $facts['ima_log_size'] {
+      if $facts['ima_log_size'] >= $log_max_size {
+        reboot_notify { 'ima_log':
+          reason => 'The IMA /sys/kernel/security/ima/ascii_runtime_measurements is filling up kernel memory. Please reboot to clear.'
+        }
       }
     }
   }

@@ -109,7 +109,7 @@ class tpm::ima::policy (
   Boolean $measure_bprm_check      = false,
   Boolean $measure_module_check    = false,
   Boolean $appraise_fowner         = false,
-){
+) {
 
   # magic reference is in Kernel documentation Documentation/ABI/testing/ima_policy
   $magic_hash = {
