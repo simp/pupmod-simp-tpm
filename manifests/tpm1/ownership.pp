@@ -17,7 +17,7 @@
 #
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
-class tpm::ownership (
+class tpm::tpm1::ownership (
   Boolean          $owned          = true,
   String           $owner_pass     = passgen( "${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
   Optional[String] $srk_pass       = undef,

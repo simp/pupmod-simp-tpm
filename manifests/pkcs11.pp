@@ -27,8 +27,8 @@ class tpm::pkcs11 (
 
   tpmtoken { 'TPM PKCS#11 Token':
     ensure   => present,
-    so_pin   => '87654321',
-    user_pin => '87654321'
+    so_pin   => $so_pin,
+    user_pin => $user_pin
   }
 
 }
