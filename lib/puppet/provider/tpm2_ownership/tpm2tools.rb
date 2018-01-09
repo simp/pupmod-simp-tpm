@@ -37,7 +37,6 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
       FileUtils.chown( 'root','root', File.dirname(pass_file) )
     end
 
-    debug('tpm2: creating data file')
     # Dump the password to pass_file
     file = File.new( pass_file, 'w', 0600 )
     file.write( passwords.to_json )
@@ -50,15 +49,10 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
   def takeownership( )
     require 'json'
 
-    output = ''
-
-    debug('tpm2_takeownership: calling subroutines to get options')
-#    options = gen_tcti_args() + gen_passwd_args()
+#   options = gen_tcti_args() + gen_passwd_args()
     options = gen_passwd_args()
 
     begin
-      debug('tpm2: printing options')
-      debug(options.to_s)
       output = tpm2_takeownership(options)
     rescue Puppet::ExecutionFailure => e
       debug("tpm2_takeownership failed with error -> #{e.inspect}")
@@ -66,7 +60,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     end
 
     dump_pass(resource[:name], Puppet[:vardir])
-# may need to check the output    
+# may need to check the output
     output
   end
 
@@ -75,6 +69,8 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
   #
   # @return [String] Return a string of the tcti arguements.
   def gen_tcti_args()
+    # The tcti options are part of the tpm2_tools version 2 and later.
+    # I commented out the call so they would not be used.
     options    = []
 
     debug('tpm2_takeownership setting tcti args.')
@@ -91,7 +87,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     options
   end
 
-  # Generate the passwords argumentsto set on the TPM.
+  # Generate the passwords arguments.
   #
   # @return [String] Return a string arguements.
   def gen_passwd_args()
@@ -120,7 +116,6 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     options
   end
 
-
   def self.read_sys( sys_glob = '/sys/class/tpm/*', vardir = Puppet[:vardir])
     # Check and see if the data file exists for the tpm.  In version 2 you can
     # use tpm2_dump_capability to check what passwords are set.
@@ -128,8 +123,6 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
       debug(tpm_path)
       tpmname = File.basename(tpm_path)
       datafile = "#{vardir}/simp/#{tpmname}_data"
-      debug('tpm2: data file name:')
-      debug(datafile)
       if File.exists?(datafile)
         currently_owned = :true
       else
@@ -144,8 +137,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   def self.instances
     read_sys.collect do |tpm|
-      debug("tpm2: Adding tpm: #{tpm[:name]}")
-      debug("tpm2: with owned: #{tpm[:owned].to_s}")
+      debug("tpm2: Adding tpm: #{tpm[:name]} with owned: #{tpm[:owned].to_s}")
       new(tpm)
     end
   end
@@ -160,7 +152,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   def owned=(should)
     debug 'tpm2: Setting property_flush to should'
-    if should == :false 
+    if should == :false
       warning 'tpm2_ownership does not support disowning the tpm'
       @property_flush[:owned] = true
     else
@@ -174,21 +166,13 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   def flush
     debug 'tpm2: Flushing tpm2_ownership'
-    debug 'tpm2: property flush owned'
-    debug @property_flush[:owned]
-    debug 'tpm2: property hash owned'
-    debug @property_hash[:owned]
     if @property_flush[:owned] == :true  and @property_hash[:owned] == :false
-      debug('tpm2: calling tpm2_takeownership routine.')
       output =  takeownership()
       unless output.nil?
         fail Puppet::Error,"Could not take ownership of the tpm. Error from tpm2_takeownership is #{output.inspect}"
       end
       @property_hash[:owned] = :true
-    else
-      debug 'tpm2: resource is in correct state'
     end
   end
 
 end
-
