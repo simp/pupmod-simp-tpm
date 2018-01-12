@@ -1,22 +1,6 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# module Beaker
-#   class SshConnection
-#     CATCHABLE_EXCEPTIONS = RETRYABLE_EXCEPTIONS
-#     RETRYABLE_EXCEPTIONS = []
-#   end
-# end
-
-def try_to_ssh(host, user, opts)
-  begin
-    out = Net::SSH.start(host.connection.ip, user, opts).exec!('ls')
-  rescue Net::SSH::ConnectionTimeout
-    out = 'connection timeout'
-  end
-  out
-end
-
 test_name 'tpm::ima class'
 
 describe 'tpm::ima class' do
@@ -88,29 +72,28 @@ describe 'tpm::ima class' do
       end
 
       it 'locks up the filesystem after a reboot and new policy is applied' do
-        # save ssh configuration, it should be the same post-reboot
-        ssh_user = host.connection.instance_variable_get(:@user)
-        ssh_opts = host[:ssh]
-        host.connection.ssh_connection_preference = [:ip]
+        on(host, 'yum install -y telnet')
+        ssh_config = File.readlines(host[:ssh][:config])
+        ssh_port   = ssh_config.grep(/port/i).first.split(' ')[1]
+
         expect(on(host, 'ls')).to be_truthy
 
-        # test the saved config
-        test = try_to_ssh(host, ssh_user, ssh_opts)
-        expect(test).not_to match 'connection timeout'
+        tel = Net::Telnet::new("Port" => ssh_port)
+        result = tel.cmd('echo echo')
+        tel.close
+        expect(result).to match(/OpenSSH/)
 
         host.reboot
-
-        # class BigTimeoutError < Timeout::Error; end
-
         sleep 30
 
-        # require 'pry';binding.pry
-
-        expect(on(host, 'ls')).to raise_error(/Cannot connect to/)
-
-        # use the saved config, but expect it to fail
-        test2 = try_to_ssh(host, ssh_user, ssh_opts)
-        expect(test2).to match 'connection timeout'
+        tel2 = Net::Telnet::new("Port" => ssh_port)
+        begin
+          result2 = tel.cmd('echo echo')
+        rescue IOError => e
+          result2 = e
+        end
+        tel2.close
+        expect(result2).to be_instance_of(IOError)
       end
     end
   end
