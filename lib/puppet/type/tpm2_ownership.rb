@@ -31,6 +31,7 @@ Example:
     owner_pass   => 'badpass',
     lock_pass    => 'badpass',
     endorse_pass => 'badpass',
+    local        => 'true'
   }
 "
 
@@ -76,6 +77,34 @@ Example:
     desc "Wether or not the passwords are in hex"
     defaultto 'false'
   end
+
+  newparam(:local, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+    desc "Wether to save the passwords on the local system"
+    defaultto 'false'
+  end
+
+  newparam(:sys_dir) do
+    desc "The system directory of the TPM.  This is used for testing.  The default
+          should work."
+    validate do |value|
+       unless Puppet::Util.absolute_path?(value)
+          raise(Puppet::Error, "The sys_dir must be  an absolute path")
+       end
+    end
+    defaultto '/sys/class/tpm'
+  end
+
+  newparam(:local_dir) do
+    desc "Directory to save passwords locally"
+    validate do |value|
+      unless Puppet::Util.absolute_path?(value) or value = 'vardir'
+        raise(Puppet::Error, " local_dir must be an absolute path or the word vardir to indicate
+              that vardir set in the puppet configuration should be used.")
+      end
+    end
+    defaultto 'vardir'
+  end
+
 
 # The following TCTI properties are common to most  tpm2-tools commands
 

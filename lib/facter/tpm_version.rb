@@ -8,9 +8,16 @@ Facter.add('tpm_version') do
   confine :has_tpm => true
 
    setcode do
-    tpmlist = Facter::Core::Execution.exec('ls -la /sys/class/tpm/tpm* ')
-
-    if tpmlist.include? 'MSFT' then
+    tpmlist = Dir.glob('/sys/class/tpm/tpm*').map {|x|
+        if File.symlink?(x)
+          File.readlink(x)
+        end
+      }
+    # if there are no files or no links to devices then return
+    # unknown
+    if tpmlist.empty? or tpmlist.join.empty? then
+      version = 'unknown'
+    elsif tpmlist.to_s.include? 'MSFT' then
       version = 'tpm2'
     else
       version = 'tpm1'
@@ -18,4 +25,3 @@ Facter.add('tpm_version') do
     version
   end
 end
-

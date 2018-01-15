@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+# Contains the tests for modules init and both install modules.
+#
 describe 'tpm' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
@@ -18,10 +20,23 @@ describe 'tpm' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('tpm') }
         it { is_expected.not_to create_class('tpm::ima') }
-        it { is_expected.not_to create_class('tpm::ownership') }
-        it { is_expected.not_to contain_package('tpm-tools') }
-        it { is_expected.not_to contain_package('trousers') }
-        it { is_expected.not_to contain_service('tcsd') }
+        it { is_expected.not_to create_class('tpm::tpm1::install') }
+        it { is_expected.not_to create_class('tpm::tpm2::install') }
+        it { is_expected.not_to create_class('tpm::ima') }
+      end
+
+
+      context 'with detected TPM unable to determine TPM type' do
+        let(:facts) do
+          os_facts.merge({ :has_tpm => true,
+                           :tpm_version => 'unknown' })
+        end
+
+        it { is_expected.not_to create_class('tpm::tpm1::install') }
+        it { is_expected.not_to create_class('tpm::tpm2::install') }
+        it {
+          expect { catalogue }.to raise_error(Puppet::Error, /uknown or not supported/)
+        }
       end
 
       context 'with default parameters and a detected TPM version 1' do

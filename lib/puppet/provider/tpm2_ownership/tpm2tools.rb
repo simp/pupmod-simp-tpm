@@ -23,9 +23,16 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
   # Dump the owner password to a flat file in Puppet's `$vardir`
   #
   # @param [String] path where fact will be dumped
-  def dump_pass(name, vardir)
+  def dump_pass(name, local_dir)
     require 'json'
-    pass_file = File.expand_path("#{vardir}/simp/#{name}_data")
+
+    if local_dir == 'vardir'
+      vardir = Puppet[:vardir]
+    else
+      vardir = local_dir
+    end
+
+    pass_file = File.expand_path("#{vardir}/simp/#{name}_data.json")
 
     passwords = { "owner_pass" => resource[:owner_pass],
                   "lock_pass" => resource[:lock_pass],
@@ -46,7 +53,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   # Call  tpm2_takeownership and write out the data file
   #
-  def takeownership( )
+  def takeownership(name, cmd = 'tpm2_takeownership')
     require 'json'
 
 #   options = gen_tcti_args() + gen_passwd_args()
@@ -59,7 +66,14 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
       return e
     end
 
-    dump_pass(resource[:name], Puppet[:vardir])
+    #Is there a good way t make /sys/class/tpm a variable so it is not hardcoded?
+    file = File.new("/sys/class/tpm/#{name}/owned")
+    file.write(@properties.to_json)
+    file.close
+
+    if resource[:local]
+      dump_pass(resource[:name], resource[:local_dir])
+    end
 # may need to check the output
     output
   end
@@ -122,7 +136,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     Dir.glob(sys_glob).collect do |tpm_path|
       debug(tpm_path)
       tpmname = File.basename(tpm_path)
-      datafile = "#{vardir}/simp/#{tpmname}_data"
+      datafile = "#{tpm_path}/owned"
       if File.exists?(datafile)
         currently_owned = :true
       else
@@ -167,7 +181,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
   def flush
     debug 'tpm2: Flushing tpm2_ownership'
     if @property_flush[:owned] == :true  and @property_hash[:owned] == :false
-      output =  takeownership()
+      output =  takeownership(@property_hash[:name])
       unless output.nil?
         fail Puppet::Error,"Could not take ownership of the tpm. Error from tpm2_takeownership is #{output.inspect}"
       end
