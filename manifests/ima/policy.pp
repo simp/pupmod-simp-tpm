@@ -104,12 +104,12 @@ class tpm::ima::policy (
   Array[String] $dont_watch_list = [],
 
   # other defaults
-  Boolean $measure_root_read_files = true,
-  Boolean $measure_file_mmap       = true,
-  Boolean $measure_bprm_check      = true,
-  Boolean $measure_module_check    = true,
-  Boolean $appraise_fowner         = true,
-){
+  Boolean $measure_root_read_files = false,
+  Boolean $measure_file_mmap       = false,
+  Boolean $measure_bprm_check      = false,
+  Boolean $measure_module_check    = false,
+  Boolean $appraise_fowner         = false,
+) {
 
   # magic reference is in Kernel documentation Documentation/ABI/testing/ima_policy
   $magic_hash = {

@@ -6,42 +6,33 @@ describe 'tpm::ima::policy' do
 
       if os_facts[:operatingsystemmajrelease].to_s == '6'
         let(:facts) do
-          os_facts.merge({
-            :init_systems => ['sysv']
-          })
+          os_facts.merge(init_systems: ['sysv'])
         end
       else
         let(:facts) do
-          os_facts.merge({
-            :init_systems => ['systemd']
-          })
+          os_facts.merge(init_systems: ['systemd'])
         end
-
       end
-
-      let(:default_sample) {
-        File.read(File.expand_path('spec/files/default_ima_policy.conf'))
-      }
 
       context 'with default params' do
         it { is_expected.to create_class('tpm::ima::policy') }
         if os_facts[:operatingsystemmajrelease].to_s == '6'
           it { is_expected.to create_file('/etc/init.d/import_ima_rules').with_ensure('absent') }
-          it { is_expected.to create_service('import_ima_rules').with({
-            :ensure  => 'stopped',
-            :enable  => false,
-          }) }
+          it { is_expected.to create_service('import_ima_rules').with(
+            ensure: 'stopped',
+            enable: false,
+          ) }
         else
           it { is_expected.to create_file('/etc/systemd/system/import_ima_rules.service').with_ensure('absent') }
           it { is_expected.to create_service('import_ima_rules.service').with.with({
-            :ensure  => 'stopped',
-            :enable  => false,
+            ensure: 'stopped',
+            enable: false,
           }) }
         end
       end
 
       context 'with manage => true' do
-        let(:params) {{ :manage => true }}
+        let(:params) {{ manage: true }}
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('tpm::ima::policy') }
         it { is_expected.to create_file('/etc/ima').with_ensure('directory') }
@@ -49,60 +40,66 @@ describe 'tpm::ima::policy' do
           .with_command('cat /etc/ima/policy.conf > /sys/kernel/security/ima/policy') }
 
         it { is_expected.to create_file('/etc/ima/policy.conf') \
-          .with_content(default_sample) }
+          .with_content(IO.read('spec/files/default_ima_policy.conf')) }
 
         if os_facts[:operatingsystemmajrelease].to_s == '6'
           it { is_expected.to create_file('/etc/init.d/import_ima_rules').with_mode('0755') }
           it { is_expected.to create_service('import_ima_rules').with({
-            :ensure  => 'stopped',
-            :enable  => true,
+            ensure: 'stopped',
+            enable: true,
           }) }
         else
           it { is_expected.to create_file('/etc/systemd/system/import_ima_rules.service').with_mode('0644') }
           it { is_expected.to create_service('import_ima_rules.service').with.with({
-            :ensure  => 'stopped',
-            :enable  => true,
+            ensure: 'stopped',
+            enable: true,
           }) }
         end
       end
 
       context 'with an selinux policy disabled' do
         let(:params) {{
-          :dont_watch_lastlog_t => false,
-          :manage               => true
+          manage: true,
+          dont_watch_lastlog_t: false,
         }}
-        let(:selinux_sample) {
-          File.read(File.expand_path('spec/files/selinux_ima_policy.conf'))
-        }
-
+        it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_file('/etc/ima/policy.conf') \
-          .with_content(selinux_sample) }
+          .with_content(IO.read('spec/files/selinux_ima_policy.conf')) }
       end
 
       context 'with an fsmagic disabled' do
         let(:params) {{
-           :dont_watch_binfmtfs => false,
-           :manage              => true
+          manage: true,
+           dont_watch_binfmtfs: false,
         }}
-        let(:fsmagic_sample) {
-          File.read(File.expand_path('spec/files/fsmagic_ima_policy.conf'))
-        }
-
+        it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_file('/etc/ima/policy.conf') \
-          .with_content(fsmagic_sample) }
+          .with_content(IO.read('spec/files/fsmagic_ima_policy.conf')) }
       end
 
       context 'with custom selinux contexts' do
         let(:params) {{
-          :dont_watch_list => [ 'user_home_t', 'locale_t' ],
-          :manage => true
+          manage: true,
+          dont_watch_list: [ 'user_home_t', 'locale_t' ],
         }}
-        let(:custom_sample) {
-          File.read(File.expand_path('spec/files/custom_ima_policy.conf'))
-        }
-
+        it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_file('/etc/ima/policy.conf') \
-          .with_content(custom_sample) }
+          .with_content(IO.read('spec/files/custom_ima_policy.conf')) }
+      end
+
+      context 'with the other ima params set' do
+        let(:params) {{
+          manage: true,
+          measure_root_read_files: true,
+          measure_file_mmap: true,
+          measure_bprm_check: true,
+          measure_module_check: true,
+          appraise_fowner: true,
+        }}
+        it { is_expected.to compile.with_all_deps }
+        # it { require 'pry';binding.pry }
+        it { is_expected.to create_file('/etc/ima/policy.conf') \
+          .with_content(IO.read('spec/files/other_ima_policy.conf').chomp) }
       end
     end
   end
