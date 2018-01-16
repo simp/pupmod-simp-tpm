@@ -83,28 +83,16 @@ Example:
     defaultto 'false'
   end
 
-  newparam(:sys_dir) do
-    desc "The system directory of the TPM.  This is used for testing.  The default
-          should work."
-    validate do |value|
-       unless Puppet::Util.absolute_path?(value)
-          raise(Puppet::Error, "The sys_dir must be  an absolute path")
-       end
-    end
-    defaultto '/sys/class/tpm'
-  end
-
   newparam(:local_dir) do
     desc "Directory to save passwords locally"
     validate do |value|
-      unless Puppet::Util.absolute_path?(value) or value = 'vardir'
+      unless Puppet::Util.absolute_path?(value) or value == 'vardir'
         raise(Puppet::Error, " local_dir must be an absolute path or the word vardir to indicate
               that vardir set in the puppet configuration should be used.")
       end
     end
     defaultto 'vardir'
   end
-
 
 # The following TCTI properties are common to most  tpm2-tools commands
 
@@ -151,7 +139,7 @@ Example:
   autorequire(:package) do
     [ 'tpm2-tss','tpm2-tools' ]
   end
-# note: note autorequiring the service because in version 2.0 the service is not
+# note: not autorequiring the service because in version 2.0 the service is not
 # required in kernel 4.X and later.
 #
 end

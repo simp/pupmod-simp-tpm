@@ -34,9 +34,6 @@ describe 'tpm' do
 
         it { is_expected.not_to create_class('tpm::tpm1::install') }
         it { is_expected.not_to create_class('tpm::tpm2::install') }
-        it {
-          expect { catalogue }.to raise_error(Puppet::Error, /uknown or not supported/)
-        }
       end
 
       context 'with default parameters and a detected TPM version 1' do
@@ -60,7 +57,7 @@ describe 'tpm' do
 
       context 'with detected TPM and take_ownership => true' do
         let(:facts) do
-          os_facts.merge({ :has_tpm => true, 
+          os_facts.merge({ :has_tpm => true,
                            :tpm_version => 'tpm1' })
         end
         let(:params) {{ :take_ownership => true }}

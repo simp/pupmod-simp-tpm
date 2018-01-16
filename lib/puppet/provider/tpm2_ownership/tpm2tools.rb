@@ -53,8 +53,9 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   # Call  tpm2_takeownership and write out the data file
   #
-  def takeownership(name, cmd = 'tpm2_takeownership')
+  def takeownership(name, sys_dir = '/sys/class/tpm')
     require 'json'
+    require 'fileutils'
 
 #   options = gen_tcti_args() + gen_passwd_args()
     options = gen_passwd_args()
@@ -65,16 +66,14 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
       debug("tpm2_takeownership failed with error -> #{e.inspect}")
       return e
     end
-
-    #Is there a good way t make /sys/class/tpm a variable so it is not hardcoded?
-    file = File.new("/sys/class/tpm/#{name}/owned")
-    file.write(@properties.to_json)
+    FileUtils.mkdir_p("#{sys_dir}/#{name}") unless Dir.exists?("#{sys_dir}/#{name}")
+    file = File.new("#{sys_dir}/#{name}/owned", "w")
+    file.write("#{name}")
     file.close
 
     if resource[:local]
       dump_pass(resource[:name], resource[:local_dir])
     end
-# may need to check the output
     output
   end
 
@@ -85,7 +84,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
   def gen_tcti_args()
     # The tcti options are part of the tpm2_tools version 2 and later.
     # I commented out the call so they would not be used.
-    options    = []
+    options = []
 
     debug('tpm2_takeownership setting tcti args.')
     case resource[:tcti]
@@ -130,7 +129,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     options
   end
 
-  def self.read_sys( sys_glob = '/sys/class/tpm/*', vardir = Puppet[:vardir])
+  def self.read_sys( sys_glob = '/sys/class/tpm/*')
     # Check and see if the data file exists for the tpm.  In version 2 you can
     # use tpm2_dump_capability to check what passwords are set.
     Dir.glob(sys_glob).collect do |tpm_path|
