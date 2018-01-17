@@ -24,4 +24,5 @@ Facter.add('tpm_version') do
     end
     version
   end
+
 end

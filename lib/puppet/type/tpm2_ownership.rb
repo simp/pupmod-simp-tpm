@@ -1,14 +1,21 @@
 # The tpm_ownership type allows you to take ownership of tpm0.
 #
 # @!puppet.type.param owner_pass TPM owner password. Required.
+# @!puppet.type.param lock_pass TPM  lock out password. Required.
+# @!puppet.type.param endorse_pass TPM endorsement hierachy password. Required.
 #
-# @!puppet.type.param srk_pass TPM SRK password. Defaults to empty string.
+# @!puppet.type.param inhex If true, indicates the passwords are in Hex.
 #
-# @!puppet.type.param advanced_facts If true, the provider will drop the owner
+# @!puppet.type.param local If true, the provider will drop the owner
 #   password in a file in the puppet `$vardir` to be used in the `tpm` fact
 #   from this module.
+# @!puppet.type.param local_dir If local is true, this will override the default
+#   directory the passwords are stored in.
 #
-# @author Nick Miller <nick.miller@onyxpoint.com>
+# @!puppet.type.param owned If true it will set the passwords on the TPM. Required
+#
+#
+# @author SIMP Team <https://simp-project.com>
 #
 require 'puppet/parameter/boolean'
 
@@ -16,8 +23,10 @@ Puppet::Type.newtype(:tpm2_ownership) do
   @doc = "A type to manage ownership of a TPM 2.0.
 
   The current tpm2-tools version 1.1.0-7 does not have a feature to read the status
-  of the tpm so the ownership of the  TPM is indicated by files kept in the
-  ${vardir}/simp directory.
+  of the tpm so the ownership of the  TPM is indicated by  a file called owned create in
+  the /system/class/tpm/tpm0 directory called owned.
+
+  Use this to set the passwords on a TPM to prevent unauthorized access.
 
   It can not at this time change the passwords or reset the passwords.
 
@@ -31,7 +40,6 @@ Example:
     owner_pass   => 'badpass',
     lock_pass    => 'badpass',
     endorse_pass => 'badpass',
-    local        => 'true'
   }
 "
 
@@ -94,7 +102,8 @@ Example:
     defaultto 'vardir'
   end
 
-# The following TCTI properties are common to most  tpm2-tools commands
+# The following TCTI properties are common to most  tpm2-tools commands.  These are used in
+#  Later versions of the tools and are not active yet.
 
   newparam(:tcti) do
     desc "the  TCTI used for communication with the next component down the
@@ -131,7 +140,7 @@ Example:
 # End of TCTI Params
 
   newproperty(:owned) do
-    desc 'Ownership status of the TPM'
+    desc 'Wether or not to set passwords on the TPM'
     newvalues(:true, :false)
     defaultto :true
   end
@@ -139,7 +148,8 @@ Example:
   autorequire(:package) do
     [ 'tpm2-tss','tpm2-tools' ]
   end
-# note: not autorequiring the service because in version 2.0 the service is not
-# required in kernel 4.X and later.
-#
+  autorequire(:service) do
+    [ 'resourcemgr' ]
+  end
+
 end

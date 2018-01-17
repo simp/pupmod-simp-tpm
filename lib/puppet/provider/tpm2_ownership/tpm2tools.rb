@@ -51,7 +51,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   end
 
-  # Call  tpm2_takeownership and write out the data file
+  # Call  tpm2_takeownership, create the owned file,  and write out the data file if needed.
   #
   def takeownership(name, sys_dir = '/sys/class/tpm')
     require 'json'
@@ -83,7 +83,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
   # @return [String] Return a string of the tcti arguements.
   def gen_tcti_args()
     # The tcti options are part of the tpm2_tools version 2 and later.
-    # I commented out the call so they would not be used.
+    # I commented out the call so they would not be used yet.
     options = []
 
     debug('tpm2_takeownership setting tcti args.')

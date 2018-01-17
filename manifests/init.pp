@@ -5,19 +5,25 @@
 # @param take_ownership Enable to allow Puppet to take ownership
 #   of the TPM.
 #
+# @param tpm_name  The name of the device (usually tpm0).
+#
+# @param tpm_version  Override for the tpm_version fact.
+#
+# @param ensure  The ensure status of packages to be installed
+#
 # @author Nick Markowski <nmarkowski@keywcorp.com>
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
 class tpm (
   Boolean          $ima            = false,
   Boolean          $take_ownership = false,
-  Array[String]    $package_list   = [],
-  String           $service_name   = '',
+  String           $tpm_name       = 'tpm0',
   Optional[Enum[
     'tpm1',
     'tpm2',
     'unknown']]    $tpm_version    = $facts['tpm_version'],
   String           $ensure         = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
+
 ){
   # Check if the system has a TPM (which also checks that it
   # is a physical machine, and if so install tools and setup

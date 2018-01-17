@@ -37,7 +37,7 @@ class tpm::tpm2::ownership (
   Optional[String] $endorseauth  = passgen( "${facts['fqdn']}_tpm0_endorseauth"),
 ) {
 
-  tpm2_ownership { 'tpm0':
+  tpm2_ownership { "#{tpm::tpm_name}":
     owned        => $owned,
     owner_pass   => $ownerauth,
     lock_pass    => $lockauth ,
