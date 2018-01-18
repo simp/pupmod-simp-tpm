@@ -10,79 +10,82 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
     Facter.stubs(:value).with(:has_tpm).returns(true)
     Facter.stubs(:value).with(:tpm_version).returns('tpm2')
     Facter.stubs(:value).with(:kernel).returns('Linux')
-#    FileUtils.stubs(:chown).with('root','root', '/tmp/simp').returns true
-#    FileUtils.stubs(:chown).with('root','root', '/tmp/puppetvar/simp').returns true
+    FileUtils.stubs(:chown).with('root','root', '/tmp/simp/tpm0').returns true
+    FileUtils.stubs(:chown).with('root','root', '/tmp/puppetvar/simp/tpm0').returns true
   end
 
-  describe 'dump_pass with local_dir set' do
-    let(:resource) {
-      Puppet::Type.type(:tpm2_ownership).new({
-        :name            => 'tpm0',
-        :owner_pass      => 'ownerpassword',
-        :lock_pass       => 'lockpassword',
-        :endorse_pass    => 'endorsepassword',
-        :inhex           => true,
-        :local           => true,
-        :local_dir       => '/tmp',
-        :provider        => 'tpm2tools'
-      })
-    }
+  describe 'dump_pass and gen_password' do
     let(:provider) { resource.provider }
 
-    let(:loc) { '/tmp' }
-    after :each do
-      file = "#{loc}/simp/#{resource[:name]}_data.json"
-      FileUtils.rm(file) if File.exists? file
-    end
+    context 'local_dir and inhex set' do
+      let(:resource) {
+        Puppet::Type.type(:tpm2_ownership).new({
+          :name            => 'tpm0',
+          :owner_pass      => 'ownerpassword',
+          :lock_pass       => 'lockpassword',
+          :endorse_pass    => 'endorsepassword',
+          :inhex           => true,
+          :local           => true,
+          :local_dir       => '/tmp/local',
+          :provider        => 'tpm2tools'
+        })
+      }
 
-    context 'dump_pass with local_dir set' do
+      # Password file should resolve to resource[:local_dir]/simp/resource[:name]/resource[:name]data.json
+      let(:passwdfile) {'/tmp/local/simp/tpm0/tpm0data.json'}
+
+      before :each do
+        File.delete("#{passwdfile}") if File.exists?("#{passwdfile}")
+        FileUtils.stubs(:chown).with('root','root', '/tmp/local/simp/tpm0').returns true
+      end
+
       it 'should drop off the password file in local_dir' do
         expect(provider.dump_pass(resource[:name],resource[:local_dir])).to match(nil)
-        expect(File.exists?("#{resource[:local_dir]}/simp/#{resource[:name]}_data.json")).to be_truthy
-        expect(File.read("#{resource[:local_dir]}/simp/#{resource[:name]}_data.json")).to match(/{"owner_pass":"ownerpassword","lock_pass":"lockpassword","endorse_pass":"endorsepassword"}/)
+        expect(File.exists?("#{passwdfile}")).to be_truthy
+        expect(File.read("#{passwdfile}")).to match(/{"owner_pass":"ownerpassword","lock_pass":"lockpassword","endorse_pass":"endorsepassword"}/)
       end
-    end
 
-    context 'gen_passwd_args with hex set' do
       it 'should add -X to the args' do
         expect(provider.gen_passwd_args).to eq(["-o ownerpassword", "-l lockpassword", "-e endorsepassword", "-X"])
       end
     end
 
-  end
+    context 'with default values' do
+      let(:resource) {
+        Puppet::Type.type(:tpm2_ownership).new({
+          :name            => 'tpm0',
+          :owner_pass      => 'ownerpassword',
+          :lock_pass       => 'lockpassword',
+          :endorse_pass    => 'endorsepassword',
+          :local           => true,
+          :provider        => 'tpm2tools'
+        })
+      }
 
-  describe 'with default local_dir and default password hex value' do
+      let(:provider) { resource.provider }
 
-    let(:resource) {
-      Puppet::Type.type(:tpm2_ownership).new({
-        :name            => 'tpm0',
-        :owner_pass      => 'ownerpassword',
-        :lock_pass       => 'lockpassword',
-        :endorse_pass    => 'endorsepassword',
-        :local           => true,
-        :provider        => 'tpm2tools'
-      })
-    }
 
-    let(:provider) { resource.provider }
+      # Password file should resolve to Puppet[:vardir]/simp/resource[:name]/resource[:name]data.json
+      let(:passwdfile) {'/tmp/puppetvar/simp/tpm0/tpm0data.json'}
 
-    context 'dump_pass with local_dir not set' do
+      before :each do
+        File.delete("#{passwdfile}") if File.exists?("#{passwdfile}")
+      end
+
       it 'should drop off the password file in Puppet[:vardir]' do
         expect(provider.dump_pass(resource[:name],resource[:local_dir])).to match(nil)
-        expect(File.exists?("/tmp/puppetvar/simp/#{resource[:name]}_data.json")).to be_truthy
-        expect(File.read("/tmp/puppetvar/simp/#{resource[:name]}_data.json")).to match(/{"owner_pass":"ownerpassword","lock_pass":"lockpassword","endorse_pass":"endorsepassword"}/)
+        expect(File.exists?("#{passwdfile}")).to be_truthy
+        expect(File.read("#{passwdfile}")).to match(/{"owner_pass":"ownerpassword","lock_pass":"lockpassword","endorse_pass":"endorsepassword"}/)
       end
-    end
 
-    context 'gen_passwd_args with with default for hex password' do
-      it 'should inot add -X to the args' do
+      it 'should not add -X ' do
         expect(provider.gen_passwd_args).to eq(["-o ownerpassword", "-l lockpassword", "-e endorsepassword"])
       end
     end
 
   end
 
-  describe "Test tpm2_takeownership fails" do
+  describe "tpm2_takeownership" do
     let(:resource)  { Puppet::Type.type(:tpm2_ownership).new({
       :name            => 'tpm0',
       :owner_pass      => 'ownerpassword',
@@ -90,34 +93,43 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
       :endorse_pass    => 'endorsepassword',
       :provider        => 'tpm2tools',
       :local           => true,
-      :local_dir       => '/tmp',
       })
     }
 
     let(:provider) { resource.provider }
 
-    let(:loc) { '/tmp/tpm' }
+    # Ownerfile should resolve to  Puppet[:vardir]/simp/resource[:name]/owned
+    let(:ownerfile) {'/tmp/puppetvar/simp/tpm0/owned'}
+    # Password file should resolve to Puppet[:vardir]/simp/resource[:name]/resource[:name]data.json
+    let(:passwdfile) {'/tmp/puppetvar/simp/tpm0/tpm0data.json'}
 
     before :each do
-      # Because there is no TPM during testing the commands all fail so for now we are faking
-      # the output with script in the files directory.
+      # Because there is no TPM during testing the commands all fail so for
+      # now we are faking the output with script in the files directory.
       Puppet::Util.stubs(:which).with('tpm2_takeownership').returns('./spec/files/tpm2_takeownership')
-      File.delete("#{loc}/tpm0/owned") if File.exists?("#{loc}/tpm0/owned")
-      File.delete("#{resource[:local_dir]}/simp/#{resource[:name]}_data.json") if File.exists?("#{resource[:local_dir]}/simp/#{resource[:name]}_data.json")
+
+      #clear out the files
+      File.delete("#{ownerfile}") if File.exists?("#{ownerfile}")
+      File.delete("#{passwdfile}") if File.exists?("#{passwdfile}")
     end
 
-    it 'should not create the owned filed if it errors' do
+    context 'tpm2_takeownership errors' do
       ENV['MOCK_ERROR'] = 'yes'
-      provider.takeownership('tpm0', loc)
-      expect(File.exists?("#{loc}/tpm0/owned")).to be_falsey
-      expect(File.exists?("#{resource[:local_dir]}/simp/#{resource[:name]}_data.json")).to be_falsey
+      it 'should not create the owned filed ' do
+        provider.takeownership(resource[:name])
+        expect(File.exists?("#{ownerfile}")).to be_falsey
+        expect(File.exists?("#{passwdfile}")).to be_falsey
+      end
     end
 
-    it 'should create the ownership file' do
-      ENV['MOCK_ERROR'] = 'no'
-      provider.takeownership('tpm0', loc)
-      expect(File.exists?('/tmp/tpm/tpm0/owned')).to be_truthy
-      expect(File.exists?("#{resource[:local_dir]}/simp/#{resource[:name]}_data.json")).to be_truthy
+    context 'tpm2_takeownership finishes' do
+      it 'should create the owned file' do
+        ENV['MOCK_ERROR'] = 'no'
+        provider.takeownership(resource[:name])
+        expect(File.exists?("#{ownerfile}")).to be_truthy
+        expect(File.exists?("#{passwdfile}")).to be_truthy
+      end
     end
   end
+
 end

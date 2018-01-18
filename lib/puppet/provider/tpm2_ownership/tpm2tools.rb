@@ -20,7 +20,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     @property_flush = {}
   end
 
-  # Dump the owner password to a flat file in Puppet's `$vardir`
+  # Dump the owner password to a flat file
   #
   # @param [String] path where fact will be dumped
   def dump_pass(name, local_dir)
@@ -32,7 +32,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
       vardir = local_dir
     end
 
-    pass_file = File.expand_path("#{vardir}/simp/#{name}_data.json")
+    pass_file = File.expand_path("#{vardir}/simp/#{name}/#{name}data.json")
 
     passwords = { "owner_pass" => resource[:owner_pass],
                   "lock_pass" => resource[:lock_pass],
@@ -40,8 +40,9 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
                 }
     # Check to make sure the SIMP directory in vardir exists, or create it
     if !File.directory?( File.dirname(pass_file) )
-      FileUtils.mkdir_p( File.dirname(pass_file), :mode => 0700 )
+      FileUtils.mkdir_p( File.dirname(pass_file), :mode => 0750 )
       FileUtils.chown( 'root','root', File.dirname(pass_file) )
+      FileUtils.chmod 0700, File.dirname(pass_file)
     end
 
     # Dump the password to pass_file
@@ -51,11 +52,12 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   end
 
+  def takeownership(name)
   # Call  tpm2_takeownership, create the owned file,  and write out the data file if needed.
-  #
-  def takeownership(name, sys_dir = '/sys/class/tpm')
+  # vardir is used for test purposes only bec
     require 'json'
     require 'fileutils'
+
 
 #   options = gen_tcti_args() + gen_passwd_args()
     options = gen_passwd_args()
@@ -66,24 +68,29 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
       debug("tpm2_takeownership failed with error -> #{e.inspect}")
       return e
     end
-    FileUtils.mkdir_p("#{sys_dir}/#{name}") unless Dir.exists?("#{sys_dir}/#{name}")
-    file = File.new("#{sys_dir}/#{name}/owned", "w")
+
+    ownerdir = "#{Puppet[:vardir]}/simp/#{name}"
+    FileUtils.mkdir_p("#{ownerdir}", :mode => 0700) unless Dir.exists?("#{ownerdir}")
+    FileUtils.chown( 'root','root', "#{ownerdir}" )
+
+    file = File.new("#{ownerdir}/owned", "w")
     file.write("#{name}")
     file.close
 
     if resource[:local]
-      dump_pass(resource[:name], resource[:local_dir])
+      dump_pass(name, resource[:local_dir])
     end
-    output
+    return nil
   end
 
+
+  def gen_tcti_args()
   # Generate standard args for connecting to the TPM.  These arguements
   # are common for most TPM2 commands.
   #
   # @return [String] Return a string of the tcti arguements.
-  def gen_tcti_args()
-    # The tcti options are part of the tpm2_tools version 2 and later.
-    # I commented out the call so they would not be used yet.
+  # The tcti options are part of the tpm2_tools version 2 and later.
+  # I commented out the call so they would not be used yet.
     options = []
 
     debug('tpm2_takeownership setting tcti args.')
@@ -100,14 +107,14 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     options
   end
 
+  def gen_passwd_args()
   # Generate the passwords arguments.
   #
   # @return [String] Return a string arguements.
-  def gen_passwd_args()
     options = []
 
     debug('tpm2_takeownership setting passwd args.')
-#   where to check that at least one of these is set?  Here or in type.
+    # where to check that at least one of these is set?  Here or in type.
     if !resource[:owner_pass].nil?
       options << "-o #{resource[:owner_pass]}"
     end
@@ -135,8 +142,8 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     Dir.glob(sys_glob).collect do |tpm_path|
       debug(tpm_path)
       tpmname = File.basename(tpm_path)
-      datafile = "#{tpm_path}/owned"
-      if File.exists?(datafile)
+      ownerfile = "#{Puppet[:vardir]}/simp/#{tpmname}/owned"
+      if File.exists?(ownerfile)
         currently_owned = :true
       else
         currently_owned = :false
@@ -180,7 +187,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
   def flush
     debug 'tpm2: Flushing tpm2_ownership'
     if @property_flush[:owned] == :true  and @property_hash[:owned] == :false
-      output =  takeownership(@property_hash[:name])
+      output = takeownership(@property_hash[:name])
       unless output.nil?
         fail Puppet::Error,"Could not take ownership of the tpm. Error from tpm2_takeownership is #{output.inspect}"
       end
