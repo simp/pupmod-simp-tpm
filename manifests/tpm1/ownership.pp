@@ -4,6 +4,7 @@
 # The password must be generated with passgen in order for most of the facts
 # to be functional post-ownership, as the tpm commands from tpm-tools
 # require the owner password.
+# @param owned  Wether or not to set ownership of the TPM.
 #
 # @param owner_pass The TPM owner password
 #

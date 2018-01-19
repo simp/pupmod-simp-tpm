@@ -1,6 +1,8 @@
 #
-# @summary Installs the TCG Software stack for the TPM and
-#          and configures service.
+# Installs the TCG Software stack for the TPM and
+# and configures service.
+#
+# @param ensure The ensure status of packages to be installed
 #
 class tpm::tpm1::install(
   String        $ensure        = $tpm::ensure
