@@ -8,19 +8,29 @@ class tpm::tpm2::install(
   String        $ensure        = $tpm::ensure
 ){
 
-  $pkg_list = ['tpm2-tools', 'tpm2-tss']
+  if $facts['os']['name'] in ['RedHat','CentOS'] {
+    if  versioncmp($facts['os']['release']['major'],'7') >= 0 {
+      $pkg_list = ['tpm2-tools', 'tpm2-tss']
 
-  # Install the needed packages
-  ensure_resource('package', $pkg_list, { 'ensure' => $ensure, before => Service['resourcemgr'] })
+      # Install the needed packages
+      ensure_resource('package', $pkg_list, { 'ensure' => $ensure, before => Service['resourcemgr'] })
 
-  # Start the resource daemon
-  service { 'resourcemgr':
-    ensure => 'running',
-    enable => true,
+      # Start the resource daemon
+      service { 'resourcemgr':
+        ensure => 'running',
+        enable => true,
+      }
+
+      if $tpm::take_ownership {
+        include 'tpm::tpm2::ownership'
+      }
+
+    }
+    else {
+      fail("Operating System ${facts['os']['name']} version ${facts['os']['release']['major']} is not supported for TPM 2.0")
+    }
   }
-
-  if $tpm::take_ownership {
-    include 'tpm::tpm2::ownership'
+  else {
+    fail("Operating System ${facts['os']['name']} is not supported for TPM 2.0")
   }
-
 }

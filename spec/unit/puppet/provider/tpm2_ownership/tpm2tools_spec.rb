@@ -14,85 +14,101 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
     FileUtils.stubs(:chown).with('root','root', '/tmp/puppetvar/simp/tpm0').returns true
   end
 
-  describe 'dump_pass and gen_password' do
+  describe 'dump_pass function' do
     let(:provider) { resource.provider }
 
     context 'local_dir and inhex set' do
       let(:resource) {
         Puppet::Type.type(:tpm2_ownership).new({
-          :name            => 'tpm0',
-          :owner_pass      => 'ownerpassword',
-          :lock_pass       => 'lockpassword',
-          :endorse_pass    => 'endorsepassword',
-          :inhex           => true,
-          :local           => true,
-          :local_dir       => '/tmp/local',
-          :provider        => 'tpm2tools'
+          :name         => 'tpm0',
+          :ownerauth    => 'ownerpassword',
+          :lockauth     => 'lockpassword',
+          :endorseauth  => 'endorsepassword',
+          :local        => true,
+          :provider     => 'tpm2tools'
         })
       }
 
       # Password file should resolve to resource[:local_dir]/simp/resource[:name]/resource[:name]data.json
-      let(:passwdfile) {'/tmp/local/simp/tpm0/tpm0data.json'}
-
-      before :each do
-        File.delete("#{passwdfile}") if File.exists?("#{passwdfile}")
-        FileUtils.stubs(:chown).with('root','root', '/tmp/local/simp/tpm0').returns true
-      end
-
-      it 'should drop off the password file in local_dir' do
-        expect(provider.dump_pass(resource[:name],resource[:local_dir])).to match(nil)
-        expect(File.exists?("#{passwdfile}")).to be_truthy
-        expect(File.read("#{passwdfile}")).to match(/{"owner_pass":"ownerpassword","lock_pass":"lockpassword","endorse_pass":"endorsepassword"}/)
-      end
-
-      it 'should add -X to the args' do
-        expect(provider.gen_passwd_args).to eq(["-o ownerpassword", "-l lockpassword", "-e endorsepassword", "-X"])
-      end
-    end
-
-    context 'with default values' do
-      let(:resource) {
-        Puppet::Type.type(:tpm2_ownership).new({
-          :name            => 'tpm0',
-          :owner_pass      => 'ownerpassword',
-          :lock_pass       => 'lockpassword',
-          :endorse_pass    => 'endorsepassword',
-          :local           => true,
-          :provider        => 'tpm2tools'
-        })
-      }
-
-      let(:provider) { resource.provider }
-
-
-      # Password file should resolve to Puppet[:vardir]/simp/resource[:name]/resource[:name]data.json
       let(:passwdfile) {'/tmp/puppetvar/simp/tpm0/tpm0data.json'}
 
       before :each do
         File.delete("#{passwdfile}") if File.exists?("#{passwdfile}")
+        FileUtils.stubs(:chown).with('root','root', '/tmp/puppetvar/simp/tpm0').returns true
       end
 
-      it 'should drop off the password file in Puppet[:vardir]' do
-        expect(provider.dump_pass(resource[:name],resource[:local_dir])).to match(nil)
+      it 'should create the password file' do
+        expect(provider.dump_pass(resource[:name],'/tmp/puppetvar')).to match(nil)
         expect(File.exists?("#{passwdfile}")).to be_truthy
-        expect(File.read("#{passwdfile}")).to match(/{"owner_pass":"ownerpassword","lock_pass":"lockpassword","endorse_pass":"endorsepassword"}/)
+        expect(File.read("#{passwdfile}")).to match(/{"ownerauth":"ownerpassword","lockauth":"lockpassword","endorseauth":"endorsepassword"}/)
       end
+
+    end
+  end
+
+  describe 'gen_passwd' do
+    context 'with default values' do
+      let(:resource) {
+        Puppet::Type.type(:tpm2_ownership).new({
+          :name         => 'tpm0',
+          :ownerauth    => 'ownerpassword',
+          :lockauth     => 'lockpassword',
+          :endorseauth  => 'endorsepassword',
+          :provider     => 'tpm2tools'
+        })
+      }
+
+      let(:provider) { resource.provider }
 
       it 'should not add -X ' do
         expect(provider.gen_passwd_args).to eq(["-o ownerpassword", "-l lockpassword", "-e endorsepassword"])
       end
     end
 
+    context 'with inhex set and lock password not defined' do
+      let(:resource) {
+        Puppet::Type.type(:tpm2_ownership).new({
+          :name         => 'tpm0',
+          :ownerauth    => 'ownerpassword',
+          :endorseauth  => 'endorsepassword',
+          :inhex        => true,
+          :provider     => 'tpm2tools'
+        })
+      }
+
+      let(:provider) { resource.provider }
+
+      it 'should add -X and not inclune -l option ' do
+        expect(provider.gen_passwd_args).to eq(["-o ownerpassword", "-e endorsepassword", "-X"])
+      end
+    end
+
+    context 'no passwords set' do
+      let(:resource) {
+        Puppet::Type.type(:tpm2_ownership).new({
+          :name            => 'tpm0',
+          :provider        => 'tpm2tools'
+        })
+      }
+
+      let(:provider) { resource.provider }
+
+      it 'should fail and produce error' do
+        expect { provider.gen_passwd_args }.to raise_error(Puppet::Error)
+      end
+    end
+
   end
+
 
   describe "tpm2_takeownership" do
     let(:resource)  { Puppet::Type.type(:tpm2_ownership).new({
-      :name            => 'tpm0',
-      :owner_pass      => 'ownerpassword',
-      :lock_pass       => 'lockpassword',
-      :endorse_pass    => 'endorsepassword',
-      :provider        => 'tpm2tools',
-      :local           => true,
+      :name         => 'tpm0',
+      :ownerauth    => 'ownerpassword',
+      :lockauth     => 'lockpassword',
+      :endorseauth  => 'endorsepassword',
+      :provider     => 'tpm2tools',
+      :local        => true,
       })
     }
 
@@ -113,17 +129,17 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
       File.delete("#{passwdfile}") if File.exists?("#{passwdfile}")
     end
 
-    context 'tpm2_takeownership errors' do
+    context 'runs with error' do
       ENV['MOCK_ERROR'] = 'yes'
-      it 'should not create the owned filed ' do
+      it 'should not create the owned or password file' do
         provider.takeownership(resource[:name])
         expect(File.exists?("#{ownerfile}")).to be_falsey
         expect(File.exists?("#{passwdfile}")).to be_falsey
       end
     end
 
-    context 'tpm2_takeownership finishes' do
-      it 'should create the owned file' do
+    context 'finishes without errors' do
+      it 'should create the owned and password files' do
         ENV['MOCK_ERROR'] = 'no'
         provider.takeownership(resource[:name])
         expect(File.exists?("#{ownerfile}")).to be_truthy

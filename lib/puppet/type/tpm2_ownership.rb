@@ -1,16 +1,13 @@
 # The tpm_ownership type allows you to take ownership of tpm0.
 #
-# @!puppet.type.param owner_pass TPM owner password. Required.
-# @!puppet.type.param lock_pass TPM  lock out password. Required.
-# @!puppet.type.param endorse_pass TPM endorsement hierachy password. Required.
+# @!puppet.type.param ownerauth TPM owner password. Required.
+# @!puppet.type.param lockauth TPM  lock out password. Required.
+# @!puppet.type.param endorseauth TPM endorsement hierachy password. Required.
 #
 # @!puppet.type.param inhex If true, indicates the passwords are in Hex.
 #
 # @!puppet.type.param local If true, the provider will drop the owner
-#   password in a file in the puppet `$vardir` to be used in the `tpm` fact
-#   from this module.
-# @!puppet.type.param local_dir If local is true, this will override the default
-#   directory the passwords are stored in.
+#   password in a file in the puppet `$vardir`/simp/<tpmname>.
 #
 # @!puppet.type.param owned If true it will set the passwords on the TPM. Required
 #
@@ -37,40 +34,40 @@ Example:
 
   tpm2_ownership { 'tpm0':
     owned        => true,
-    owner_pass   => 'badpass',
-    lock_pass    => 'badpass',
-    endorse_pass => 'badpass',
+    ownerauth   => 'badpass',
+    lockauth    => 'badpass',
+    endorseauth => 'badpass',
   }
 "
 
   feature :take_ownership, "The ability to take ownership of a TPM"
 
 
-  newparam(:owner_pass) do
+  newparam(:ownerauth) do
     desc 'The owner password of the TPM'
     validate do |value|
       unless value.is_a?(String)
-        raise(Puppet::Error, "owner_pass must be a String, not '#{value.class}'")
+        raise(Puppet::Error, "ownerauth must be a String, not '#{value.class}'")
       end
     end
     defaultto ''
   end
 
-  newparam(:lock_pass) do
+  newparam(:lockauth) do
     desc "The lock out password of the TPM"
     validate do |value|
       unless value.is_a?(String)
-        raise(Puppet::Error, "lock_pass must be a String, not '#{value.class}'")
+        raise(Puppet::Error, "lockauth must be a String, not '#{value.class}'")
       end
     end
     defaultto ''
   end
 
-  newparam(:endorse_pass) do
+  newparam(:endorseauth) do
     desc "The endorse password of the TPM"
     validate do |value|
       unless value.is_a?(String)
-        raise(Puppet::Error, "endorse_pass must be a String, not '#{value.class}'")
+        raise(Puppet::Error, "endorseauth must be a String, not '#{value.class}'")
       end
     end
     defaultto ''
@@ -89,17 +86,6 @@ Example:
   newparam(:local, :boolean => true, :parent => Puppet::Parameter::Boolean) do
     desc "Wether to save the passwords on the local system"
     defaultto 'false'
-  end
-
-  newparam(:local_dir) do
-    desc "Directory to save passwords locally"
-    validate do |value|
-      unless Puppet::Util.absolute_path?(value) or value == 'vardir'
-        raise(Puppet::Error, " local_dir must be an absolute path or the word vardir to indicate
-              that vardir set in the puppet configuration should be used.")
-      end
-    end
-    defaultto 'vardir'
   end
 
 # The following TCTI properties are common to most  tpm2-tools commands.  These are used in
@@ -131,7 +117,7 @@ Example:
     desc "the port number used by the socket TCTI"
     validate do |value|
       unless value.is_a?(Integer)
-        raise(Puppet::Error, "endorse_pass must be an Integer, not '#{value.class}'")
+        raise(Puppet::Error, "endorseauth must be an Integer, not '#{value.class}'")
       end
     end
     defaultto 2323

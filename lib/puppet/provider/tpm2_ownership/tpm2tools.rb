@@ -23,20 +23,14 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
   # Dump the owner password to a flat file
   #
   # @param [String] path where fact will be dumped
-  def dump_pass(name, local_dir)
+  def dump_pass(name, vardir)
     require 'json'
-
-    if local_dir == 'vardir'
-      vardir = Puppet[:vardir]
-    else
-      vardir = local_dir
-    end
 
     pass_file = File.expand_path("#{vardir}/simp/#{name}/#{name}data.json")
 
-    passwords = { "owner_pass" => resource[:owner_pass],
-                  "lock_pass" => resource[:lock_pass],
-                  "endorse_pass" => resource[:endorse_pass]
+    passwords = { "ownerauth" => resource[:ownerauth],
+                  "lockauth" => resource[:lockauth],
+                  "endorseauth" => resource[:endorseauth]
                 }
     # Check to make sure the SIMP directory in vardir exists, or create it
     if !File.directory?( File.dirname(pass_file) )
@@ -78,7 +72,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     file.close
 
     if resource[:local]
-      dump_pass(name, resource[:local_dir])
+      dump_pass(name, Puppet[:vardir])
     end
     return nil
   end
@@ -115,22 +109,22 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
     debug('tpm2_takeownership setting passwd args.')
     # where to check that at least one of these is set?  Here or in type.
-    if !resource[:owner_pass].nil?
-      options << "-o #{resource[:owner_pass]}"
+    if resource[:ownerauth].length > 0
+      options << "-o #{resource[:ownerauth]}"
     end
-    if !resource[:lock_pass].nil?
-      options << "-l #{resource[:lock_pass]}"
+    if resource[:lockauth].length > 0
+      options << "-l #{resource[:lockauth]}"
     end
-    if !resource[:endorse_pass].nil?
-      options << "-e #{resource[:endorse_pass]}"
+    if resource[:endorseauth].length > 0
+      options << "-e #{resource[:endorseauth]}"
     end
 
     unless options.any?
-      raise Puppet::Error, "At least one of owner_pass, lock_pass or endorse_pass must be provided"
-    end
-
-    if resource[:inhex]
-      options << "-X"
+      fail("At least one of ownerauth, lockauth or endorseauth must be provided")
+    else
+      if resource[:inhex]
+        options << "-X"
+      end
     end
 
     options

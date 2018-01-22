@@ -41,8 +41,8 @@ possible.
 
 ### TPM 2.0
 
-This module can be used to set the owner, endorement hierarchy and lock out passowrds
-on TPM 2.0.
+This module can be used to set the owner and endorsement hierarchy passwords
+and lock out password on TPM 2.0.
 
 Limitations:  It currently only works for a system with one TPM and can not be used to
   unset the password.

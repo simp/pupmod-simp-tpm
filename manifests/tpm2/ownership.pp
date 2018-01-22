@@ -11,28 +11,42 @@
 # require the owner password.  You can store the passwords
 # locally bit this is not recommended.
 #
+#
+# @param tpm_name     The name of the tpm in the /sys/class/tpm directory.
+#
 # @param owned        If true set the passwords, if false
 #                     It does nothing.
 #
-# @param ownerauth   The TPM owner auth password
-# @param lockauth    The TPM lock auth password
-# @param endorseauth The TPM endorse auth password
+# One or more of the following must be set:
+# @param ownerauth   The TPM owner auth password, if '' then it will not be set.
+# @param lockauth    The TPM lock auth password, if '' then it will not be set.
+# @param endorseauth The TPM endorse auth password, if '' then it will not be set.
+#
+# @param inhex       True if the passowrds above are given in Hex.
+#
+# @param local       Weather or not to write the passwords to a file
+#                    on the local system.  It is recommended to use
+#                    passgen instead.
 #
 # @author SIMP Team https://simp-project.com
 #
-#
 class tpm::tpm2::ownership (
-  Boolean          $owned        = true,
-  Optional[String] $ownerauth    = passgen( "${facts['fqdn']}_tpm_ownerauth"),
-  Optional[String] $lockauth     = passgen( "${facts['fqdn']}_tpm_lockauth "),
-  Optional[String] $endorseauth  = passgen( "${facts['fqdn']}_tpm_endorseauth"),
+  String                  $tpm_name         = $tpm::tpm_name,
+  Boolean                 $owned        = true,
+  String                  $ownerauth    = passgen( "${facts['fqdn']}_tpm_ownerauth"),
+  String                  $lockauth     = passgen( "${facts['fqdn']}_tpm_lockauth "),
+  String                  $endorseauth  = passgen( "${facts['fqdn']}_tpm_endorseauth"),
+  Boolean                 $inhex        = false,
+  Boolean                 $local        = false,
 ) {
 
-  tpm2_ownership { "#{tpm::tpm_name}":
-    owned        => $owned,
-    owner_pass   => $ownerauth,
-    lock_pass    => $lockauth ,
-    endorse_pass => $endorseauth,
+  tpm2_ownership { $tpm_name:
+    owned       => $owned,
+    ownerauth   => $ownerauth,
+    lockauth    => $lockauth ,
+    endorseauth => $endorseauth,
+    inhex       => $inhex,
+    local       => $local
   }
 
 }
