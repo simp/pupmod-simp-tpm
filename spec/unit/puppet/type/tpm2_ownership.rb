@@ -11,7 +11,7 @@ describe Puppet::Type.type(:tpm2_ownership) do
       expect {
         Puppet::Type.type(:tpm2_ownership).new(
           :name           => 'tpm0',
-          :owner_pass     => 'badpass',
+          :ownerauth     => 'badpass',
           :inhex          => true
         )
       }.to_not raise_error
@@ -20,14 +20,14 @@ describe Puppet::Type.type(:tpm2_ownership) do
       expect {
         Puppet::Type.type(:tpm_ownership).new(
           :name           => 'tpm0',
-          :owner_pass     => 'badpass',
+          :ownerauth     => 'badpass',
           :inhex          => 'not a boolean'
         )
       }.to raise_error
     end
   end
 
-  [:owner_pass, :lock_pass, :endorse_pass].each do |param|
+  [:ownerauth, :lockauth, :endorseauth].each do |param|
     it "should require a string for #{param}" do
       expect {
         Puppet::Type.type(:tpm2_ownership).new(

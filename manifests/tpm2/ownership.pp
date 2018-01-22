@@ -43,7 +43,7 @@ class tpm::tpm2::ownership (
   tpm2_ownership { $tpm_name:
     owned       => $owned,
     ownerauth   => $ownerauth,
-    lockauth    => $lockauth ,
+    lockauth    => $lockauth,
     endorseauth => $endorseauth,
     inhex       => $inhex,
     local       => $local
