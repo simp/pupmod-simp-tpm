@@ -2,7 +2,7 @@
   "name": "simp-tpm",
   "version": "1.2.0",
   "author": "SIMP Team",
-  "summary": "Manages TPM 1.2, IMA, and TBOOT",
+  "summary": "Manages TPM 1.2 and 2.0 software stack installations and configurations",
   "license": "Apache-2.0",
   "source": "https://github.com/simp/pupmod-simp-tpm",
   "project_page": "https://github.com/simp/pupmod-simp-tpm",
