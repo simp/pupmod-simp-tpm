@@ -44,7 +44,7 @@ class tpm::tboot (
 ) {
   include 'tpm'
 
-  if $tpm::tpm_version == 'tpm1' {
+  if $::tpm::tpm_version == 'tpm1' {
     reboot_notify { 'Launch tboot':
       reason => 'tboot policy has been written, please reboot to complete a verified launch'
     }
@@ -57,10 +57,10 @@ class tpm::tboot (
       ensure => $package_ensure
     }
 
-    include 'tpm::tboot::sinit'
-    include 'tpm::tboot::policy'
-    include 'tpm::tboot::grub'
-    include 'tpm::tboot::lock_kernel'
+    include '::tpm::tboot::sinit'
+    include '::tpm::tboot::policy'
+    include '::tpm::tboot::grub'
+    include '::tpm::tboot::lock_kernel'
 
     Class['tpm']
     -> Class['tpm::tboot::sinit']

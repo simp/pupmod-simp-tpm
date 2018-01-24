@@ -4,7 +4,8 @@
 # The password must be generated with passgen in order for most of the facts
 # to be functional post-ownership, as the tpm commands from tpm-tools
 # require the owner password.
-# @param owned  Wether or not to set ownership of the TPM.
+#
+# @param owned Whether or not to set ownership of the TPM.
 #
 # @param owner_pass The TPM owner password
 #
@@ -20,7 +21,7 @@
 #
 class tpm::tpm1::ownership (
   Boolean          $owned          = true,
-  String           $owner_pass     = passgen( "${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
+  String           $owner_pass     = passgen("${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
   Optional[String] $srk_pass       = undef,
   Boolean          $advanced_facts = false
 ) {

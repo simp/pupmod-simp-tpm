@@ -14,16 +14,20 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
     FileUtils.stubs(:chown).with('root','root', '/tmp/puppetvar/simp/tpm0').returns true
   end
 
+  after :each do
+    ENV['MOCK_ERROR'] = nil
+  end
+
   describe 'dump_pass function' do
     let(:provider) { resource.provider }
 
-    context 'local_dir and inhex set' do
+    context 'local_dir and in_hex set' do
       let(:resource) {
         Puppet::Type.type(:tpm2_ownership).new({
           :name         => 'tpm0',
-          :ownerauth    => 'ownerpassword',
-          :lockauth     => 'lockpassword',
-          :endorseauth  => 'endorsepassword',
+          :owner_auth   => 'ownerpassword',
+          :lock_auth    => 'lockpassword',
+          :endorse_auth => 'endorsepassword',
           :local        => true,
           :provider     => 'tpm2tools'
         })
@@ -40,7 +44,7 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
       it 'should create the password file' do
         expect(provider.dump_pass(resource[:name],'/tmp/puppetvar')).to match(nil)
         expect(File.exists?("#{passwdfile}")).to be_truthy
-        expect(File.read("#{passwdfile}")).to match(/{"ownerauth":"ownerpassword","lockauth":"lockpassword","endorseauth":"endorsepassword"}/)
+        expect(File.read("#{passwdfile}")).to match(/{"owner_auth":"ownerpassword","lock_auth":"lockpassword","endorse_auth":"endorsepassword"}/)
       end
 
     end
@@ -51,9 +55,9 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
       let(:resource) {
         Puppet::Type.type(:tpm2_ownership).new({
           :name         => 'tpm0',
-          :ownerauth    => 'ownerpassword',
-          :lockauth     => 'lockpassword',
-          :endorseauth  => 'endorsepassword',
+          :owner_auth   => 'ownerpassword',
+          :lock_auth    => 'lockpassword',
+          :endorse_auth => 'endorsepassword',
           :provider     => 'tpm2tools'
         })
       }
@@ -65,20 +69,20 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
       end
     end
 
-    context 'with inhex set and lock password not defined' do
+    context 'with in_hex set and lock password not defined' do
       let(:resource) {
         Puppet::Type.type(:tpm2_ownership).new({
           :name         => 'tpm0',
-          :ownerauth    => 'ownerpassword',
-          :endorseauth  => 'endorsepassword',
-          :inhex        => true,
+          :owner_auth   => 'ownerpassword',
+          :endorse_auth => 'endorsepassword',
+          :in_hex       => true,
           :provider     => 'tpm2tools'
         })
       }
 
       let(:provider) { resource.provider }
 
-      it 'should add -X and not inclune -l option ' do
+      it 'should add -X and not include -l option' do
         expect(provider.gen_passwd_args).to eq(["-o ownerpassword", "-e endorsepassword", "-X"])
       end
     end
@@ -86,8 +90,8 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
     context 'no passwords set' do
       let(:resource) {
         Puppet::Type.type(:tpm2_ownership).new({
-          :name            => 'tpm0',
-          :provider        => 'tpm2tools'
+          :name     => 'tpm0',
+          :provider => 'tpm2tools'
         })
       }
 
@@ -102,13 +106,14 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
 
 
   describe "tpm2_takeownership" do
-    let(:resource)  { Puppet::Type.type(:tpm2_ownership).new({
-      :name         => 'tpm0',
-      :ownerauth    => 'ownerpassword',
-      :lockauth     => 'lockpassword',
-      :endorseauth  => 'endorsepassword',
-      :provider     => 'tpm2tools',
-      :local        => true,
+    let(:resource) {
+      Puppet::Type.type(:tpm2_ownership).new({
+        :name         => 'tpm0',
+        :owner_auth   => 'ownerpassword',
+        :lock_auth    => 'lockpassword',
+        :endorse_auth => 'endorsepassword',
+        :provider     => 'tpm2tools',
+        :local        => true,
       })
     }
 
@@ -122,7 +127,7 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
     before :each do
       # Because there is no TPM during testing the commands all fail so for
       # now we are faking the output with script in the files directory.
-      Puppet::Util.stubs(:which).with('tpm2_takeownership').returns('./spec/files/tpm2_takeownership')
+      Puppet::Util.stubs(:which).with('tpm2_takeownership').returns('spec/files/tpm2_takeownership')
 
       #clear out the files
       File.delete("#{ownerfile}") if File.exists?("#{ownerfile}")
@@ -132,7 +137,9 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
     context 'runs with error' do
       ENV['MOCK_ERROR'] = 'yes'
       it 'should not create the owned or password file' do
-        provider.takeownership(resource[:name])
+        expect(
+          provider.takeownership(resource[:name])
+        ).to be_truthy
         expect(File.exists?("#{ownerfile}")).to be_falsey
         expect(File.exists?("#{passwdfile}")).to be_falsey
       end

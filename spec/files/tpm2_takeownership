@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
 if ENV['MOCK_ERROR'] == 'yes'
-  raise("Error: tpm2_takeownership failed")
+  puts "Error: tpm2_takeownership failed"
+  exit(1)
 else
   puts "tpm2_takeownership exiting with 0"
   exit(0)

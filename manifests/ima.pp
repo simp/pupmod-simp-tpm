@@ -10,7 +10,7 @@
 # @param mount_dir Where to mount ima securityfs
 #
 # @param ima_audit
-#   Audit control.  Can be set to:
+#   Audit control. Can be set to:
 #     true  - Enable additional integrity auditing messages
 #     false - Enable integrity auditing messages (default)
 #
@@ -20,7 +20,7 @@
 # @param ima_hash
 #   The list of supported hashes can be found in crypto/hash_info.h
 #
-# @param ima_tcb Toggle the TCB policy.  This means IMA will measure
+# @param ima_tcb Toggle the TCB policy. This means IMA will measure
 #   all programs exec'd, files mmap'd for exec, and all file opened
 #   for read by uid=0. Defaults to true.
 #

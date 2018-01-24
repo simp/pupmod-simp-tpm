@@ -140,7 +140,6 @@ Puppet::Type.type(:tpm_ownership).provide(:trousers) do
   end
 
   def owned
-    
     if resource[:advanced_facts]
       debug "Dumping tpm owner password"
       dump_owner_pass(Puppet[:vardir])

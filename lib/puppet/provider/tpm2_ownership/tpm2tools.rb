@@ -1,5 +1,5 @@
 Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
-  desc 'The tpm2tools providers uses the TCG software stack (tpm2-tss) and commands provided 
+  desc 'The tpm2tools providers uses the TCG software stack (tpm2-tss) and commands provided
     by tpm2-tools rpm to set the passwords for a TPM 2.0. The current tools
     can not check if the password is set so it will set it and set a flag.  In later versions
     of the tools you can check the status and it the password is unset, you can set it.
@@ -28,9 +28,9 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
     pass_file = File.expand_path("#{vardir}/simp/#{name}/#{name}data.json")
 
-    passwords = { "ownerauth" => resource[:ownerauth],
-                  "lockauth" => resource[:lockauth],
-                  "endorseauth" => resource[:endorseauth]
+    passwords = { "owner_auth"   => resource[:owner_auth],
+                  "lock_auth"    => resource[:lock_auth],
+                  "endorse_auth" => resource[:endorse_auth]
                 }
     # Check to make sure the SIMP directory in vardir exists, or create it
     if !File.directory?( File.dirname(pass_file) )
@@ -46,45 +46,46 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   end
 
-  def takeownership(name)
   # Call  tpm2_takeownership, create the owned file,  and write out the data file if needed.
   # vardir is used for test purposes only bec
+  # @return nil if success, the error if there was one
+  def takeownership(name)
     require 'json'
     require 'fileutils'
 
-
-#   options = gen_tcti_args() + gen_passwd_args()
+    # options = gen_tcti_args() + gen_passwd_args()
     options = gen_passwd_args()
 
     begin
-      output = tpm2_takeownership(options)
+      tpm2_takeownership(options)
+
+      ownerdir = "#{Puppet[:vardir]}/simp/#{name}"
+      FileUtils.mkdir_p("#{ownerdir}", :mode => 0700) unless Dir.exists?("#{ownerdir}")
+      FileUtils.chown( 'root','root', "#{ownerdir}" )
+
+      file = File.new("#{ownerdir}/owned", "w")
+      file.write("#{name}")
+      file.close
+
+      if resource[:local]
+        dump_pass(name, Puppet[:vardir])
+      end
     rescue Puppet::ExecutionFailure => e
-      debug("tpm2_takeownership failed with error -> #{e.inspect}")
+      warn("tpm2_takeownership failed with error -> #{e.inspect}")
       return e
     end
 
-    ownerdir = "#{Puppet[:vardir]}/simp/#{name}"
-    FileUtils.mkdir_p("#{ownerdir}", :mode => 0700) unless Dir.exists?("#{ownerdir}")
-    FileUtils.chown( 'root','root', "#{ownerdir}" )
-
-    file = File.new("#{ownerdir}/owned", "w")
-    file.write("#{name}")
-    file.close
-
-    if resource[:local]
-      dump_pass(name, Puppet[:vardir])
-    end
     return nil
   end
 
 
-  def gen_tcti_args()
   # Generate standard args for connecting to the TPM.  These arguements
   # are common for most TPM2 commands.
   #
   # @return [String] Return a string of the tcti arguements.
   # The tcti options are part of the tpm2_tools version 2 and later.
   # I commented out the call so they would not be used yet.
+  def gen_tcti_args()
     options = []
 
     debug('tpm2_takeownership setting tcti args.')
@@ -101,28 +102,28 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     options
   end
 
-  def gen_passwd_args()
   # Generate the passwords arguments.
   #
   # @return [String] Return a string arguements.
+  def gen_passwd_args()
     options = []
 
     debug('tpm2_takeownership setting passwd args.')
     # where to check that at least one of these is set?  Here or in type.
-    if resource[:ownerauth].length > 0
-      options << "-o #{resource[:ownerauth]}"
+    if resource[:owner_auth].length > 0
+      options << "-o #{resource[:owner_auth]}"
     end
-    if resource[:lockauth].length > 0
-      options << "-l #{resource[:lockauth]}"
+    if resource[:lock_auth].length > 0
+      options << "-l #{resource[:lock_auth]}"
     end
-    if resource[:endorseauth].length > 0
-      options << "-e #{resource[:endorseauth]}"
+    if resource[:endorse_auth].length > 0
+      options << "-e #{resource[:endorse_auth]}"
     end
 
     unless options.any?
-      fail("At least one of ownerauth, lockauth or endorseauth must be provided")
+      fail("At least one of owner_auth, lock_auth or endorse_auth must be provided")
     else
-      if resource[:inhex]
+      if resource[:in_hex]
         options << "-X"
       end
     end
@@ -130,9 +131,9 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     options
   end
 
+  # Check and see if the data file exists for the tpm.  In version 2 you can
+  # use tpm2_dump_capability to check what passwords are set.
   def self.read_sys( sys_glob = '/sys/class/tpm/*')
-    # Check and see if the data file exists for the tpm.  In version 2 you can
-    # use tpm2_dump_capability to check what passwords are set.
     Dir.glob(sys_glob).collect do |tpm_path|
       debug(tpm_path)
       tpmname = File.basename(tpm_path)

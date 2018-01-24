@@ -1,6 +1,6 @@
 {
   "name": "simp-tpm",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "author": "SIMP Team",
   "summary": "Manages TPM 1.2 and 2.0 software stack installations and configurations",
   "license": "Apache-2.0",
@@ -14,7 +14,9 @@
     "pkcs11",
     "txt",
     "intel",
-    "tboot"
+    "tboot",
+    "tpm1.2",
+    "tpm2.0"
   ],
   "dependencies": [
     {
@@ -24,10 +26,6 @@
     {
       "name": "simp/simplib",
       "version_requirement": ">= 3.1.0 < 4.0.0"
-    },
-    {
-      "name": "simp/rsync",
-      "version_requirement": ">= 6.0.0 < 7.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
