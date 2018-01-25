@@ -126,13 +126,13 @@ Example:
 
   newproperty(:owned) do
     desc 'Whether or not to set passwords on the TPM'
-    newvalues(:true)
+    newvalues(true)
     validate do |value|
       unless value == true
         raise(Puppet::Error, "Owned must be set to true.  Clearing the TPM is not supported at this time.")
       end
     end
-    defaultto :true
+    defaultto true
   end
 
   autorequire(:package) do
