@@ -6,8 +6,8 @@
 #
 # @!puppet.type.param in_hex If true, indicates the passwords are in Hex.
 #
-# @!puppet.type.param local If true, the provider will drop the owner
-#   password in a file in the puppet `$vardir`/simp/<tpmname>.
+# @!puppet.type.param local If true, the provider will drop the 
+#   passwords in a file in the puppet `$vardir`/simp/<tpmname>.
 #
 # @!puppet.type.param owned If true it will set the passwords on the TPM. Required
 #
