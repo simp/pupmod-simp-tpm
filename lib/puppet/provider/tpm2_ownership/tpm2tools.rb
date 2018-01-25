@@ -91,12 +91,9 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     debug('tpm2_takeownership setting tcti args.')
     case resource[:tcti]
     when :devicefile
-      options << "--tcti device"
-      options << "-d #{resource[:devicefile]}"
+      options << ["--tcti device","-d", "#{resource[:devicefile]}"]
     else
-      options << "--tcti socket"
-      options << "-R #{resource[:socket_address]}"
-      options << "-p #{resource[:socket_port]}"
+      options << ["--tcti socket", "-R", "#{resource[:socket_address]}", "-p", "#{resource[:socket_port]}"]
     end
 
     options
@@ -111,13 +108,13 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
     debug('tpm2_takeownership setting passwd args.')
     # where to check that at least one of these is set?  Here or in type.
     if resource[:owner_auth].length > 0
-      options << "-o #{resource[:owner_auth]}"
+      options << ["-o", "#{resource[:owner_auth]}"]
     end
     if resource[:lock_auth].length > 0
-      options << "-l #{resource[:lock_auth]}"
+      options << ["-l","#{resource[:lock_auth]}"]
     end
     if resource[:endorse_auth].length > 0
-      options << "-e #{resource[:endorse_auth]}"
+      options << ["-e", "#{resource[:endorse_auth]}"]
     end
 
     unless options.any?

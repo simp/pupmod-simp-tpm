@@ -65,7 +65,7 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
       let(:provider) { resource.provider }
 
       it 'should not add -X ' do
-        expect(provider.gen_passwd_args).to eq(["-o ownerpassword", "-l lockpassword", "-e endorsepassword"])
+        expect(provider.gen_passwd_args).to eq([["-o", "ownerpassword"], ["-l","lockpassword"], ["-e", "endorsepassword"]])
       end
     end
 
@@ -83,7 +83,7 @@ describe Puppet::Type.type(:tpm2_ownership).provider(:tpm2tools) do
       let(:provider) { resource.provider }
 
       it 'should add -X and not include -l option' do
-        expect(provider.gen_passwd_args).to eq(["-o ownerpassword", "-e endorsepassword", "-X"])
+        expect(provider.gen_passwd_args).to eq([["-o", "ownerpassword"], ["-e", "endorsepassword"], "-X"])
       end
     end
 
