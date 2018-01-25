@@ -164,12 +164,7 @@ Puppet::Type.type(:tpm2_ownership).provide(:tpm2tools) do
 
   def owned=(should)
     debug 'tpm2: Setting property_flush to should'
-    if should == :false
-      warning 'tpm2_ownership does not support disowning the tpm'
-      @property_flush[:owned] = true
-    else
-      @property_flush[:owned] = should
-    end
+    @property_flush[:owned] = should
   end
 
   def owned
