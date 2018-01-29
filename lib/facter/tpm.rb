@@ -10,6 +10,7 @@
 #
 Facter.add('tpm') do
   confine :has_tpm => true
+  confine :tpm_version => 'tpm1'
   confine do
     Facter::Core::Execution.which('tpm_version')
   end

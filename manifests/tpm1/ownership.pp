@@ -5,6 +5,8 @@
 # to be functional post-ownership, as the tpm commands from tpm-tools
 # require the owner password.
 #
+# @param owned Whether or not to set ownership of the TPM.
+#
 # @param owner_pass The TPM owner password
 #
 # @param srk_pass The TPM SRK password. This is defaulted to an empty
@@ -17,9 +19,9 @@
 #
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
-class tpm::ownership (
+class tpm::tpm1::ownership (
   Boolean          $owned          = true,
-  String           $owner_pass     = passgen( "${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
+  String           $owner_pass     = passgen("${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
   Optional[String] $srk_pass       = undef,
   Boolean          $advanced_facts = false
 ) {

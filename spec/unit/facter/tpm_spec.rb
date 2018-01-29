@@ -17,6 +17,7 @@ describe 'tpm', :type => :fact do
   context 'has_tpm fact is true, but tpm-tools package is not installed' do
     it 'should return nil' do
       Facter.fact(:has_tpm).stubs(:value).returns(true)
+      Facter.fact(:tpm_version).stubs(:value).returns('tpm1')
       Facter::Core::Execution.stubs(:which).with('tpm_version').returns nil
       expect(Facter.fact(:tpm).value).to eq nil
     end
@@ -25,6 +26,7 @@ describe 'tpm', :type => :fact do
   context 'tpm is enabled and unowned' do
     before(:each) do
       Facter.fact(:has_tpm).stubs(:value).returns(true)
+      Facter.fact(:tpm_version).stubs(:value).returns('tpm1')
       Facter::Core::Execution.stubs(:which).with('txt-stat').returns nil
 
       # Just need something that actually exists on the current FS
