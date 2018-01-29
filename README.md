@@ -50,10 +50,10 @@ Limitations:  It currently only works for a system with one TPM and can not be u
 It will create a file called owned in the /sys/class/tpm/<tpm name> directory to indicate that
 the TPM is owned.  To reset the passwords the Password must be cleared and this file removed.
 
-At the time this was written Redhat/CentOS packages tpm2-tools/tpm2-tss version 1.X.  The intel gitlab
-module is on version 3.0 which is more robust and includes the capability to check the status
-of the tpm ownership.  When this available the module will be updated so the use of the owned
-file is not needed.
+At the time this was written, tpm2-tools/tpm2-tss version 1.X were all that was available in
+the CentOS/base repo. The [project page for tpm2-tools](https://github.com/tpm2-software/tpm2-tools)
+is on version 3.0 which is more robust and includes the capability to check the status of the tpm
+ownership.  When this available the module will be updated so the use of the owned file is not needed.
 
 ### This is a SIMP module
 
