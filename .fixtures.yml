@@ -3,10 +3,14 @@ fixtures:
   repositories:
     augeasproviders_core: https://github.com/simp/augeasproviders_core
     augeasproviders_grub: https://github.com/simp/augeasproviders_grub
-    concat: https://github.com/simp/puppetlabs-concat
+    concat:
+      repo: https://github.com/simp/puppetlabs-concat
+      ref: 3.0.0
     rsync: https://github.com/simp/pupmod-simp-rsync
     simplib: https://github.com/simp/pupmod-simp-simplib
     stdlib: https://github.com/simp/puppetlabs-stdlib
-    yum: https://github.com/simp/puppet-yum
+    yum:
+      repo: https://github.com/simp/puppet-yum
+      ref: v2.1.0
   symlinks:
     tpm: "#{source_dir}"
