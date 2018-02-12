@@ -4,8 +4,10 @@ fixtures:
     augeasproviders_core: https://github.com/simp/augeasproviders_core
     augeasproviders_grub: https://github.com/simp/augeasproviders_grub
     concat:
+      # master is beyond 4.1.1, but has breaking changes to
+      # how fragments are ordered (MODULES-6625)
       repo: https://github.com/simp/puppetlabs-concat
-      ref: 3.0.0
+      ref: 4.1.1
     rsync: https://github.com/simp/pupmod-simp-rsync
     simplib: https://github.com/simp/pupmod-simp-simplib
     stdlib: https://github.com/simp/puppetlabs-stdlib

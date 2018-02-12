@@ -36,9 +36,9 @@ jobs:
         - bundle exec rake check:dot_underscore
         - bundle exec rake check:test_file
         - bundle exec rake pkg:check_version
+        - bundle exec rake pkg:compare_latest_tag
         - bundle exec rake lint
         - bundle exec rake metadata_lint
-        - bundle exec rake compare_latest_tag
         - bundle exec puppet module build
 
     - stage: spec
