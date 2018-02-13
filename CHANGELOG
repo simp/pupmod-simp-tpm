@@ -2,7 +2,7 @@
 - Added support for installing the Software Stack for TPM 2.0
 - Added support for taking ownership of TPM 2.0
 
-* Wed Jan 03 2017 Nick Miller  <nick.miller@onyxpoint.com> - 1.2.0-0
+* Wed Jan 03 2018 Nick Miller  <nick.miller@onyxpoint.com> - 1.2.0-0
 - tpm::ima::policy was not previously callable from tpm::ima
 - tpm::ima::policy will now disable many default IMA checks by default
 
