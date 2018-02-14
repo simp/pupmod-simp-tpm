@@ -16,9 +16,12 @@
 #
 # @param ima_template
 #   A pre-defined IMA measurement template format.
+#   Only valid in kernel version >= 3.13, is always ima
+#   in older versions.
 #
 # @param ima_hash
-#   The list of supported hashes can be found in crypto/hash_info.h
+#   The list of supported hashes can be found in crypto/hash_infotru.h
+#   Only valid in kernel version >= 3.13, is always sha1 in older versions.
 #
 # @param ima_tcb Toggle the TCB policy. This means IMA will measure
 #   all programs exec'd, files mmap'd for exec, and all file opened
@@ -32,15 +35,16 @@
 # @author Trevor Vaughan <tvaughan@onyxpoint.com>
 #
 class tpm::ima (
-  Boolean              $enable        = true,
-  Boolean              $manage_policy = false,
-  Stdlib::AbsolutePath $mount_dir     = '/sys/kernel/security',
-  Boolean              $ima_audit     = true,
-  Tpm::Ima::Template   $ima_template  = 'ima-ng',
-  String               $ima_hash      = 'sha256',
-  Boolean              $ima_tcb       = true,
-  Integer              $log_max_size  = 30000000
-){
+  Boolean                        $enable                  = true,
+  Boolean                        $manage_appraise         = false,
+  Boolean                        $manage_policy           = false,
+  Stdlib::AbsolutePath           $mount_dir               = '/sys/kernel/security',
+  Boolean                        $ima_tcb                 = true,
+  Boolean                        $ima_audit               = false,
+  Tpm::Ima::Template             $ima_template            = 'ima-ng',
+  String                         $ima_hash                = 'sha256',
+  Integer                        $log_max_size            = 30000000
+) {
 
   if $enable {
     if $facts['cmdline']['ima'] == 'on' {
@@ -57,21 +61,35 @@ class tpm::ima (
       }
     }
 
+
     kernel_parameter { 'ima':
       value    => 'on',
       bootmode => 'normal'
     }
+
+    $_ima_audit = $ima_audit ? {
+      true    => '1',
+      default => '0'
+    }
     kernel_parameter { 'ima_audit':
-      value    => bool2str($ima_audit),
+      value    => $_ima_audit,
       bootmode => 'normal'
     }
-    kernel_parameter { 'ima_template':
-      value    => $ima_template,
-      bootmode => 'normal'
-    }
-    kernel_parameter { 'ima_hash':
-      value    => $ima_hash,
-      bootmode => 'normal'
+
+    if (versioncmp($facts[kernelmajversion],'3.13') >= 0) {
+      kernel_parameter { 'ima_template':
+        value    => $ima_template,
+        bootmode => 'normal'
+      }
+      kernel_parameter { 'ima_hash':
+        value    => $ima_hash,
+        bootmode => 'normal'
+      }
+    } else {
+      kernel_parameter { [ 'ima_template', 'ima_hash' ]:
+        ensure   => 'absent',
+        bootmode => 'normal'
+      }
     }
 
     if $ima_tcb {
@@ -84,6 +102,10 @@ class tpm::ima (
     # Be very careful with this class it could make the system read-only
     if $manage_policy {
       include '::tpm::ima::policy'
+    }
+
+    if $manage_appraise {
+      include '::tpm::ima::appraise'
     }
 
     if $facts['ima_log_size'] {
@@ -114,4 +136,5 @@ class tpm::ima (
       Kernel_parameter['ima_hash']
     ]
   }
+
 }
