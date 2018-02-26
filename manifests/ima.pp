@@ -1,49 +1,56 @@
 # Sets up IMA kernel boot flags if they are not enabled, and mounts the
-# securityfs when they are.
+# ``securityfs`` when they are.
 #
-# @param enable If true, enable IMA on the system.
+# @param enable
+#   Enable IMA on the system
 #
-# @param manage_policy If true, the tpm::ima::policy class will be
-#   included. Please read the documentation for that class **carefully**, as it can
-#   cause live filesystems to become read-only until a reboot.
+# @param manage_policy
+#   Include the ``tpm::ima::policy`` Class
 #
-# @param mount_dir Where to mount ima securityfs
+#   * Please read the documentation for that class **carefully**, as it can
+#     cause live filesystems to become read-only until a reboot.
+#
+# @param mount_dir
+#   Where to mount the IMA ``securityfs``
 #
 # @param ima_audit
-#   Audit control. Can be set to:
-#     true  - Enable additional integrity auditing messages
-#     false - Enable integrity auditing messages (default)
+#   Audit control
+#
+#   * ``true``  - Enable additional integrity auditing messages
+#   * ``false`` - Enable integrity auditing messages
 #
 # @param ima_template
-#   A pre-defined IMA measurement template format.
-#   Only valid in kernel version >= 3.13, is always ima
-#   in older versions.
+#   A predefined IMA measurement template format.
+#
+#   * NOTE: This is only valid in kernel version >= ``3.13``. It is always
+#     ``ima`` in older versions.
 #
 # @param ima_hash
-#   The list of supported hashes can be found in crypto/hash_infotru.h
-#   Only valid in kernel version >= 3.13, is always sha1 in older versions.
+#   The list of supported hashes can be found in ``crypto/hash_infotru.h``
 #
-# @param ima_tcb Toggle the TCB policy. This means IMA will measure
-#   all programs exec'd, files mmap'd for exec, and all file opened
-#   for read by uid=0. Defaults to true.
+#   * NOTE: This is only valid in kernel version >= ``3.13``. It is always
+#     ``sha1`` in older versions.
 #
-# @param log_max_size The size of the
-#   /sys/kernel/security/ima/ascii_runtime_measurements, in bytes, that will
-#   cause a reboot notification will be sent to the user.
+# @param ima_tcb
+#   Toggle the TCB policy
 #
-# @author Nick Markowski <namarkowski@keywcorp.com>
-# @author Trevor Vaughan <tvaughan@onyxpoint.com>
+#   * IMA will measure all programs called via ``exec``, files copied via
+#     ``mmap``, and all files opened by ``uid=0``.
+#
+# @param log_max_size
+#   The size of ``/sys/kernel/security/ima/ascii_runtime_measurements``, in
+#   bytes, that will cause a reboot notification will be sent to the user.
 #
 class tpm::ima (
-  Boolean                        $enable                  = true,
-  Boolean                        $manage_appraise         = false,
-  Boolean                        $manage_policy           = false,
-  Stdlib::AbsolutePath           $mount_dir               = '/sys/kernel/security',
-  Boolean                        $ima_tcb                 = true,
-  Boolean                        $ima_audit               = false,
-  Tpm::Ima::Template             $ima_template            = 'ima-ng',
-  String                         $ima_hash                = 'sha256',
-  Integer                        $log_max_size            = 30000000
+  Boolean              $enable          = true,
+  Boolean              $manage_appraise = false,
+  Boolean              $manage_policy   = false,
+  Stdlib::AbsolutePath $mount_dir       = '/sys/kernel/security',
+  Boolean              $ima_tcb         = true,
+  Boolean              $ima_audit       = false,
+  Tpm::Ima::Template   $ima_template    = 'ima-ng',
+  String[1]            $ima_hash        = 'sha256',
+  Integer[1]           $log_max_size    = 30000000
 ) {
 
   if $enable {

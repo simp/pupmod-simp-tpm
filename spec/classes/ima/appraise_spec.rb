@@ -24,7 +24,7 @@ describe 'tpm::ima::appraise' do
       context 'with default params' do
         let (:params) {{
           relabel_file: '/tmp/relabel',
-          package_ensure: 'install',
+          package_ensure: 'installed',
           scriptdir: '/myscripts'
         }}
 
@@ -98,7 +98,7 @@ describe 'tpm::ima::appraise' do
           relabel_file: '/tmp/relabel',
           scriptdir: '/myscripts',
           force_fixmode: true,
-          package_ensure: 'install'
+          package_ensure: 'installed'
         }}
         it_should_behave_like 'an ima appraise enabled system'
         it { is_expected.to contain_class('tpm::ima::appraise::fixmode').with({
@@ -108,7 +108,7 @@ describe 'tpm::ima::appraise' do
       context 'with enable set to false' do
         let (:params) {{
           enable: false,
-          package_ensure: 'install',
+          package_ensure: 'installed',
           scriptdir: '/myscripts',
           relabel_file:   '/tmp/relabel'
         }}

@@ -34,7 +34,7 @@ describe 'ima_security_attr', :type => :fact do
       before(:each) { File.stubs(:exists?).with('/tmp/simp/.ima_relabel').returns(true) }
 
       it 'should return inactive' do
-        expect(Facter.fact(:ima_security_attr).value).to eq 'start'
+        expect(Facter.fact(:ima_security_attr).value).to eq 'need_relabel'
       end
     end
 

@@ -4,68 +4,85 @@
 # @see Kernel documentation Documentation/ABI/testing/ima_policy
 # @see https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/Documentation/ABI/testing/ima_policy?id=refs/tags/v3.10.103
 #
-# To enable ima appraise first make sure all your locally mounted file systems
-# with root files on them are mounted with i_version option. 
+# To enable IMA appraisal first make sure all your locally mounted file systems
+# with root files on them are mounted with ``i_version`` option.
+#
 # (TODO: check for this and set if possible)
-# Then include the tpm module in your classes and set the following in Hiera:
 #
-# # enable IMA
-# tpm::ima: true
-# tpm::ima::enable: true
-# # enable IMA Appraisal
-# tpm::ima::manage_appraise: true
-# tpm::ima::appraise::enable: true
-# It is also recommended although not necessary, to enable the mangement of the ima policy
-# because the default policy is over zealous
-# tpm::ima::manage_policy: true
-# tpm::ima::policy::manage: true
+# Then include the ``tpm`` module in your classes and set the following in Hiera:
 #
-# When puppet runs it will configure the system to reboot into ima_appraise mode = fix.
-# The system will then need to be rebooted and will notify with an ima_appraise_fix_reboot
-# notice.
-# When the system is rebooted it will be in fix mode and it will label
-# all the files with the required security.ima attribute.   This takes a while.
-# Puppet will notify not to reboot until this script completes.  Puppet will notify
-# with an ima_appraise_enforce_reboot notice when the script completes.
+# @example enable IMA via Hiera
+#   tpm::ima: true
+#   tpm::ima::enable: true
 #
-# When the system is rebooted it will boot into ima_appraisal in enforce mode.
+#   # enable IMA Appraisal
+#   tpm::ima::manage_appraise: true
+#   tpm::ima::appraise::enable: true
+#
+#   # It is also recommended although not necessary, to enable the management of
+#   # the ima policy because the default policy is over zealous
+#   tpm::ima::manage_policy: true
+#   tpm::ima::policy::manage: true
+#
+# When ``puppet`` runs it will configure the system to reboot into ``ima_appraise`` mode ``fix``.
+#
+# The system will then need to be rebooted and will notify with an
+# ``ima_appraise_fix_reboot`` notice.
+#
+# When the system is rebooted it will be in ``fix`` mode and it will label all
+# the files with the required ``security.ima`` filesystem attribute. This takes
+# a while.  Puppet will notify not to reboot until this script completes.
+# Puppet will notify with an ``ima_appraise_enforce_reboot`` notice when the
+# script completes.
+#
+# When the system is rebooted it will boot into ``ima_appraisal`` in
+# ``enforce`` mode.
 #
 # If you need to update files after the system has been in enforce mode:
-#   set tpm::ima::appraise::force_fixmode to true,
-#   run puppet and reboot.
-# When you have completed the upgrade, run the script
-#   /usr/local/bin/ima_security_attr_update.sh
-# when the completes, set force_fixmode back to false, rerun puppet and reboot.
 #
-# Toubleshooting:
-# If you reboot and are getting SELinux errors or you do not have permissions
-# to access your files then you probably forgot to set i_version on your mounts
-# in /etc/fstab.
+#   1. Set ``tpm::ima::appraise::force_fixmode`` to ``true``,
+#   2. Run ``puppet`` and reboot when prompted.
 #
-# If you reboot and it won't load the initramfs the dracut didn't run.
-# You can fix this by rebooting without ima, running dracut -f and rebooting
-# in ima appraise mode.
+# When you have completed the upgrade, run the script ``/usr/local/bin/ima_security_attr_update.sh``.
 #
-# @param enable  Enable IMA appraise capability.
+# When the completes, set ``force_fixmode`` back to ``false``, rerun
+# ``puppet``, and reboot when prompted.
 #
-# @param package_ensure  How to treat installations of
-#    packages.
+# Troubleshooting:
 #
-# @param relabel_file  The file to touch when the file system needs relabeling
+# * If you reboot and are getting SELinux errors or you do not have permissions
+#   to access your files then you probably forgot to set ``i_version`` on your
+#   mounts in ``/etc/fstab``.
 #
-# @param scriptdir The directory to place scripts.
+# * If you reboot and it won't load the ``initramfs`` then the ``dracut``
+#   update didn't run. You can fix this by rebooting without the ``ima`` kernel
+#   settings, running ``dracut -f`` and then rebooting in ``ima`` ``appraise``
+#   mode.
 #
-# @param force_fixmode This will force the system into fix_mode so you can update
-#  files and then relabel the system. It requires a reboot of the system.
+# @param enable
+#   Enable IMA appraise capability
+#
+# @param package_ensure
+#   How to treat installations of packages
+#
+# @param relabel_file
+#   The file to touch when the file system needs relabeling
+#
+# @param scriptdir
+#   The directory to place scripts.
+#
+# @param force_fixmode
+#   This will force the system into ``fix_mode`` so you can update files and
+#   then relabel the system - requires a reboot.
 #
 # @author SIMP Team  <https://simp-project.com/>
 #
 class tpm::ima::appraise(
-  String               $package_ensure = $::tpm::package_ensure,
-  Boolean              $enable         = true,
-  Stdlib::AbsolutePath $relabel_file   = "${facts['puppet_vardir']}/simp/.ima_relabel",
-  Stdlib::AbsolutePath $scriptdir      = '/usr/local/bin',
-  Boolean              $force_fixmode  = false,
+  Simplib::PackageEnsure $package_ensure = $::tpm::package_ensure,
+  Boolean                $enable         = true,
+  Stdlib::AbsolutePath   $relabel_file   = "${facts['puppet_vardir']}/simp/.ima_relabel",
+  Stdlib::AbsolutePath   $scriptdir      = '/usr/local/bin',
+  Boolean                $force_fixmode  = false,
 ){
 
   if $enable {
@@ -149,5 +166,4 @@ class tpm::ima::appraise(
       Kernel_parameter['ima_appraise_tcb'],
     ]
   }
-
 }
