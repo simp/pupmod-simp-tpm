@@ -23,6 +23,7 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
     Puppet.stubs(:[]).with(:vardir).returns('/tmp')
     Facter.stubs(:value).with(:has_tpm).returns(true)
     Facter.stubs(:value).with(:tpm).returns(tpm_fact)
+    Facter.stubs(:value).with(:kernel).returns('Linux')
     FileUtils.stubs(:chown).with('root','root', '/tmp/simp').returns true
   end
 

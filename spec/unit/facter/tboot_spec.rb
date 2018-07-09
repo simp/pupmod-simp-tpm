@@ -23,9 +23,9 @@ describe 'tboot', :type => :fact do
     before(:each) { Facter.fact(:has_tpm).stubs(:value).returns(true) }
 
     context 'tboot package is not installed' do
-      Facter::Core::Execution.stubs(:which).with('txt-stat').returns nil
-
       it 'should return nil' do
+        Facter::Core::Execution.stubs(:which).with('txt-stat').returns nil
+
         expect(Facter.fact(:tboot).value).to eq nil
       end
     end
