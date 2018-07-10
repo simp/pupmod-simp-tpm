@@ -16,12 +16,6 @@ if Puppet.version < "4.0.0"
   end
 end
 
-
-if !ENV.key?( 'TRUSTED_NODE_DATA' )
-  warn '== WARNING: TRUSTED_NODE_DATA is unset, using TRUSTED_NODE_DATA=yes'
-  ENV['TRUSTED_NODE_DATA']='yes'
-end
-
 default_hiera_config =<<-EOM
 ---
 :backends:
@@ -84,7 +78,7 @@ RSpec.configure do |c|
     :production => {
       #:fqdn           => 'production.rspec.test.localdomain',
       :path           => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
-      :concat_basedir => '/tmp',
+      :concat_basedir => '/tmp'
     }
   }
 
