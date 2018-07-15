@@ -1,6 +1,6 @@
 {
   "name": "simp-tpm",
-  "version": "1.2.0",
+  "version": "3.0.0",
   "author": "SIMP Team",
   "summary": "Manages TPM 1.2, IMA, and TBOOT",
   "license": "Apache-2.0",
