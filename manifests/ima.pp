@@ -14,10 +14,9 @@
 #   Where to mount the IMA ``securityfs``
 #
 # @param ima_audit
-#   Audit control
-#
-#   * ``true``  - Enable additional integrity auditing messages
-#   * ``false`` - Enable integrity auditing messages
+#   Audit control.  Can be set to:
+#     true  - Enable additional integrity auditing messages
+#     false - Enable integrity auditing messages (default)
 #
 # @param ima_template
 #   A predefined IMA measurement template format.
@@ -28,8 +27,13 @@
 # @param ima_hash
 #   The list of supported hashes can be found in ``crypto/hash_infotru.h``
 #
-#   * NOTE: This is only valid in kernel version >= ``3.13``. It is always
-#     ``sha1`` in older versions.
+# @param ima_tcb Toggle the TCB policy.  This means IMA will measure
+#   all programs exec'd, files mmap'd for exec, and all file opened
+#   for read by uid=0. Defaults to true.
+#
+# @param log_max_size The size of the
+#   /sys/kernel/security/ima/ascii_runtime_measurements, in bytes, that will
+#   cause a reboot notification will be sent to the user.
 #
 # @param ima_tcb
 #   Toggle the TCB policy

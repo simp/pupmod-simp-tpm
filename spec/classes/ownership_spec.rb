@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'tpm::tpm1::ownership' do
+describe 'tpm::ownership' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) do
@@ -16,7 +16,7 @@ describe 'tpm::tpm1::ownership' do
         }}
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to create_class('tpm::tpm1::ownership') }
+        it { is_expected.to create_class('tpm::ownership') }
         it { is_expected.to contain_tpm_ownership('tpm0').with({
           'owned'          => true,
           'owner_pass'     => 'badpass1',
