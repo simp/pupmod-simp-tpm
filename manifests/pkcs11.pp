@@ -7,21 +7,18 @@
 #
 # @param user_pin 4-8 character password used for the user pin.
 #
-# @param package_ensure The ensure status of packages to be installed.
-#
 class tpm::pkcs11 (
-  String $so_pin         = passgen("${facts['fqdn']}_pkcs_so_pin", { 'length' => 8 } ),
-  String $user_pin       = passgen("${facts['fqdn']}_pkcs_user_pin", { 'length' => 8 } ),
-  String $package_ensure = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
-) {
+  String $so_pin   = passgen( "${facts['fqdn']}_pkcs_so_pin", { 'length' => 8 } ),
+  String $user_pin = passgen( "${facts['fqdn']}_pkcs_user_pin", { 'length' => 8 } ),
+){
   ##################################################################################################################
   # Here's a nice doc on how to set up the PKCS #11 interface
   # https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Security_Guide/sec-Encryption.html
   # http://trousers.sourceforge.net/pkcs11.html
   ##################################################################################################################
-  package { 'opencryptoki':        ensure => $package_ensure }
-  package { 'opencryptoki-tpmtok': ensure => $package_ensure }
-  package { 'tpm-tools-pkcs11':    ensure => $package_ensure }
+  package { 'opencryptoki': ensure => latest }
+  package { 'opencryptoki-tpmtok': ensure => latest }
+  package { 'tpm-tools-pkcs11': ensure => latest }
 
   service { 'pkcsslotd':
     ensure => running,
@@ -30,8 +27,8 @@ class tpm::pkcs11 (
 
   tpmtoken { 'TPM PKCS#11 Token':
     ensure   => present,
-    so_pin   => $so_pin,
-    user_pin => $user_pin
+    so_pin   => '87654321',
+    user_pin => '87654321'
   }
 
 }

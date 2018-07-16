@@ -13,7 +13,6 @@ describe 'tpm::tboot' do
           'measured_launch' => false,
           'tboot_session'   => false
         }
-        os_facts[:tpm_version] = 'tpm1'
         os_facts
       end
 

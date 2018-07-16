@@ -44,32 +44,27 @@ class tpm::tboot (
 ) {
   include 'tpm'
 
-  if $::tpm::tpm_version == 'tpm1' {
-    reboot_notify { 'Launch tboot':
-      reason => 'tboot policy has been written, please reboot to complete a verified launch'
-    }
-
-    file { '/root/txt/':
-      ensure => directory
-    }
-
-    package { 'tboot':
-      ensure => $package_ensure
-    }
-
-    include '::tpm::tboot::sinit'
-    include '::tpm::tboot::policy'
-    include '::tpm::tboot::grub'
-    include '::tpm::tboot::lock_kernel'
-
-    Class['tpm']
-    -> Class['tpm::tboot::sinit']
-    ~> Class['tpm::tboot::policy']
-    ~> Class['tpm::tboot::grub']
-    ~> Reboot_notify['Launch tboot']
-
+  reboot_notify { 'Launch tboot':
+    reason => 'tboot policy has been written, please reboot to complete a verified launch'
   }
-  else {
-    warning("${module_name}: tboot is currently only supported for TPM version 1, the tpm version is ${::tpm::tpm_version}")
+
+  file { '/root/txt/':
+    ensure => directory
   }
+
+  package { 'tboot':
+    ensure => $package_ensure
+  }
+
+  include 'tpm::tboot::sinit'
+  include 'tpm::tboot::policy'
+  include 'tpm::tboot::grub'
+  include 'tpm::tboot::lock_kernel'
+
+  Class['tpm']
+  -> Class['tpm::tboot::sinit']
+  ~> Class['tpm::tboot::policy']
+  ~> Class['tpm::tboot::grub']
+  ~> Reboot_notify['Launch tboot']
+
 }
