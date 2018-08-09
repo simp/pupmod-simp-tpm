@@ -1,3 +1,6 @@
+* Thu Aug 09 2018 Michael Morrone <michael.morrone@onypoint.com> - 3.1.0-0
+- Removed support for IMA (into its own module)
+
 * Sun Jul 15 2018 Chris Tessmer <chris.tessmer@onypoint.com> - 3.0.0-0
 - Removed support for TPM 2.0 (into its own module)
 

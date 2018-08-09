@@ -16,16 +16,9 @@
 
 ## Description
 
-This module manages a TPM, including taking ownership and enabling IMA. You must
-take ownership of a TPM to load and unload certs, use it as a PKCS #11
-interface, or to use SecureBoot or IMA.
-
-The [Integrity Management Architecture (IMA)](https://sourceforge.net/p/linux-ima/wiki/Home/)
-subsystem is a tool that uses the TPM to verify integrity of the system, based
-on filesystem and file hashes. The IMA class sets up IMA kernel boot flags if
-they are not enabled and when they are, mounts the `securityfs`. This module can
-manage the IMA policy, although modifying the policy incorrectly could cause
-your system to become read-only.
+This module manages TPM, including taking ownership. You must take ownership of
+a TPM to load and unload certs, use it as a PKCS #11 interface, or to use 
+SecureBoot.
 
 The TPM ecosystem has been designed to be difficult to automate. The difficulty
 has shown many downsides of using a tool like this module to manage your
@@ -65,23 +58,11 @@ This module is optimally designed for use within a larger SIMP ecosystem, but it
 
 --------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
-> **WARNING**
->
-> Inserting poorly-formed or incorrect policy into the IMA policy file could
-> cause your system to become read-only. This can be temporarily remedied by a
-> reboot. This is the current case with the way the module manages the policy
-> and it is not recommended to use this section of the module at this time.
-
---------------------------------------------------------------------------------
-
 This module will:
 * Install `tpm-tools` and `trousers`
 * Enable the `tcsd` service
 * (*OPTIONAL*) Take ownership of the TPM
   * The password will be in a flat file in `$vardir/simp`
-* (*OPTIONAL*) Enable IMA on the host
-  * (*OPTIONAL*) Manage the IMA policy (BROKEN - See Limitations)
 * (*OPTIONAL*) Install `tboot`, create policy, and add grub entry
 
 
@@ -119,13 +100,6 @@ tpm::ownership::advanced_facts: true
 
 tpm::ownership::owner_pass: 'twentycharacters0000'
 tpm::ownership::srk_pass: 'well-known'
-```
-
-To enable IMA and the PKCS #11 interface, add this to hiera:
-
-```yaml
-tpm::use_ima: true
-tpm::enable_pkcs_interface: true
 ```
 
 To enable the PKCS#11 interface, add the `tpm::pkcs11` class to your node and set the PINs in hiera:
@@ -229,25 +203,6 @@ and compatible distributions, such as CentOS. Please see the
 supported operating systems, Puppet versions, and module dependencies.
 
 This module does not support clearing a previously owned TPM.
-
-### IMA
-
-The current RedHat implementation of IMA does not seem to work after inserting
-our default policy (generated example in `spec/files/default_ima_policy.conf`).
-It causes the system to become read-only, even though it is only using supported
-configuration elements. The module will be updated soon with more sane defaults
-to allow for at least the minimal amount of a system to be measured.
-
-To get started, include the `tpm::ima::policy` class and set these parameters.
-From there, they can be changed to `true` on one by one:
-
-```yaml
-tpm::ima::policy::measure_root_read_files: false
-tpm::ima::policy::measure_file_mmap: false
-tpm::ima::policy::measure_bprm_check: false
-tpm::ima::policy::measure_module_check: false
-tpm::ima::policy::appraise_fowner: false
-```
 
 ## Development
 
