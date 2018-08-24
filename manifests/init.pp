@@ -1,7 +1,5 @@
 # Provides utilities for interacting with a TPM
 #
-# @param ima Toggles IMA on or off.
-#
 # @param take_ownership Enable to allow Puppet to take ownership
 #   of the TPM.
 #
@@ -9,7 +7,6 @@
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
 class tpm (
-  Boolean $ima            = false,
   Boolean $take_ownership = false
 ){
   # Check if the system has a TPM (which also checks that it
@@ -28,10 +25,6 @@ class tpm (
     if $take_ownership {
       include '::tpm::ownership'
     }
-  }
-
-  if $ima {
-    include '::tpm::ima'
   }
 
 }
