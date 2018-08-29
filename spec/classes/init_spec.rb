@@ -17,6 +17,7 @@ describe 'tpm' do
       context 'with default parameters and no physical TPM' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('tpm') }
+        it { is_expected.not_to create_class('ima') }
         it { is_expected.not_to create_class('tpm::ownership') }
         it { is_expected.not_to contain_package('tpm-tools') }
         it { is_expected.not_to contain_package('trousers') }
@@ -30,6 +31,7 @@ describe 'tpm' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('tpm') }
+        it { is_expected.not_to create_class('ima') }
         it { is_expected.not_to create_class('tpm::ownership') }
         it { is_expected.to contain_package('tpm-tools').with_ensure('latest') }
         it { is_expected.to contain_package('trousers').with_ensure('latest') }
@@ -47,6 +49,28 @@ describe 'tpm' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('tpm') }
+        it { is_expected.not_to create_class('ima') }
+        it { is_expected.to create_class('tpm::ownership') }
+        it { is_expected.to contain_package('tpm-tools').with_ensure('latest') }
+        it { is_expected.to contain_package('trousers').with_ensure('latest') }
+        it { is_expected.to contain_service('tcsd').with({
+          'ensure'  => 'running',
+          'enable'  => true,
+        }) }
+      end
+
+      context 'with detected TPM and ima => true and take_ownership => true' do
+        let(:facts) do
+          os_facts.merge({ :has_tpm => true })
+        end
+        let(:params) {{
+          :ima => true,
+          :take_ownership => true,
+        }}
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to create_class('tpm') }
+        it { is_expected.to create_class('ima') }
         it { is_expected.to create_class('tpm::ownership') }
         it { is_expected.to contain_package('tpm-tools').with_ensure('latest') }
         it { is_expected.to contain_package('trousers').with_ensure('latest') }
