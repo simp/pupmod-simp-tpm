@@ -6,6 +6,7 @@ fixtures:
       # how fragments are ordered (MODULES-6625)
       repo: https://github.com/simp/puppetlabs-concat
       ref: 4.1.1
+    ima: https://github.com/simp/pupmod-simp-ima
     rsync: https://github.com/simp/pupmod-simp-rsync
     simplib: https://github.com/simp/pupmod-simp-simplib
     stdlib: https://github.com/simp/puppetlabs-stdlib
