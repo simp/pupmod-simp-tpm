@@ -1,5 +1,7 @@
 * Thu Aug 09 2018 Michael Morrone <michael.morrone@onypoint.com> - 3.1.0-0
-- Removed support for IMA (into its own module)
+- Removed direct module support for IMA, as that functionality has been 
+  ported to the ima module.  Instead, for backward compatibility, this
+  module now uses the ima module, when tpm::ima is set to true.
 
 * Sun Jul 15 2018 Chris Tessmer <chris.tessmer@onypoint.com> - 3.0.0-0
 - Removed support for TPM 2.0 (into its own module)
