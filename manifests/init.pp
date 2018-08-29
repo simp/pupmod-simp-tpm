@@ -34,7 +34,7 @@ class tpm (
   # The following should be removed at the next major release, along with the
   # dependency in the metadata.json.
   if $ima {
-    warning ('tpm::ima is deprecated and has been moved to its own module.')
+    warning ('tpm::ima is deprecated and will be removed in a future release.  Use the ima module instead.')
     include '::ima'
   }
 }
