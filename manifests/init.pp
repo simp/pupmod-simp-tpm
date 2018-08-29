@@ -1,12 +1,13 @@
 # Provides utilities for interacting with a TPM
 #
-# @param ima Toggles IMA on or off.
+# @param ima Toggles IMA on or off. 
+#   NOTE: This parameter is deprecated and throws a warning if specified.
+#   IMA may remain on if the ima module is enabled elsewhere.
 #
 # @param take_ownership Enable to allow Puppet to take ownership
 #   of the TPM.
 #
-# @author Nick Markowski <nmarkowski@keywcorp.com>
-# @author Nick Miller <nick.miller@onyxpoint.com>
+# @author https://github.com/simp/pupmod-simp-tpm/graphs/contributors
 #
 class tpm (
   Boolean $ima            = false,
@@ -30,8 +31,10 @@ class tpm (
     }
   }
 
+  # The following should be removed at the next major release, along with the
+  # dependency in the metadata.json.
   if $ima {
-    include '::tpm::ima'
+    warning ('tpm::ima is deprecated and will be removed in a future release.  Use the ima module instead.')
+    include '::ima'
   }
-
 }
