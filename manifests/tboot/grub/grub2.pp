@@ -24,6 +24,14 @@ class tpm::tboot::grub::grub2 {
     default => ''
   }
 
+  file_line{ 'Allow Acccess to  option in boot menu':
+    ensure => present,
+    path   => '/etc/grub.d/20_linux_tboot',
+    line   => 'CLASS="--class gnu-linux --class gnu --class os --class tboot --unrestricted"',
+    match  => '^CLASS="--class\ gnu-linux\ --class\ gnu\ --class\ os\ --class\ tboot"$',
+    notify => Exec['Update grub config']
+  }
+
   $grub_tboot = {
     'GRUB_CMDLINE_TBOOT'       => "\"${tboot_boot_options.join(' ')}\"",
     'GRUB_CMDLINE_LINUX_TBOOT' => "\"${additional_boot_options.join(' ')}\"",

@@ -18,10 +18,10 @@
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
 class tpm::ownership (
-  Boolean          $owned          = true,
-  String           $owner_pass     = passgen( "${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
-  Optional[String] $srk_pass       = undef,
-  Boolean          $advanced_facts = false
+  Boolean                                  $owned          = true,
+  Variant[Enum['well-known'],String[20]]   $owner_pass     = passgen( "${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
+  Optional[String]                         $srk_pass       = undef,
+  Boolean                                  $advanced_facts = false
 ) {
 
   tpm_ownership { 'tpm0':
