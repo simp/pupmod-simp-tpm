@@ -12,26 +12,20 @@ describe 'tpm::tboot' do
         os_facts[:tboot] = {
           'measured_launch' => false,
           'tboot_session'   => false,
-          'tboot_version'   => nil
         }
         os_facts
       end
 
+      # El6 will no longer fail at this point because it does
+      # not attempt to run grub unless it knows what version
+      # of tboot is installed
       context 'default with unknown version of tboot' do
-        if os_facts[:os][:release][:major].to_i == 7
-          it { is_expected.to compile.with_all_deps }
-          it { is_expected.to contain_class('tpm') }
-          it { is_expected.to contain_package('tboot') }
-          it { is_expected.to contain_reboot_notify('Launch tboot') }
-        else
-          # it { is_expected.to contain_class('tpm::tboot::grub::grub1') }
-          it { is_expected.to compile.and_raise_error(/does not currently support Grub 0.99-1.0/) }
-        end
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('tpm') }
+        it { is_expected.to contain_package('tboot') }
       end
 
-
-
-      context 'default options, regular boot' do
+      context 'default options with tboot version known' do
         let(:params) {{
           :tboot_version => '1.9.6',
         }}
@@ -72,7 +66,7 @@ describe 'tpm::tboot' do
         end
       end
 
-      context 'different grub2 parameters and policy' do
+      context 'with tboot version < 1/9/7 and create_policy set to true' do
         let(:params) {{
           :tboot_version           => '1.9.6',
           :create_policy           => true
