@@ -22,6 +22,7 @@ Architecture: x86_64"
     context 'tboot installed' do
 
       it 'should return the version' do
+        Facter::Core::Execution.stubs(:which).with('txt-stat').returns '/sbin/txt-stat'
         Facter::Core::Execution.stubs(:execute).with('rpm -qi tboot').returns tboot_installed
         expect(Facter.fact(:tboot_version).value).to eq "1.9.6"
       end
@@ -30,6 +31,7 @@ Architecture: x86_64"
     context 'tboot not installed' do
 
       it 'should return the version' do
+        Facter::Core::Execution.stubs(:which).with('txt-stat').returns nil
         Facter::Core::Execution.stubs(:execute).with('rpm -qi tboot').returns tboot_notinstalled
         expect(Facter.fact(:tboot_version).value).to eq nil 
       end

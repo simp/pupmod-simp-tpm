@@ -10,7 +10,7 @@ describe 'tpm::ownership' do
       context 'with default parameters and a physical TPM' do
         let(:params) {{
           'owned'          => true,
-          'owner_pass'     => 'badpass1',
+          'owner_pass'     => 'badpass12301234567890',
           'srk_pass'       => 'badpass2',
           'advanced_facts' => true
         }}
@@ -19,7 +19,24 @@ describe 'tpm::ownership' do
         it { is_expected.to create_class('tpm::ownership') }
         it { is_expected.to contain_tpm_ownership('tpm0').with({
           'owned'          => true,
-          'owner_pass'     => 'badpass1',
+          'owner_pass'     => 'badpass12301234567890',
+          'srk_pass'       => 'badpass2',
+          'advanced_facts' => true
+        }) }
+      end
+      context 'with default parameters and well-known password' do
+        let(:params) {{
+          'owned'          => true,
+          'owner_pass'     => 'well-known',
+          'srk_pass'       => 'badpass2',
+          'advanced_facts' => true
+        }}
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to create_class('tpm::ownership') }
+        it { is_expected.to contain_tpm_ownership('tpm0').with({
+          'owned'          => true,
+          'owner_pass'     => 'well-known',
           'srk_pass'       => 'badpass2',
           'advanced_facts' => true
         }) }
