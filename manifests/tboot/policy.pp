@@ -5,6 +5,7 @@ class tpm::tboot::policy {
   assert_private()
 
   $owner_password       = $tpm::tboot::owner_password
+  $create_policy        = $tpm::tboot::create_policy
   $policy_script        = $tpm::tboot::policy_script
   $policy_script_source = $tpm::tboot::policy_script_source
   $update_script        = $tpm::tboot::update_script
@@ -20,15 +21,27 @@ class tpm::tboot::policy {
     source => $update_script_source
   }
 
-  # if the last boot wasn't measured, but we did boot with the tboot kernel
-  if $facts['tboot'] {
-    if ! $facts['tboot']['measured_launch'] and $facts['tboot']['tboot_session'] {
-      exec { 'Generate and install tboot policy':
-        command => "/usr/bin/sh ${policy_script} ${owner_password}",
-        tries   => 1,
-        notify  => Exec['Update grub config']
-      }
+  if $create_policy {
+
+    exec { 'Generate and install tboot policy':
+      command => "/usr/bin/sh ${policy_script} ${owner_password}",
+      tries   => 1,
+      unless  => 'test -f /boot/list.data',
+      require => File["${policy_script}"],
+      notify  => Reboot_notify['Tboot Policy Change']
     }
+
+  } else {
+
+    file { '/boot/list.data':
+      ensure => absent,
+      notify  => Reboot_notify['Tboot Policy Change']
+    }
+
+  }
+
+  reboot_notify { 'Tboot Policy Change':
+    reason    => 'Trusted tboot policy has been changed, please reboot to complete a verified launch'
   }
 
 }

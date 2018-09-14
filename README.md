@@ -21,7 +21,7 @@
 ## Description
 
 This module manages TPM, including taking ownership. You must take ownership of
-a TPM to load and unload certs, use it as a PKCS #11 interface, or to use 
+a TPM to load and unload certs, use it as a PKCS #11 interface, or to use
 SecureBoot.
 
 The TPM ecosystem has been designed to be difficult to automate. The difficulty
@@ -147,8 +147,32 @@ tpmtoken { 'TPM PKCS#11 token':
 
 ### Trusted Boot
 
-This module should be able to create the policy required to allow the machine to
-complete a measured launch.
+This module supports versions of tboot 1.9.6 and later.
+This module only supports grub2.
+
+#### Known Errors
+There are known errors in tboot v1.9.6 and the creation of the LCP and VLP
+fail with memory errors.  This was fixed in  tboot v1.9.7.
+
+By default policy creation is disabled because as of Sept 06, 2018 tboot
+v1.9.6 is the version delivered with RedHat 7.5.
+If you want to compile tboot yourself the source can be obtained from the sourceforge:
+ https://sourceforge.net/projects/tboot/
+
+In order to check if tboot version is > 1.9.6 and policy is not true
+it needs to do two passes because the fact for the version is executed
+before the module installs tboot.
+
+To avoid this the tboot version can be set in hiera:
+
+```yaml
+---
+tpm::tboot::tboot_version: "1.9.6"
+```
+
+#### Setting up trusted boot
+
+To set up trusted boot on a system do the following:
 
 1. Make sure the TPM owner password is 20 characters long and the SRK password
    is 'well-known', equivalent to `tpm_takeownership -z`
@@ -161,6 +185,12 @@ complete a measured launch.
 tpm::tboot::sinit_name: 2nd_gen_i5_i7_SINIT_51.BIN # the appropriate BIN
 tpm::tboot::sinit_source: 'puppet:///profiles/2nd_gen_i5_i7_SINIT_51.BIN' # where ever you choose to stash this
 tpm::tboot::owner_password: "%{alias('tpm::ownership::owner_pass')}"
+tpm::ownership::owner_pass: "whatever your password is"
+# If you are using version 1.9.7 or later and want the LCP and VLP updated:
+tpm::tboot::create_policy: true
+# To avoid puppet having to do 2 passes to determine what version of tboot is installed
+# you can set the version of tboot.
+tpm::tboot::tboot_version: "1.9.6"
 ```
 
 5. Include the `tpm::tboot` class:
@@ -172,10 +202,22 @@ classes:
   - tpm::tboot
 ```
 
-6. Reboot into the Grub option that specifies 'no policy', booting into a tboot session
-7. Let puppet run again at boot
-8. Reboot into the normal tboot boot option
-9. Check the `tboot` fact for a measured launch: `puppet facts | grep measured_launch` or just run `txt-stat`
+6. Run puppet (run it twice if you have not set the tboot version).
+   Reboot and select the tboot option from the menu.
+7. Check the `tboot` fact for a measured launch: `puppet facts | grep measured_launch` or just run `txt-stat`
+
+#### Removing other options from the boot menu
+
+If only the tboot menu option should be available to users then set the following in hiera:
+
+```yaml
+---
+tpm::tboot::purge_boot_entries: true
+```
+
+This removes the execute permissions from the /etc/grub.d/10_linux file.
+If you decide to remove tboot later, these permissions will need to
+be set back to executable and the grub2-mkconfig run again.
 
 #### Locking the kernel
 

@@ -12,10 +12,12 @@ class tpm::tboot::grub {
     default: { fail('Unknown grub version, tboot cannot continue') }
   }
 
-  file { "/boot/${sinit_name}":
-    ensure  => file,
-    source  => "/root/txt/sinit/${sinit_name}",
-    require => Class['tpm::tboot::sinit']
+  if $sinit_name {
+    file { "/boot/${sinit_name}":
+      ensure  => file,
+      source  => "/root/txt/sinit/${sinit_name}",
+      require => Class['tpm::tboot::sinit']
+    }
   }
 
 }
