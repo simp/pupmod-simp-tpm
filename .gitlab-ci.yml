@@ -27,7 +27,7 @@ image: 'ruby:2.4'
 
 variables:
   PUPPET_VERSION:    'UNDEFINED' # <- Matrixed jobs MUST override this (or fail)
-  BUNDLER_VERSION:   '1.16.1'
+  BUNDLER_VERSION:   '1.17.1'
 
   # Force dependencies into a path the gitlab-runner user can write to.
   # (This avoids some failures on Runners with misconfigured ruby environments.)
@@ -51,7 +51,7 @@ variables:
       - '.vendor'
   before_script:
     - 'ruby -e "puts %(Environment Variables:\n  * #{ENV.keys.grep(/PUPPET|SIMP|BEAKER|MATRIX/).map{|v| %(#{v} = #{ENV[v]})}.join(%(\n  * ))})"'
-    - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-1.16.0}")'
+    - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-1.17.0}")'
     - 'declare GEM_INSTALL_CMD=(gem install --no-document)'
     - 'declare BUNDLER_INSTALL_CMD=(bundle install --no-binstubs --jobs $(nproc) "${FLAGS[@]}")'
     - 'mkdir -p ${GEM_HOME} ${BUNDLER_BIN}'
@@ -130,12 +130,12 @@ variables:
   script:
     - 'bundle exec rake spec'
 
-.acceptance_base: &acceptance_base
+.acceptance_tests: &acceptance_tests
   stage: 'acceptance'
   tags: ['beaker']
   <<: *setup_bundler_env
 
-.compliance_base: &compliance_base
+.compliance_tests: &compliance_tests
   stage: 'compliance'
   tags: ['beaker']
   <<: *setup_bundler_env
@@ -177,6 +177,10 @@ pup6-lint:
 # Unit Tests
 #-----------------------------------------------------------------------
 
+pup4.10-unit:
+  <<: *pup_4_10
+  <<: *unit_tests
+
 pup5-unit:
   <<: *pup_5
   <<: *unit_tests
@@ -189,35 +193,9 @@ pup5.5.7-unit:
   <<: *pup_5_5_7
   <<: *unit_tests
 
-pup4.10-unit:
-  <<: *pup_4_10
-  <<: *unit_tests
-
 pup6-unit:
   <<: *pup_6
   <<: *unit_tests
 
-# Acceptance tests
+# No Acceptance Tests
 # ==============================================================================
-#acceptance-default:
-#  stage: acceptance
-#  tags:
-#    - beaker
-#  <<: *cache_bundler
-#  <<: *setup_bundler_env
-#  variables:
-#    PUPPET_VERSION: '4.10'
-#  script:
-#    - bundle exec rake beaker:suites[default]
-#
-#acceptance-fips-default:
-#  stage: acceptance
-#  tags:
-#    - beaker
-#  <<: *cache_bundler
-#  <<: *setup_bundler_env
-#  variables:
-#    PUPPET_VERSION: '4.10'
-#    BEAKER_fips: 'yes'
-#  script:
-#    - bundle exec rake beaker:suites[default]

@@ -5,7 +5,6 @@ gem_sources.each { |gem_source| source gem_source }
 group :test do
   gem 'rake'
   gem 'puppet', ENV.fetch('PUPPET_VERSION', '~> 5.5')
-  gem 'facter'
   gem 'rspec'
   gem 'rspec-puppet'
   gem 'hiera-puppet-helper'
@@ -20,6 +19,7 @@ end
 
 group :development do
   gem 'pry'
+  gem 'pry-byebug'
   gem 'pry-doc'
 end
 

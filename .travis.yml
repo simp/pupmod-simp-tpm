@@ -50,7 +50,7 @@ jobs:
     - stage: check
       name: 'Syntax, style, and validation checks'
       rvm: 2.4.4
-      env: PUPPET_VERSION="~> 5"
+      env: PUPPET_VERSION="~> 5.5"
       script:
         - bundle exec rake check:dot_underscore
         - bundle exec rake check:test_file
@@ -97,7 +97,7 @@ jobs:
         - bundle exec rake spec
 
     - stage: deploy
-      rvm: 2.4.1
+      rvm: 2.4.4
       script:
         - true
       before_deploy:
@@ -117,5 +117,4 @@ jobs:
             secure: "eiAI6Z+uuADFkYqh51agwR45cXa/pcBicHMx9Efq3sGy3iq/WkhVzjD/EO0ZRYqNhVgjUe/eyUzeYnTWsq78U495zOgd04mAGvYs+Ueq0fMpU3fllHNWg4xeaZ3DGpRMHAbeZ9nw3F3x3kRQCEsNghnu4FlEGHVxwmmbeK0JKCwwQ/7poS9IFmoRujK/pgEiSXsyTE6hOeEf8aiO7ghvL2I3qIGU7CApbiJkwNWsDCf4gDGWATVzVMtT1L85sXRtv5O0VtVogKMt0MBfts81hOVdhtvQgFIDrGX+URbuohKMrEhbPklHHyHgatC2fZHY1yy4N1hR51dyuUyd59sDCpFHlKUyC7AWUmO2fsTGHkzXnmRzTNJqlros+CcBi1D7rqRclfi66FIOfN1XAf1BRnoWwy7GTtqjQM1xmMGFAM32i7uDWT7hoL0QwfPeQY5nvEXEaWs0zIQEaoxyHLwJAN2PvyFvjWQMOu+boxEH5qRFV8XhBz5CLgRSr4iG0iXDHCNCZgBObrgKXM0H43AfnwACzxAClrYK+jRXZ1bz+eif5INrdWGkuRxq03HEvvsGP8LUwHo4voNrX8hD8KIymbqa7jnrutEdMQNR/Pm4MBZtEK26QScu7Kag8MEmyGDHamdic1uiwXYYyijfn9NQ5evzArY+5Gr9BNO2KVXz7KA="
           on:
             tags: true
-            rvm: 2.4.1
             condition: '($SKIP_FORGE_PUBLISH != true)'
