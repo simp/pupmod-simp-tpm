@@ -38,7 +38,8 @@ possible.
 
 ### This is a SIMP module
 
-This module is a component of the [System Integrity Management Platform](https://github.com/NationalSecurityAgency/SIMP), a compliance-management framework built on Puppet.
+This module is a component of the [System Integrity Management Platform](https://simp-project.com),
+a compliance-management framework built on Puppet.
 
 If you find any issues, they may be submitted to our [bug tracker](https://simp-project.atlassian.net/).
 
@@ -252,7 +253,7 @@ This module does not support clearing a previously owned TPM.
 
 ## Development
 
-Please read our [Contribution Guide](https://simp.readthedocs.io/en/master/contributors_guide/Contribution_Procedure.html)
+Please read our [Contribution Guide](https://simp.readthedocs.io/en/stable/contributors_guide/Contribution_Procedure.html)
 
 
 ### Acceptance tests
