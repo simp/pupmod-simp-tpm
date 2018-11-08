@@ -1,0 +1,23 @@
+---
+# SIMP infrastructure settings
+simp_options::trusted_nets:   ['192.168.122.0/24']
+
+compliance_markup::validate_profiles:
+  - 'disa_stig'
+  - 'nist_800_53'
+  - 'nist_800_53_rev4'
+
+# Needed for catalog inspection to ensure valid data
+compliance_markup::report_on_client: true
+compliance_markup::report_on_server: false
+compliance_markup::report_types:
+  - 'non_compliant'
+  - 'unknown_parameters'
+  - 'unknown_resources'
+
+# Ideally, this would be the same as the validation array but you may want to
+# do something different based on your test requirements
+compliance_markup::enforcement:
+  - 'disa_stig'
+  - 'nist_800_53'
+  - 'nist_800_53_rev4'

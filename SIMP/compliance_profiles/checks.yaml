@@ -1,0 +1,51 @@
+---
+version: 2.0.0
+checks:
+  oval:com.puppet.forge.simp.tpm.ima.enable:
+    settings:
+      parameter: tpm::ima::enable
+      value: true
+    type: puppet-class-parameter
+    controls:
+      nist_800_53_rev4:AC-25: true
+      nist_800_53_rev4:SI-7:9: true
+    identifiers:
+      nist_800_53_rev4:
+      - AC-25
+      - SI-7:9
+  oval:com.puppet.forge.simp.tpm.ima.ima_audit:
+    settings:
+      parameter: tpm::ima::ima_audit
+      value: true
+    type: puppet-class-parameter
+    controls:
+      nist_800_53_rev4:AC-25: true
+      nist_800_53_rev4:SI-7:9: true
+    identifiers:
+      nist_800_53_rev4:
+      - AC-25
+      - SI-7:9
+  oval:com.puppet.forge.simp.tpm.ima.ima_tcb:
+    settings:
+      parameter: tpm::ima::ima_tcb
+      value: true
+    type: puppet-class-parameter
+    controls:
+      nist_800_53_rev4:AC-25: true
+      nist_800_53_rev4:SI-7:9: true
+    identifiers:
+      nist_800_53_rev4:
+      - AC-25
+      - SI-7:9
+  oval:com.puppet.forge.simp.tpm.ima.mount_dir:
+    settings:
+      parameter: tpm::ima::mount_dir
+      value: "/sys/kernel/security"
+    type: puppet-class-parameter
+    controls:
+      nist_800_53_rev4:AC-25: true
+      nist_800_53_rev4:SI-7:9: true
+    identifiers:
+      nist_800_53_rev4:
+      - AC-25
+      - SI-7:9
