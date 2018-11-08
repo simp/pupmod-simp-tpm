@@ -1,3 +1,10 @@
+<%
+  if ENV['BEAKER_HYPERVISOR']
+    hypervisor = ENV['BEAKER_HYPERVISOR']
+  else
+    hypervisor = 'vagrant'
+  end
+-%>
 HOSTS:
   el7:
     roles:
@@ -5,13 +12,13 @@ HOSTS:
       - default
     platform:   el-7-x86_64
     box:        centos/7
-    hypervisor: vagrant
+    hypervisor: <%= hypervisor %>
   el6:
     roles:
       - server
     platform:   el-6-x86_64
     box:        centos/6
-    hypervisor: vagrant
+    hypervisor: <%= hypervisor %>
 
 CONFIG:
   log_level: verbose
@@ -20,4 +27,7 @@ CONFIG:
   synced_folder: disabled
   ssh:
     timeout: 2
+<% if ENV['BEAKER_PUPPET_COLLECTION'] -%>
+  puppet_collection: <%= ENV['BEAKER_PUPPET_COLLECTION'] %>
+<% end -%>
 # vb_gui: true

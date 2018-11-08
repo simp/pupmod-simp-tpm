@@ -38,7 +38,7 @@ end
 
 if ENV['MOCK_TIMEOUT'] == 'yes'
   sleep 30
-  tpmtoken_init
+  exit tpmtoken_init
 else
-  tpmtoken_init
+  exit tpmtoken_init
 end

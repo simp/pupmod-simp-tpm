@@ -32,7 +32,7 @@ end
 
 if ENV['MOCK_TIMEOUT'] == 'yes'
   sleep 30
-  return 255 # tpm_takeownership
+  exit 255 # tpm_takeownership
 else
-  tpm_takeownership
+  exit tpm_takeownership
 end
