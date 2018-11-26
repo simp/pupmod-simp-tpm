@@ -24,7 +24,7 @@ stages:
   - check
   - spec
   - name: deploy
-    if: 'fork = false AND tag = true'
+    if: 'tag IS present'
 
 bundler_args: --without development system_tests --path .vendor
 
@@ -50,7 +50,7 @@ jobs:
     - stage: check
       name: 'Syntax, style, and validation checks'
       rvm: 2.4.4
-      env: PUPPET_VERSION="~> 5.5"
+      env: PUPPET_VERSION="~> 5"
       script:
         - bundle exec rake check:dot_underscore
         - bundle exec rake check:test_file
