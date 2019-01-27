@@ -1,16 +1,14 @@
 # The testing matrix considers ruby/puppet versions supported by SIMP and PE:
 #
-# https://puppet.com/docs/pe/2018.1/component_versions_in_recent_pe_releases.html
+# https://puppet.com/docs/pe/2019.0/component_versions_in_recent_pe_releases.html
 # https://puppet.com/misc/puppet-enterprise-lifecycle
 # https://puppet.com/docs/pe/2018.1/overview/getting_support_for_pe.html
 # ------------------------------------------------------------------------------
 # Release       Puppet   Ruby   EOL
 # SIMP 6.1      4.10.6   2.1.9  TBD
 # SIMP 6.2      4.10.12  2.1.9  TBD
-# PE 2016.4.15  4.10.12  2.1.9  2018-12 (LTS)
-# PE 2017.3.10  5.3.8    2.4.4  2018-12 (STS)
 # SIMP 6.3      5.5.7    2.4.4  TBD***
-# PE 2018.1     5.5.6    2.4.4  2020-05 (LTS)***
+# PE 2018.1     5.5.8    2.4.4  2020-05 (LTS)***
 # PE 2019.0     6.0      2.5.1  2019-08-31^^^
 #
 # *** = Modules created for SIMP 6.3+ are not required to support Puppet < 5.5
@@ -22,8 +20,6 @@ stages:
   - 'acceptance'
   - 'compliance'
   - 'deployment'
-
-image: 'ruby:2.4'
 
 variables:
   PUPPET_VERSION:    'UNDEFINED' # <- Matrixed jobs MUST override this (or fail)
@@ -50,8 +46,8 @@ variables:
     paths:
       - '.vendor'
   before_script:
-    - 'ruby -e "puts %(Environment Variables:\n  * #{ENV.keys.grep(/PUPPET|SIMP|BEAKER|MATRIX/).map{|v| %(#{v} = #{ENV[v]})}.join(%(\n  * ))})"'
-    - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-1.17.0}")'
+    - 'ruby -e "puts %(\n\n), %q(=)*80, %(\nSIMP-relevant Environment Variables:\n\n#{e=ENV.keys.grep(/^PUPPET|^SIMP|^BEAKER|MATRIX/); pad=e.map{|x| x.size}.max+1; e.map{|v| %(    * #{%(#{v}:).ljust(pad)} #{39.chr + ENV[v] + 39.chr}\n)}.join}\n),  %q(=)*80, %(\n\n)"'
+    - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-1.17.1}")'
     - 'declare GEM_INSTALL_CMD=(gem install --no-document)'
     - 'declare BUNDLER_INSTALL_CMD=(bundle install --no-binstubs --jobs $(nproc) "${FLAGS[@]}")'
     - 'mkdir -p ${GEM_HOME} ${BUNDLER_BIN}'
@@ -70,7 +66,7 @@ variables:
 #-----------------------------------------------------------------------
 
 .pup_4: &pup_4
-  image: 'ruby:2.4'
+  image: 'ruby:2.1'
   variables:
     PUPPET_VERSION: '~> 4.0'
     MATRIX_RUBY_VERSION: '2.1'
@@ -85,13 +81,6 @@ variables:
   image: 'ruby:2.4'
   variables:
     PUPPET_VERSION: '~> 5.0'
-    BEAKER_PUPPET_COLLECTION: 'puppet5'
-    MATRIX_RUBY_VERSION: '2.4'
-
-.pup_5_3: &pup_5_3
-  image: 'ruby:2.4'
-  variables:
-    PUPPET_VERSION: '~> 5.3.0'
     BEAKER_PUPPET_COLLECTION: 'puppet5'
     MATRIX_RUBY_VERSION: '2.4'
 
@@ -130,12 +119,12 @@ variables:
   script:
     - 'bundle exec rake spec'
 
-.acceptance_tests: &acceptance_tests
+.acceptance_base: &acceptance_base
   stage: 'acceptance'
   tags: ['beaker']
   <<: *setup_bundler_env
 
-.compliance_tests: &compliance_tests
+.compliance_base: &compliance_base
   stage: 'compliance'
   tags: ['beaker']
   <<: *setup_bundler_env
@@ -177,25 +166,19 @@ pup6-lint:
 # Unit Tests
 #-----------------------------------------------------------------------
 
-pup4.10-unit:
-  <<: *pup_4_10
-  <<: *unit_tests
-
 pup5-unit:
   <<: *pup_5
-  <<: *unit_tests
-
-pup5.3-unit:
-  <<: *pup_5_3
   <<: *unit_tests
 
 pup5.5.7-unit:
   <<: *pup_5_5_7
   <<: *unit_tests
 
+pup4.10-unit:
+  <<: *pup_4_10
+  <<: *unit_tests
+
 pup6-unit:
   <<: *pup_6
   <<: *unit_tests
 
-# No Acceptance Tests
-# ==============================================================================
