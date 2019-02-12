@@ -19,7 +19,7 @@
 #
 class tpm::ownership (
   Boolean                                $owned          = true,
-  Variant[Enum['well-known'],String[20]] $owner_pass     = passgen( "${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
+  Variant[Enum['well-known'],String[20]] $owner_pass     = simplib::passgen( "${facts['fqdn']}_tpm0_owner_pass", { 'length' => 20 } ),
   Optional[String]                       $srk_pass       = undef,
   Boolean                                $advanced_facts = false
 ) {

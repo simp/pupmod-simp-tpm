@@ -8,8 +8,8 @@
 # @param user_pin 4-8 character password used for the user pin.
 #
 class tpm::pkcs11 (
-  String $so_pin   = passgen( "${facts['fqdn']}_pkcs_so_pin", { 'length' => 8 } ),
-  String $user_pin = passgen( "${facts['fqdn']}_pkcs_user_pin", { 'length' => 8 } ),
+  String $so_pin   = simplib::passgen( "${facts['fqdn']}_pkcs_so_pin", { 'length' => 8 } ),
+  String $user_pin = simplib::passgen( "${facts['fqdn']}_pkcs_user_pin", { 'length' => 8 } ),
 ){
   ##################################################################################################################
   # Here's a nice doc on how to set up the PKCS #11 interface

@@ -1,3 +1,7 @@
+* Tue Feb 12 2019 Liz Nemsick <lnemsick.simp@gmail.com> - 3.1.1-0
+- Use simplib::passgen() in lieu of passgen(), a deprecated simplib
+  Puppet 3 function.
+
 * Thu Sep 13 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 3.1.0-0
 - Added support for tboot V1.9.6 and removed support for tboot.1.9.4.
   Use pupmod-simp-tpm 1.1.0 if tboot v1.9.4 is required.
