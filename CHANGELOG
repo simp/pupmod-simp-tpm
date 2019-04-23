@@ -1,3 +1,6 @@
+* Tue Apr 23 2019 Joseph Sharkey <shark.bruhaha@gmail.com> - 3.1.2-0
+- Updated .travis.yml, .gitlab-ci.yml, .ruby-version
+
 * Tue Feb 12 2019 Liz Nemsick <lnemsick.simp@gmail.com> - 3.1.1-0
 - Use simplib::passgen() in lieu of passgen(), a deprecated simplib
   Puppet 3 function.
