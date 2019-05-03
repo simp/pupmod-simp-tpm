@@ -62,6 +62,13 @@ variables:
 # Puppet Versions
 #-----------------------------------------------------------------------
 
+.pup_5: &pup_5
+  image: 'ruby:2.4.5'
+  variables:
+    PUPPET_VERSION: '~> 5.0'
+    BEAKER_PUPPET_COLLECTION: 'puppet5'
+    MATRIX_RUBY_VERSION: '2.4.5'
+
 .pup_5_5_10: &pup_5_5_10
   image: 'ruby:2.4.5'
   variables:
@@ -137,6 +144,10 @@ pup6-lint:
 
 # Unit Tests
 #-----------------------------------------------------------------------
+
+pup5-unit:
+  <<: *pup_5
+  <<: *unit_tests
 
 pup5.5.10-unit:
   <<: *pup_5_5_10

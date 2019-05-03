@@ -44,7 +44,7 @@ jobs:
     - stage: check
       name: 'Syntax, style, and validation checks'
       rvm: 2.4.5
-      env: PUPPET_VERSION="~> 5.5"
+      env: PUPPET_VERSION="~> 5"
       script:
         - bundle exec rake check:dot_underscore
         - bundle exec rake check:test_file
@@ -56,8 +56,8 @@ jobs:
         - bundle exec puppet module build
 
     - stage: spec
-      rvm: 2.4.5
       name: 'Puppet 5.5.10 (SIMP 6.3, PE 2018.1)'
+      rvm: 2.4.5
       env: PUPPET_VERSION="5.5.10"
       script:
         - bundle exec rake spec_parallel
