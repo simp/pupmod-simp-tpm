@@ -7,10 +7,11 @@ checks:
       value: true
     type: puppet-class-parameter
     controls:
-      nist_800_53_rev4:AC-25: true
-      nist_800_53_rev4:SI-7:9: true
+      nist_800_53:rev4: true
+      nist_800_53:rev4:AC-25: true
+      nist_800_53:rev4:SI-7:9: true
     identifiers:
-      nist_800_53_rev4:
+      nist_800_53:rev4:
       - AC-25
       - SI-7:9
   oval:com.puppet.forge.simp.tpm.ima.ima_audit:
@@ -19,10 +20,11 @@ checks:
       value: true
     type: puppet-class-parameter
     controls:
-      nist_800_53_rev4:AC-25: true
-      nist_800_53_rev4:SI-7:9: true
+      nist_800_53:rev4: true
+      nist_800_53:rev4:AC-25: true
+      nist_800_53:rev4:SI-7:9: true
     identifiers:
-      nist_800_53_rev4:
+      nist_800_53:rev4:
       - AC-25
       - SI-7:9
   oval:com.puppet.forge.simp.tpm.ima.ima_tcb:
@@ -31,10 +33,11 @@ checks:
       value: true
     type: puppet-class-parameter
     controls:
-      nist_800_53_rev4:AC-25: true
-      nist_800_53_rev4:SI-7:9: true
+      nist_800_53:rev4: true
+      nist_800_53:rev4:AC-25: true
+      nist_800_53:rev4:SI-7:9: true
     identifiers:
-      nist_800_53_rev4:
+      nist_800_53:rev4:
       - AC-25
       - SI-7:9
   oval:com.puppet.forge.simp.tpm.ima.mount_dir:
@@ -43,9 +46,10 @@ checks:
       value: "/sys/kernel/security"
     type: puppet-class-parameter
     controls:
-      nist_800_53_rev4:AC-25: true
-      nist_800_53_rev4:SI-7:9: true
+      nist_800_53:rev4: true
+      nist_800_53:rev4:AC-25: true
+      nist_800_53:rev4:SI-7:9: true
     identifiers:
-      nist_800_53_rev4:
+      nist_800_53:rev4:
       - AC-25
       - SI-7:9
