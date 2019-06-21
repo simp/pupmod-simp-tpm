@@ -4,9 +4,7 @@ fixtures:
     augeas_core: https://github.com/puppetlabs/puppetlabs-augeas_core
     augeasproviders_core: https://github.com/simp/augeasproviders_core
     augeasproviders_grub: https://github.com/simp/augeasproviders_grub
-    compliance_markup:
-      repo: "https://github.com/simp/pupmod-simp-compliance_markup"
-      branch: "testing_hotfix_06062019"
+    compliance_markup: https://github.com/simp/pupmod-simp-compliance_markup
     concat:
       # master is beyond 4.1.1, but has breaking changes to
       # how fragments are ordered (MODULES-6625)
