@@ -9,7 +9,8 @@ FileUtils.rm_rf(v1_profiles) if File.directory?(v1_profiles)
 describe 'compliance_markup', type: :class do
 
   compliance_profiles = [
-    'nist_800_53_rev4'
+    #'disa_stig',
+    #'nist_800_53:rev4'
   ]
 
   # A list of classes that we expect to be included for compliance
