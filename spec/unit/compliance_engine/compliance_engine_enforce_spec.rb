@@ -9,50 +9,60 @@ FileUtils.rm_rf(v1_profiles) if File.directory?(v1_profiles)
 describe 'compliance_markup', type: :class do
 
   compliance_profiles = [
-    'disa_stig',
     'nist_800_53_rev4'
   ]
 
-  compliance_profiles.each do |target_profile|
-    # A list of classes that we expect to be included for compliance
-    #
-    # This needs to be well defined since we can also manipulate defined type
-    # defaults
-    expected_classes = [
-      'tpm',
-      'simp_options'
-    ]
+  # A list of classes that we expect to be included for compliance
+  #
+  # This needs to be well defined since we can also manipulate defined type
+  # defaults
+  expected_classes = [
+    'tpm',
+  ]
 
-    allowed_failures = {
-      'documented_missing_parameters' => [],
-      'documented_missing_resources' => []
-    }
+  allowed_failures = {
+    'documented_missing_parameters' => [],
+    'documented_missing_resources' => []
+  }
 
-    on_supported_os.each do |os, os_facts|
-      context "on #{os}" do
-        let(:hieradata){ "#{target_profile}-compliance-engine" }
-        let(:facts){ os_facts }
-
+  on_supported_os.each do |os, os_facts|
+    context "on #{os}" do
+      compliance_profiles.each do |target_profile|
         context "with compliance profile '#{target_profile}'" do
-          let(:pre_condition) {
-            %(#{expected_classes.map{|c| %{include #{c}}}.join("\n")})
+          let(:facts){
+            os_facts.merge({
+              :target_compliance_profile => target_profile
+            })
           }
+
+          let(:pre_condition) {%(
+            #{expected_classes.map{|c| %{include #{c}}}.join("\n")}
+          )}
+
+          let(:hieradata){ target_profile }
 
           it { is_expected.to compile }
 
           let(:compliance_report) {
-            JSON.load(
-              catalogue.resource("File[#{facts[:puppet_vardir]}/compliance_report.json]")[:content]
-            )
+            @compliance_report ||= JSON.load(
+                catalogue.resource("File[#{facts[:puppet_vardir]}/compliance_report.json]")[:content]
+              )
+
+            @compliance_report
           }
 
-          let(:compliance_profile_data) { compliance_report['compliance_profiles'][target_profile] }
+          let(:compliance_profile_data) {
+            @compliance_profile_data ||= compliance_report['compliance_profiles'][target_profile]
+
+            @compliance_profile_data
+          }
 
           it 'should have a compliance profile report' do
             expect(compliance_profile_data).to_not be_nil
           end
 
           it 'should have a 100% compliant report' do
+            puts compliance_profile_data
             expect(compliance_profile_data['summary']['percent_compliant']).to eq(100)
           end
 
