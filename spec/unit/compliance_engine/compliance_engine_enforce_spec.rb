@@ -20,6 +20,7 @@ describe 'compliance_markup', type: :class do
     # defaults
     expected_classes = [
       'tpm',
+      'simp_options'
     ]
 
     allowed_failures = {
@@ -32,7 +33,6 @@ describe 'compliance_markup', type: :class do
         let(:hieradata){ "#{target_profile}-compliance-engine" }
         let(:facts){ os_facts }
 
-        #compliance_profiles.each do |target_profile|
         context "with compliance profile '#{target_profile}'" do
           let(:pre_condition) {
             %(#{expected_classes.map{|c| %{include #{c}}}.join("\n")})

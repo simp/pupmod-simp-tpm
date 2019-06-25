@@ -14,3 +14,9 @@ compliance_markup::report_types:
 # do something different based on your test requirements
 compliance_markup::enforcement:
   - 'nist_800_53_rev4'
+simp_options::puppet::server: '10.0.2.15'
+simp_options::puppet::ca: '10.0.2.15'
+simp_options::ldap::bind_pw: 'B1nd-P@$$w0Rd1!'
+simp_options::ldap::bind_hash: '{SSHA}bindhashbindhashbindhashbindhash'
+simp_options::ldap::sync_pw: 'SynC-P@$$w0rd1!'
+simp_options::ldap::sync_hash: '{SSHA}synchashsynchashsynchashsynchash'

@@ -12,6 +12,7 @@ fixtures:
       ref: 4.1.1
     ima: https://github.com/simp/pupmod-simp-ima
     rsync: https://github.com/simp/pupmod-simp-rsync
+    simp_options: https://github.com/simp/pupmod-simp-simp_options
     simplib: https://github.com/simp/pupmod-simp-simplib
     stdlib: https://github.com/simp/puppetlabs-stdlib
     yum: https://github.com/simp/puppet-yum
