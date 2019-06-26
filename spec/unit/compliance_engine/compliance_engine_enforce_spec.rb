@@ -23,7 +23,7 @@ describe 'compliance_markup', type: :class do
 
   allowed_failures = {
     'documented_missing_parameters' => [],
-    'documented_missing_resources' => []
+    'documented_missing_resources' => [] 
   }
 
   on_supported_os.each do |os, os_facts|
@@ -40,7 +40,7 @@ describe 'compliance_markup', type: :class do
             #{expected_classes.map{|c| %{include #{c}}}.join("\n")}
           )}
 
-          let(:hieradata){ target_profile }
+          let(:hieradata){ 'compliance-engine' }
 
           it { is_expected.to compile }
 
@@ -63,7 +63,6 @@ describe 'compliance_markup', type: :class do
           end
 
           it 'should have a 100% compliant report' do
-            puts compliance_profile_data
             expect(compliance_profile_data['summary']['percent_compliant']).to eq(100)
           end
 
