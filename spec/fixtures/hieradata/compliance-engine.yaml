@@ -22,6 +22,3 @@ simp_options::puppet::server: 'puppet.foo.bar'
 simp_options::puppet::ca: 'puppet.foo.bar'
 simp_options::dns::servers :
   - 1.2.3.4
-
-sssd::domains :
-  - 'LOCAL'
