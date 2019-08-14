@@ -5,14 +5,11 @@
 # https://puppet.com/docs/pe/2018.1/overview/getting_support_for_pe.html
 # ------------------------------------------------------------------------------
 # Release       Puppet   Ruby   EOL
-# SIMP 6.1      4.10.6   2.1.9  TBD
-# SIMP 6.2      4.10.12  2.1.9  TBD
-# SIMP 6.3      5.5.7    2.4.4  TBD***
-# PE 2018.1     5.5.8    2.4.4  2020-05 (LTS)***
+# SIMP 6.3      5.5.10   2.4.5  TBD***
+# PE 2018.1     5.5.8    2.4.5  2020-05 (LTS)***
 # PE 2019.0     6.0      2.5.1  2019-08-31^^^
 #
 # *** = Modules created for SIMP 6.3+ are not required to support Puppet < 5.5
-# ^^^ = SIMP doesn't support 6 yet; tests are info-only and allowed to fail
 ---
 stages:
   - 'sanity'
@@ -65,18 +62,6 @@ variables:
 # Puppet Versions
 #-----------------------------------------------------------------------
 
-.pup_4: &pup_4
-  image: 'ruby:2.1'
-  variables:
-    PUPPET_VERSION: '~> 4.0'
-    MATRIX_RUBY_VERSION: '2.1'
-
-.pup_4_10: &pup_4_10
-  image: 'ruby:2.1'
-  variables:
-    PUPPET_VERSION: '~> 4.10.4'
-    MATRIX_RUBY_VERSION: '2.1'
-
 .pup_5: &pup_5
   image: 'ruby:2.4'
   variables:
@@ -84,21 +69,19 @@ variables:
     BEAKER_PUPPET_COLLECTION: 'puppet5'
     MATRIX_RUBY_VERSION: '2.4'
 
-.pup_5_5_7: &pup_5_5_7
+.pup_5_5_10: &pup_5_5_10
   image: 'ruby:2.4'
   variables:
-    PUPPET_VERSION: '5.5.7'
+    PUPPET_VERSION: '5.5.10'
     BEAKER_PUPPET_COLLECTION: 'puppet5'
     MATRIX_RUBY_VERSION: '2.4'
 
 .pup_6: &pup_6
-  allow_failure: true
   image: 'ruby:2.5'
   variables:
     PUPPET_VERSION: '~> 6.0'
     BEAKER_PUPPET_COLLECTION: 'puppet6'
     MATRIX_RUBY_VERSION: '2.5'
-
 
 # Testing Environments
 #-----------------------------------------------------------------------
@@ -151,10 +134,6 @@ sanity_checks:
 # Linting
 #-----------------------------------------------------------------------
 
-pup4-lint:
-  <<: *pup_4
-  <<: *lint_tests
-
 pup5-lint:
   <<: *pup_5
   <<: *lint_tests
@@ -170,15 +149,14 @@ pup5-unit:
   <<: *pup_5
   <<: *unit_tests
 
-pup5.5.7-unit:
-  <<: *pup_5_5_7
-  <<: *unit_tests
-
-pup4.10-unit:
-  <<: *pup_4_10
+pup5.5.10-unit:
+  <<: *pup_5_5_10
   <<: *unit_tests
 
 pup6-unit:
   <<: *pup_6
   <<: *unit_tests
 
+# Acceptance tests
+# ==============================================================================
+# None
