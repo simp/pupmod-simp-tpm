@@ -1,4 +1,5 @@
-# Install the sinit for your platform
+# @summary Install the sinit for your platform
+#
 # This class is controlled by `tpm::tboot`
 #
 class tpm::tboot::sinit {
@@ -17,6 +18,8 @@ class tpm::tboot::sinit {
     }
 
     if $sinit_source == 'rsync' {
+      simplib::assert_optional_dependency($module_name, 'simp/rsync')
+
       rsync { 'tboot':
         source  => $rsync_source,
         target  => '/root/txt/sinit',
@@ -32,6 +35,5 @@ class tpm::tboot::sinit {
         require => File['/root/txt/sinit']
       }
     }
-
   }
 }

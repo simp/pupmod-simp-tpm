@@ -19,7 +19,6 @@ end
 
 group :development do
   gem 'pry'
-  gem 'pry-byebug'
   gem 'pry-doc'
 end
 

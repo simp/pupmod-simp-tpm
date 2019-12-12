@@ -1,4 +1,5 @@
-# Lock the kernel to avoid automatically invalidating the launch policy
+# @summary Lock the kernel to avoid automatically invalidating the launch policy
+#
 # This class is controlled by `tpm::tboot`
 #
 class tpm::tboot::lock_kernel {
@@ -16,5 +17,4 @@ class tpm::tboot::lock_kernel {
       ensure => $_ensure
     }
   }
-
 }

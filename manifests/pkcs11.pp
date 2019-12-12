@@ -1,11 +1,13 @@
-# Manage the tpm-enabled PKCS #11 interface
+# @summary Manage the tpm-enabled PKCS #11 interface
 #
-# If the SO_PIN_LOCKED flag gets thrown, you will have to reset your interface
-#   by deleting the /var/lib/opencryptoki/tpm/root/NVTOK.DAT file.
+# If the `SO_PIN_LOCKED` flag gets thrown, you will have to reset your interface
+# by deleting the /var/lib/opencryptoki/tpm/root/NVTOK.DAT file.
 #
-# @param so_pin 4-8 character password used for the Security Officer pin.
+# @param so_pin
+#   4-8 character password used for the Security Officer pin.
 #
-# @param user_pin 4-8 character password used for the user pin.
+# @param user_pin
+#   4-8 character password used for the user pin.
 #
 class tpm::pkcs11 (
   String $so_pin   = simplib::passgen( "${facts['fqdn']}_pkcs_so_pin", { 'length' => 8 } ),
@@ -30,5 +32,4 @@ class tpm::pkcs11 (
     so_pin   => '87654321',
     user_pin => '87654321'
   }
-
 }

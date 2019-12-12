@@ -5,7 +5,7 @@
 # https://puppet.com/docs/pe/2018.1/overview/getting_support_for_pe.html
 # ------------------------------------------------------------------------------
 # Release       Puppet   Ruby   EOL
-# SIMP 6.3      5.5.10   2.4.5  TBD***
+# SIMP 6.3      5.5.16   2.4.5  TBD***
 # PE 2018.1     5.5.8    2.4.5  2020-05 (LTS)***
 # PE 2019.0     6.0      2.5.1  2019-08-31^^^
 #
@@ -69,10 +69,10 @@ variables:
     BEAKER_PUPPET_COLLECTION: 'puppet5'
     MATRIX_RUBY_VERSION: '2.4'
 
-.pup_5_5_10: &pup_5_5_10
+.pup_5_5_16: &pup_5_5_16
   image: 'ruby:2.4'
   variables:
-    PUPPET_VERSION: '5.5.10'
+    PUPPET_VERSION: '5.5.16'
     BEAKER_PUPPET_COLLECTION: 'puppet5'
     MATRIX_RUBY_VERSION: '2.4'
 
@@ -149,8 +149,8 @@ pup5-unit:
   <<: *pup_5
   <<: *unit_tests
 
-pup5.5.10-unit:
-  <<: *pup_5_5_10
+pup5.5.16-unit:
+  <<: *pup_5_5_16
   <<: *unit_tests
 
 pup6-unit:
