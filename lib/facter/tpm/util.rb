@@ -21,7 +21,10 @@ module Facter
       private
 
       # Get the pubek from tpm_getpubek when the TPM is owned
-      # @param [String] the owner password of the TPM
+      #
+      # @param owner_pass [String] the owner password of the TPM
+      # @param cmd [String] the command path to tpm_getpubek
+      #
       # @return [String] the output of the command, or nil if it times out
       #
       def get_pubek_owned(owner_pass, cmd = '/sbin/tpm_getpubek')
@@ -158,7 +161,8 @@ module Facter
       #   when the TPM is owned, the command asks for a password. We use an
       #   an interactive PTY to get around this restriction.
       #
-      # @param [Boolean] whether or not the TPM is owned
+      # @param status [Boolean] whether or not the TPM is owned
+      #
       # @return [Hash] the TPM public key, including the raw key in `['raw']`
       #
       def pubek(status)

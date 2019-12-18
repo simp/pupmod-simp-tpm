@@ -1,4 +1,5 @@
-# Generate and install policy
+# @summary Generate and install policy
+#
 # This class is controlled by `tpm::tboot`
 #
 class tpm::tboot::policy {

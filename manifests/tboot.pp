@@ -1,28 +1,71 @@
-# Create a launch policy, modify grub, and enable tboot
+# @summary Create a launch policy, modify grub, and enable tboot.
 #
 # This version of tpm::tboot will work only with tboot versions 1.9.6 or
 # later.  To use an earlier version on tboot use pupmod-simp-tpm version 1.1.0.
 #
-# @param purge_boot_entries Remove other, nontrusted boot entries from Grub
-# @param lock_kernel_packages Lock kernel related packages in YUM, to avoid accidentally invalidating the launch policy
-# @param create_policy If true the verified launch policy  and launch control
-#   policies will be updated using the scripts identified by parameter policy_script.
-# @param sinit_name Name of the SINIT policy file, usually ending in `*.BIN`
-# @param sinit_source Puppet `file` resouce source arrtibute for the SINIT binary
-# @param kernel_packages_to_lock List of kernel related packages to lock
-#   @example The binary was manually copied over to `/root/BIN`, so this entry was set to `file:///root/BIN`
-# @param rsync_source Rsync location for the SINIT binary
-# @param rsync_server Rsync server. This param has a smart default of `simp_options::rsync::server`
-# @param rsync_timeout Rsync timeout. This param has a smart default of `simp_options::rsync::timeout`
-# @param owner_password The TPM owner password
-# @param tboot_boot_options Kernel parameters for the tboot kernel
-#   `min_ram=0x2000000` is required on systems with more than 4GB of memory
+# @param purge_boot_entries
+#   Remove other, nontrusted boot entries from Grub
+#
+# @param lock_kernel_packages
+#   Lock kernel related packages in YUM, to avoid accidentally invalidating the
+#   launch policy
+#
+# @param create_policy
+#   The verified launch policy and launch control policies will be updated using
+#   the scripts identified by parameter policy_script.
+#
+# @param sinit_name
+#   Name of the SINIT policy file, usually ending in `*.BIN`
+#
+# @param sinit_source
+#   Puppet `file` resouce source attribute for the SINIT binary
+#
+# @param tboot_version
+#   The verson of tboot installed on the remote system
+#
+# @param kernel_packages_to_lock
+#   List of kernel related packages to lock
+#
+#   @example
+#     The binary was manually copied over to `/root/BIN`, so this entry was set
+#     to `file:///root/BIN`
+#
+# @param rsync_source
+#   Rsync location for the SINIT binary
+#
+# @param rsync_server
+#   Rsync server to use for pulling the sinit images
+#
+# @param rsync_timeout
+#   Rsync timeout
+#
+# @param owner_password
+#   The TPM owner password
+#
+# @param tboot_boot_options
+#   Kernel parameters for the tboot kernel `min_ram=0x2000000` is required on
+#   systems with more than 4GB of memory
+#
 #   @see the tboot documentation in `/usr/share/simp/tboot-*/README`
-# @param additional_boot_options Regular Linux kernel parameters, specific to tboot sessions
-#   `intel_iommu=on` is the default here to force the kernel to load VT-d
-# @param policy_script The script to generate the tboot policy. This should not be changed
-# @param policy_script_source Where to find the script. This should also not be changed
-# @param package_ensure How to ensure the `tboot` package will be managed
+#
+# @param additional_boot_options
+#   Regular Linux kernel parameters, specific to tboot sessions `intel_iommu=on`
+#   is the default here to force the kernel to load VT-d
+#
+# @param policy_script
+#   The script to generate the tboot policy. This should not be changed
+#
+# @param policy_script_source
+#   Where to find the script. This should also not be changed
+#
+# @param update_script
+#   The script to use for updating the tboot policy. This should not be changed.
+#
+# @param update_script_source
+#   Where to find the update script. This should not be changed.
+#
+# @param package_ensure
+#   How to ensure the `tboot` package will be managed
 #
 class tpm::tboot (
   Boolean              $purge_boot_entries      = false,

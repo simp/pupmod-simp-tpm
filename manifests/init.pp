@@ -13,6 +13,8 @@ class tpm (
   Boolean $ima            = false,
   Boolean $take_ownership = false
 ){
+  simplib::assert_metadata($module_name)
+
   # Check if the system has a TPM (which also checks that it
   # is a physical machine, and if so install tools and setup
   # tcsd service - uses str2bool because facts return as strings :(
@@ -27,7 +29,7 @@ class tpm (
     }
 
     if $take_ownership {
-      include '::tpm::ownership'
+      include 'tpm::ownership'
     }
   }
 
@@ -35,6 +37,6 @@ class tpm (
   # dependency in the metadata.json.
   if $ima {
     warning ('tpm::ima is deprecated and will be removed in a future release.  Use the ima module instead.')
-    include '::ima'
+    include 'ima'
   }
 }

@@ -1,4 +1,5 @@
-# Manage grub2 configuration
+# @summary Manage grub2 configuration
+#
 # This class is controlled by `tpm::tboot`
 #
 class tpm::tboot::grub::grub2 {

@@ -238,9 +238,7 @@ And reboot!
 
 ## Reference
 
-Please refer to the inline documentation within each source file, or to the
-module's generated YARD documentation for reference material.
-
+See [REFERENCE.md](REFERENCE.md) for API details.
 
 ## Limitations
 

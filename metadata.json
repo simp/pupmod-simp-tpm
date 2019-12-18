@@ -22,11 +22,7 @@
     },
     {
       "name": "simp/simplib",
-      "version_requirement": ">= 3.5.0 < 4.0.0"
-    },
-    {
-      "name": "simp/rsync",
-      "version_requirement": ">= 6.0.0 < 7.0.0"
+      "version_requirement": ">= 3.5.0 < 5.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
@@ -37,6 +33,14 @@
       "version_requirement": ">= 2.0.0 < 5.0.0"
     }
   ],
+  "simp": {
+    "optional_dependencies": [
+      {
+        "name": "simp/rsync",
+        "version_requirement": ">= 6.0.0 < 7.0.0"
+      }
+    ]
+  },
   "operatingsystem_support": [
     {
       "operatingsystem": "CentOS",

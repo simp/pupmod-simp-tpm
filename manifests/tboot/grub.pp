@@ -1,4 +1,5 @@
-# Configure grub
+# @summary Configure grub
+#
 # This class is controlled by `tpm::tboot`
 #
 class tpm::tboot::grub {
