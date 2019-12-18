@@ -18,7 +18,7 @@
 
 **Resource types**
 
-* [`tpm_ownership`](#tpm_ownership): A type to manage ownership of a TPM. `owner_pass` is required, while `srk-pass` is only necessary if you aren't using Trusted Boot or the PKC
+* [`tpm_ownership`](#tpm_ownership): A type to manage ownership of a TPM. `owner_pass` is required, while `srk_pass` is only necessary if you aren't using Trusted Boot or the PKC
 * [`tpmtoken`](#tpmtoken): This type will manage the PKCS #11 interface provided by opencryptoki, and backed by the TPM.  Example:   include 'tpm'    tpmtoken { 'tpmtok
 
 ## Classes
@@ -169,7 +169,7 @@ Default value: `undef`
 
 Data type: `Optional[String]`
 
-Puppet `file` resouce source arrtibute for the SINIT binary
+Puppet `file` resouce source attribute for the SINIT binary
 
 Default value: simplib::lookup('simp_options::rsync', { 'default_value' => undef })
 
@@ -317,8 +317,9 @@ This class is controlled by `tpm::tboot`
 ### tpm_ownership
 
 A type to manage ownership of a TPM. `owner_pass` is required, while
-`srk-pass` is only necessary if you aren't using Trusted Boot or the PKCS#11
-interface. The SRK password must be  to be null in order to use those features.
+`srk_pass` is only necessary if you aren't using Trusted Boot or the PKCS#11
+interface. The SRK (Storage Root Key) password must be  to be null in order to
+use those features.
 
 If you need to use a 'well-known' password, make the password equal to the
 string 'well-known'. The provider will then use the `-z` or `-y` option when

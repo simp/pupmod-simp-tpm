@@ -18,7 +18,7 @@
 #   Name of the SINIT policy file, usually ending in `*.BIN`
 #
 # @param sinit_source
-#   Puppet `file` resouce source arrtibute for the SINIT binary
+#   Puppet `file` resouce source attribute for the SINIT binary
 #
 # @param tboot_version
 #   The verson of tboot installed on the remote system

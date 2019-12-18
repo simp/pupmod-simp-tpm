@@ -14,8 +14,9 @@ require 'puppet/parameter/boolean'
 
 Puppet::Type.newtype(:tpm_ownership) do
   @doc = "A type to manage ownership of a TPM. `owner_pass` is required, while
-`srk-pass` is only necessary if you aren't using Trusted Boot or the PKCS#11
-interface. The SRK password must be  to be null in order to use those features.
+`srk_pass` is only necessary if you aren't using Trusted Boot or the PKCS#11
+interface. The SRK (Storage Root Key) password must be  to be null in order to 
+use those features.
 
 If you need to use a 'well-known' password, make the password equal to the
 string 'well-known'. The provider will then use the `-z` or `-y` option when
