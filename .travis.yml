@@ -124,7 +124,7 @@ jobs:
         - true
       before_deploy:
         - "export PUPMOD_METADATA_VERSION=`ruby -r json -e \"puts JSON.parse(File.read('metadata.json')).fetch('version')\"`"
-        - '[[ $TRAVIS_TAG =~ ^poxvup-${PUPMOD_METADATA_VERSION}$|^${PUPMOD_METADATA_VERSION}$ ]]'
+        - '[[ $TRAVIS_TAG =~ ^simp-${PUPMOD_METADATA_VERSION}$|^${PUPMOD_METADATA_VERSION}$ ]]'
         - 'gem install -v "~> 5.5.0" puppet'
         - 'git clean -f -x -d'
         - 'puppet module build'
