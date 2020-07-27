@@ -1,5 +1,8 @@
 # ------------------------------------------------------------------------------
 #             NOTICE: **This file is maintained with puppetsync**
+#
+# Everything above the "Repo-specific content" comment will be overwritten by
+# the next puppetsync.
 # ------------------------------------------------------------------------------
 # The testing matrix considers ruby/puppet versions supported by SIMP and PE:
 #
@@ -12,6 +15,7 @@
 # PE 2018.1     5.5      2.4.10  2021-01 (LTS overlap)
 # PE 2019.8     6.16     2.5.7   2021-11 (LTS)
 ---
+
 stages:
   - 'sanity'
   - 'validation'
@@ -20,8 +24,16 @@ stages:
   - 'deployment'
 
 variables:
+  # PUPPET_VERSION is a canary variable!
+  #
+  # The value `UNDEFINED` will (intentionally) cause `bundler install|update` to
+  # fail.  The intended value for PUPPET_VERSION is provided by the `pup_#` YAML
+  # anchors.  If it is still `UNDEFINED`, all the other setting from the job's
+  # anchor are also missing.
   PUPPET_VERSION:    'UNDEFINED' # <- Matrixed jobs MUST override this (or fail)
   BUNDLER_VERSION:   '1.17.1'
+  SIMP_MATRIX_LEVEL: '1'
+  SIMP_FORCE_RUN_MATRIX: 'no'
 
   # Force dependencies into a path the gitlab-runner user can write to.
   # (This avoids some failures on Runners with misconfigured ruby environments.)
@@ -52,12 +64,122 @@ variables:
     - 'rm -rf pkg/ || :'
     - 'bundle check || rm -f Gemfile.lock && ("${BUNDLER_INSTALL_CMD[@]}" --local || "${BUNDLER_INSTALL_CMD[@]}" || bundle pristine ||  "${BUNDLER_INSTALL_CMD[@]}") || { echo "PIPELINE: Bundler could not install everything (see log output above)" && exit 99 ; }'
 
-# To avoid running a prohibitive number of tests every commit,
-# don't set this env var in your gitlab instance
-.only_with_SIMP_FULL_MATRIX: &only_with_SIMP_FULL_MATRIX
-  only:
-    variables:
-      - $SIMP_FULL_MATRIX == "yes"
+# Assign a matrix level when your test will run.  Heavier jobs get higher numbers
+# NOTE: To skip all jobs with a SIMP_MATRIX_LEVEL, set SIMP_MATRIX_LEVEL=0
+
+.meets_spec_test_criteria: &meets_spec_test_criteria
+  changes:
+    - .gitlab-ci.yml
+    - .fixtures.yml
+    - "spec/spec_helper.rb"
+    - "spec/{classes,unit,defines,type_aliases,types,hosts}/**/*.rb"
+    - "{manifests,files,types}/**/*"
+    - "templates/*.{erb,epp}"
+    - "lib/**/*"
+  exists:
+    - "spec/{classes,unit,defines,type_aliases,types,hosts}/**/*_spec.rb"
+
+.meets_acceptance_test_criteria: &meets_acceptance_test_criteria
+  changes:
+    - .gitlab-ci.yml
+    - "spec/spec_helper_acceptance.rb"
+    - "spec/acceptance/**/*"
+    - "{manifests,files,types}/**/*"
+    - "templates/*.{erb,epp}"
+    - "lib/**/*"
+  exists:
+    - "spec/acceptance/**/*_spec.rb"
+
+.skip_job_when_commit_message_says_to: &skip_job_when_commit_message_says_to
+  when: never
+  if: '$CI_COMMIT_MESSAGE != /^CI: (SKIP MATRIX|MATRIX LEVEL 0)/'
+
+.force_run_job_when_commit_message_lvl_1_or_above: &force_run_job_when_commit_mssage_lvl_1_or_above
+  when: on_success
+  if: '$CI_COMMIT_MESSAGE =~ /^CI: MATRIX LEVEL [123]/'
+
+.force_run_job_when_commit_message_lvl_2_or_above: &force_run_job_when_commit_mssage_lvl_2_or_above
+  when: on_success
+  if: '$CI_COMMIT_MESSAGE =~ /^CI: MATRIX LEVEL [23]/'
+
+.force_run_job_when_commit_message_lvl_3_or_above: &force_run_job_when_commit_mssage_lvl_3_or_above
+  when: on_success
+  if: '$CI_COMMIT_MESSAGE =~ /^CI: MATRIX LEVEL [3]/'
+
+.run_job_when_lvl_1_or_above: &run_job_when_lvl_1_or_above
+  when: on_success
+  if: '$SIMP_MATRIX_LEVEL =~ /^[123]$/'
+
+.run_job_when_lvl_2_or_above: &run_job_when_lvl_2_or_above
+  when: on_success
+  if: '$SIMP_MATRIX_LEVEL =~ /^[23]$/'
+
+.run_job_when_lvl_3_or_above: &run_job_when_lvl_3_or_above
+  when: on_success
+  if: '$SIMP_MATRIX_LEVEL =~ /^[3]$/'
+
+.force_run_job_when_var_and_lvl_1_or_above: &force_run_job_when_var_and_lvl_1_or_above
+  when: on_success
+  if: '$SIMP_FORCE_RUN_MATRIX == "yes" && $SIMP_MATRIX_LEVEL =~ /^[123]$/'
+
+.force_run_job_when_var_and_lvl_2_or_above: &force_run_job_when_var_and_lvl_2_or_above
+  when: on_success
+  if: '$SIMP_FORCE_RUN_MATRIX == "yes" && $SIMP_MATRIX_LEVEL =~ /^[23]$/'
+
+.force_run_job_when_var_and_lvl_3_or_above: &force_run_job_when_var_and_lvl_3_or_above
+  when: on_success
+  if: '$SIMP_FORCE_RUN_MATRIX == "yes" && $SIMP_MATRIX_LEVEL =~ /^[3]$/'
+
+
+
+# SIMP_MATRIX_LEVEL=1: Intended to run every commit
+.with_SIMP_ACCEPTANCE_MATRIX_LEVEL_1: &with_SIMP_ACCEPTANCE_MATRIX_LEVEL_1
+  rules:
+    - <<: *skip_job_when_commit_message_says_to
+    - <<: *force_run_job_when_var_and_lvl_1_or_above
+    - <<: *force_run_job_when_commit_mssage_lvl_1_or_above
+    - <<: *run_job_when_lvl_1_or_above
+      <<: *meets_acceptance_test_criteria
+    - when: never
+
+.with_SIMP_SPEC_MATRIX_LEVEL_1: &with_SIMP_SPEC_MATRIX_LEVEL_1
+  rules:
+    - <<: *skip_job_when_commit_message_says_to
+    - <<: *force_run_job_when_commit_mssage_lvl_1_or_above
+    - <<: *force_run_job_when_var_and_lvl_1_or_above
+    - <<: *run_job_when_lvl_1_or_above
+      <<: *meets_spec_test_criteria
+    - when: never
+
+# SIMP_MATRIX_LEVEL=2: Resource-heavy or redundant jobs
+.with_SIMP_ACCEPTANCE_MATRIX_LEVEL_2: &with_SIMP_ACCEPTANCE_MATRIX_LEVEL_2
+  rules:
+    - <<: *skip_job_when_commit_message_says_to
+    - <<: *force_run_job_when_var_and_lvl_2_or_above
+    - <<: *force_run_job_when_commit_mssage_lvl_2_or_above
+    - <<: *run_job_when_lvl_2_or_above
+      <<: *meets_acceptance_test_criteria
+    - when: never
+
+.with_SIMP_SPEC_MATRIX_LEVEL_2: &with_SIMP_SPEC_MATRIX_LEVEL_2
+  rules:
+    - <<: *skip_job_when_commit_message_says_to
+    - <<: *force_run_job_when_commit_mssage_lvl_2_or_above
+    - <<: *force_run_job_when_var_and_lvl_2_or_above
+    - <<: *run_job_when_lvl_2_or_above
+      <<: *meets_spec_test_criteria
+    - when: never
+
+# SIMP_MATRIX_LEVEL=3: Reserved for FULL matrix testing
+.with_SIMP_ACCEPTANCE_MATRIX_LEVEL_3: &with_SIMP_ACCEPTANCE_MATRIX_LEVEL_3
+  rules:
+    - <<: *skip_job_when_commit_message_says_to
+    - <<: *force_run_job_when_var_and_lvl_3_or_above
+    - <<: *force_run_job_when_commit_mssage_lvl_3_or_above
+    - <<: *run_job_when_lvl_3_or_above
+      <<: *meets_acceptance_test_criteria
+    - when: never
+
 
 # Puppet Versions
 #-----------------------------------------------------------------------
@@ -106,6 +228,7 @@ variables:
   stage: 'validation'
   tags: ['docker']
   <<: *setup_bundler_env
+  <<: *with_SIMP_SPEC_MATRIX_LEVEL_1
   script:
     - 'bundle exec rake spec'
 
@@ -113,11 +236,13 @@ variables:
   stage: 'acceptance'
   tags: ['beaker']
   <<: *setup_bundler_env
+  <<: *with_SIMP_ACCEPTANCE_MATRIX_LEVEL_1
 
 .compliance_base: &compliance_base
   stage: 'compliance'
   tags: ['beaker']
   <<: *setup_bundler_env
+  <<: *with_SIMP_ACCEPTANCE_MATRIX_LEVEL_1
 
 
 # Pipeline / testing matrix
@@ -167,6 +292,13 @@ pup6-unit:
 pup6.16.0-unit:
   <<: *pup_6_16_0
   <<: *unit_tests
+
+# ------------------------------------------------------------------------------
+#             NOTICE: **This file is maintained with puppetsync**
+#
+# Everything above the "Repo-specific content" comment will be overwritten by
+# the next puppetsync.
+# ------------------------------------------------------------------------------
 
 # Repo-specific content
 # ==============================================================================
