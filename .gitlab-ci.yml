@@ -67,7 +67,7 @@ variables:
 # Assign a matrix level when your test will run.  Heavier jobs get higher numbers
 # NOTE: To skip all jobs with a SIMP_MATRIX_LEVEL, set SIMP_MATRIX_LEVEL=0
 
-.meets_spec_test_criteria: &meets_spec_test_criteria
+.relevant_file_conditions_trigger_spec_tests: &relevant_file_conditions_trigger_spec_tests
   changes:
     - .gitlab-ci.yml
     - .fixtures.yml
@@ -79,7 +79,7 @@ variables:
   exists:
     - "spec/{classes,unit,defines,type_aliases,types,hosts}/**/*_spec.rb"
 
-.meets_acceptance_test_criteria: &meets_acceptance_test_criteria
+.relevant_file_conditions_trigger_acceptance_tests: &relevant_file_conditions_trigger_acceptance_tests
   changes:
     - .gitlab-ci.yml
     - "spec/spec_helper_acceptance.rb"
@@ -90,45 +90,48 @@ variables:
   exists:
     - "spec/acceptance/**/*_spec.rb"
 
+# For some reason, the rule regexes stopped matching line starts inside
+# $CI_COMMIT_MESSAGE with carets /^/, so we're using /\n?/ as a workaround.
 .skip_job_when_commit_message_says_to: &skip_job_when_commit_message_says_to
+  if: '$CI_COMMIT_MESSAGE =~ /\n?CI: (SKIP MATRIX|MATRIX LEVEL 0)/'
   when: never
-  if: '$CI_COMMIT_MESSAGE != /^CI: (SKIP MATRIX|MATRIX LEVEL 0)/'
 
 .force_run_job_when_commit_message_lvl_1_or_above: &force_run_job_when_commit_mssage_lvl_1_or_above
+  if: '$CI_COMMIT_MESSAGE =~ /\n?CI: MATRIX LEVEL [123]/'
   when: on_success
-  if: '$CI_COMMIT_MESSAGE =~ /^CI: MATRIX LEVEL [123]/'
 
 .force_run_job_when_commit_message_lvl_2_or_above: &force_run_job_when_commit_mssage_lvl_2_or_above
+  if: '$CI_COMMIT_MESSAGE =~ /\n?CI: MATRIX LEVEL [23]/'
   when: on_success
-  if: '$CI_COMMIT_MESSAGE =~ /^CI: MATRIX LEVEL [23]/'
 
 .force_run_job_when_commit_message_lvl_3_or_above: &force_run_job_when_commit_mssage_lvl_3_or_above
+  if: '$CI_COMMIT_MESSAGE =~ /\n?CI: MATRIX LEVEL [3]/'
   when: on_success
-  if: '$CI_COMMIT_MESSAGE =~ /^CI: MATRIX LEVEL [3]/'
 
-.run_job_when_lvl_1_or_above: &run_job_when_lvl_1_or_above
+# check for $CI_PIPELINE_SOURCE needed because this is combined w/when:changes
+.run_job_when_level_1_or_above_w_changes: &run_job_when_level_1_or_above_w_changes
+  if: '$SIMP_MATRIX_LEVEL =~ /^[123]$/ && $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
   when: on_success
-  if: '$SIMP_MATRIX_LEVEL =~ /^[123]$/'
 
-.run_job_when_lvl_2_or_above: &run_job_when_lvl_2_or_above
+.run_job_when_level_2_or_above_w_changes: &run_job_when_level_2_or_above_w_changes
+  if: '$SIMP_MATRIX_LEVEL =~ /^[23]$/ && $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
   when: on_success
-  if: '$SIMP_MATRIX_LEVEL =~ /^[23]$/'
 
-.run_job_when_lvl_3_or_above: &run_job_when_lvl_3_or_above
+.run_job_when_level_3_or_above_w_changes: &run_job_when_level_3_or_above_w_changes
+  if: '$SIMP_MATRIX_LEVEL =~ /^[3]$/ && $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
   when: on_success
-  if: '$SIMP_MATRIX_LEVEL =~ /^[3]$/'
 
 .force_run_job_when_var_and_lvl_1_or_above: &force_run_job_when_var_and_lvl_1_or_above
-  when: on_success
   if: '$SIMP_FORCE_RUN_MATRIX == "yes" && $SIMP_MATRIX_LEVEL =~ /^[123]$/'
+  when: on_success
 
 .force_run_job_when_var_and_lvl_2_or_above: &force_run_job_when_var_and_lvl_2_or_above
-  when: on_success
   if: '$SIMP_FORCE_RUN_MATRIX == "yes" && $SIMP_MATRIX_LEVEL =~ /^[23]$/'
+  when: on_success
 
 .force_run_job_when_var_and_lvl_3_or_above: &force_run_job_when_var_and_lvl_3_or_above
-  when: on_success
   if: '$SIMP_FORCE_RUN_MATRIX == "yes" && $SIMP_MATRIX_LEVEL =~ /^[3]$/'
+  when: on_success
 
 
 
@@ -138,8 +141,8 @@ variables:
     - <<: *skip_job_when_commit_message_says_to
     - <<: *force_run_job_when_var_and_lvl_1_or_above
     - <<: *force_run_job_when_commit_mssage_lvl_1_or_above
-    - <<: *run_job_when_lvl_1_or_above
-      <<: *meets_acceptance_test_criteria
+    - <<: *relevant_file_conditions_trigger_acceptance_tests
+      <<: *run_job_when_level_1_or_above_w_changes
     - when: never
 
 .with_SIMP_SPEC_MATRIX_LEVEL_1: &with_SIMP_SPEC_MATRIX_LEVEL_1
@@ -147,8 +150,8 @@ variables:
     - <<: *skip_job_when_commit_message_says_to
     - <<: *force_run_job_when_commit_mssage_lvl_1_or_above
     - <<: *force_run_job_when_var_and_lvl_1_or_above
-    - <<: *run_job_when_lvl_1_or_above
-      <<: *meets_spec_test_criteria
+    - <<: *relevant_file_conditions_trigger_spec_tests
+      <<: *run_job_when_level_1_or_above_w_changes
     - when: never
 
 # SIMP_MATRIX_LEVEL=2: Resource-heavy or redundant jobs
@@ -157,8 +160,8 @@ variables:
     - <<: *skip_job_when_commit_message_says_to
     - <<: *force_run_job_when_var_and_lvl_2_or_above
     - <<: *force_run_job_when_commit_mssage_lvl_2_or_above
-    - <<: *run_job_when_lvl_2_or_above
-      <<: *meets_acceptance_test_criteria
+    - <<: *run_job_when_level_2_or_above_w_changes
+      <<: *relevant_file_conditions_trigger_acceptance_tests
     - when: never
 
 .with_SIMP_SPEC_MATRIX_LEVEL_2: &with_SIMP_SPEC_MATRIX_LEVEL_2
@@ -166,8 +169,8 @@ variables:
     - <<: *skip_job_when_commit_message_says_to
     - <<: *force_run_job_when_commit_mssage_lvl_2_or_above
     - <<: *force_run_job_when_var_and_lvl_2_or_above
-    - <<: *run_job_when_lvl_2_or_above
-      <<: *meets_spec_test_criteria
+    - <<: *run_job_when_level_2_or_above_w_changes
+      <<: *relevant_file_conditions_trigger_spec_tests
     - when: never
 
 # SIMP_MATRIX_LEVEL=3: Reserved for FULL matrix testing
@@ -176,8 +179,8 @@ variables:
     - <<: *skip_job_when_commit_message_says_to
     - <<: *force_run_job_when_var_and_lvl_3_or_above
     - <<: *force_run_job_when_commit_mssage_lvl_3_or_above
-    - <<: *run_job_when_lvl_3_or_above
-      <<: *meets_acceptance_test_criteria
+    - <<: *run_job_when_level_3_or_above_w_changes
+      <<: *relevant_file_conditions_trigger_acceptance_tests
     - when: never
 
 
