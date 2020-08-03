@@ -3,3 +3,4 @@
 --no-class_inherits_from_params_class-check
 --no-140chars-check
 --no-trailing_comma-check
+--no-empty_string_assignment-check
