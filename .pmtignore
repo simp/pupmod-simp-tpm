@@ -1,0 +1,23 @@
+# .pmtignore is required to mask symlinks from the `puppet module build` test
+# In the module's pipeline sanity checks
+# ------------------------------------------------------------------------------
+# NOTE: This file is managed by puppetsync.  Make sure any changes are
+#       reflected in the control repo.
+# ------------------------------------------------------------------------------
+.*.sw?
+.yardoc
+dist/
+pkg/
+spec/fixtures/
+spec/acceptance/
+spec/rp_env/
+!/spec/hieradata/default.yaml
+!/spec/fixtures/site.pp
+.rspec_system
+.vagrant/
+.bundle/
+Gemfile.lock
+vendor/
+junit/
+log/
+doc/
