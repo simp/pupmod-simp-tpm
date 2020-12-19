@@ -1,5 +1,9 @@
-# NOTE: This file is managed by puppetsync.  Make sure any changes are
-#       reflected in the control repo.
+# ------------------------------------------------------------------------------
+#         NOTICE: **This file is maintained with puppetsync**
+#
+# This file is automatically updated as part of a puppet module baseline.
+# The next baseline sync will overwrite any local changes made to this file.
+# ------------------------------------------------------------------------------
 .*.sw?
 .yardoc
 .idea/
