@@ -1,8 +1,10 @@
 # ------------------------------------------------------------------------------
 #             NOTICE: **This file is maintained with puppetsync**
 #
-# Everything above the "Repo-specific content" comment will be overwritten by
-# the next puppetsync.
+# This file is updated automatically as part of a puppet module baseline.
+#
+# The next baseline sync will overwrite any local changes to everything above
+# the line "# Repo-specific content"
 # ------------------------------------------------------------------------------
 # The testing matrix considers ruby/puppet versions supported by SIMP and PE:
 #
@@ -13,11 +15,10 @@
 # Release       Puppet   Ruby    EOL
 # SIMP 6.4      5.5      2.4.10  TBD
 # PE 2018.1     5.5      2.4.10  2021-01 (LTS overlap)
-# PE 2019.8     6.16     2.5.7   2021-11 (LTS)
+# PE 2019.8     6.18     2.5.7   2022-12 (LTS)
 ---
 
 stages:
-  - 'sanity'
   - 'validation'
   - 'acceptance'
   - 'compliance'
@@ -76,6 +77,9 @@ variables:
     - "{manifests,files,types}/**/*"
     - "templates/*.{erb,epp}"
     - "lib/**/*"
+    - "Gemfile"
+    - "SIMP/**/*"
+    - "data/**/*"
   exists:
     - "spec/{classes,unit,defines,type_aliases,types,hosts}/**/*_spec.rb"
 
@@ -87,6 +91,9 @@ variables:
     - "{manifests,files,types}/**/*"
     - "templates/*.{erb,epp}"
     - "lib/**/*"
+    - "Gemfile"
+    - "SIMP/**/*"
+    - "data/**/*"
   exists:
     - "spec/acceptance/**/*_spec.rb"
 
@@ -208,10 +215,10 @@ variables:
     BEAKER_PUPPET_COLLECTION: 'puppet6'
     MATRIX_RUBY_VERSION: '2.5'
 
-.pup_6_16_0: &pup_6_16_0
+.pup_6_18_0: &pup_6_18_0
   image: 'ruby:2.5'
   variables:
-    PUPPET_VERSION: '6.16.0'
+    PUPPET_VERSION: '6.18.0'
     BEAKER_PUPPET_COLLECTION: 'puppet6'
     MATRIX_RUBY_VERSION: '2.5'
 
@@ -251,14 +258,13 @@ variables:
 # Pipeline / testing matrix
 #=======================================================================
 
-sanity_checks:
+releng_checks:
   <<: *pup_5
   <<: *setup_bundler_env
-  stage: 'sanity'
+  stage: 'validation'
   tags: ['docker']
   script:
-    - 'if `hash apt-get`; then apt-get update; fi'
-    - 'if `hash apt-get`; then apt-get install -y rpm; fi'
+    - 'command -v rpm || if command -v apt-get; then apt-get update; apt-get install -y rpm; fi ||:'
     - 'bundle exec rake check:dot_underscore'
     - 'bundle exec rake check:test_file'
     - 'bundle exec rake pkg:check_version'
@@ -294,8 +300,8 @@ pup6-unit:
   <<: *unit_tests
   <<: *with_SIMP_SPEC_MATRIX_LEVEL_2
 
-pup6.16.0-unit:
-  <<: *pup_6_16_0
+pup6.18.0-unit:
+  <<: *pup_6_18_0
   <<: *unit_tests
 
 # ------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 {
   "name": "simp-tpm",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "author": "SIMP Team",
   "summary": "Manages TPM 1.2 and TBOOT",
   "license": "Apache-2.0",
@@ -45,14 +45,12 @@
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     }
