@@ -57,6 +57,25 @@ variables:
       - '.vendor'
   before_script:
     - 'ruby -e "puts %(\n\n), %q(=)*80, %(\nSIMP-relevant Environment Variables:\n\n#{e=ENV.keys.grep(/^PUPPET|^SIMP|^BEAKER|MATRIX/); pad=e.map{|x| x.size}.max+1; e.map{|v| %(    * #{%(#{v}:).ljust(pad)} #{39.chr + ENV[v] + 39.chr}\n)}.join}\n),  %q(=)*80, %(\n\n)"'
+    # Diagnostic ruby & gem information
+    - 'which ruby && ruby --version || :'
+    - "[[ $- == *i* ]] && echo 'Interactive shell session' || echo 'Non-interactive shell session'"
+    - "shopt -q login_shell && echo 'Login shell' || echo 'Not a login shell'"
+    - 'rvm ls || :'
+
+    # If RVM is available, make SURE it's using the right Ruby:
+    #   * Source rvm (to run in non-login shells)
+    #   * If any $MATRIX_RUBY_VERSION rubies are available, use the latest
+    #   * Otherwise: install & use ${MATRIX_RUBY_VERSION}-head (e.g., latest)
+    #     * ^^ This could be wonky and introduce variations across runners
+    #     * ^^ maybe it should just fail if there is no $MATRIX_RUBY_VERSION installed?
+    - "command -v rvm && { if declare -p rvm_path &> /dev/null; then source \"${rvm_path}/scripts/rvm\"; else source \"$HOME/.rvm/scripts/rvm\" || source /etc/profile.d/rvm.sh; fi; }"
+    - "command -v rvm && { LATEST_RVM_RUBY_XY=\"$(rvm ls | grep \"$MATRIX_RUBY_VERSION\" | tail -1 | sed -e 's/^.*\\([0-9]\\+\\.[0-9]\\+\\.[0-9]\\+\\).*$/\\1/g')\"; if [ -z \"$LATEST_RVM_RUBY_XY\" ]; then LATEST_RVM_RUBY_XY=\"${MATRIX_RUBY_VERSION}-head\"; rvm install \"$LATEST_RVM_RUBY\" --no-docs; else echo \"Found RVM Ruby: '${LATEST_RVM_RUBY_XY}'\"; fi; rvm use \"$LATEST_RVM_RUBY_XY\" ;  }"
+    - 'ruby --version || :'
+    - 'gem list sync || :'
+
+    # Bundle gems (preferring cached > local > downloaded resources)
+    #   * Try to use cached and local resources before downloading dependencies
     - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-1.17.1}")'
     - 'declare GEM_INSTALL_CMD=(gem install --no-document)'
     - 'declare BUNDLER_INSTALL_CMD=(bundle install --no-binstubs --jobs $(nproc) "${FLAGS[@]}")'
@@ -64,6 +83,13 @@ variables:
     - 'gem list -ie "${GEM_BUNDLER_VER[@]}" --silent bundler || "${GEM_INSTALL_CMD[@]}" --local "${GEM_BUNDLER_VER[@]}" bundler || "${GEM_INSTALL_CMD[@]}" "${GEM_BUNDLER_VER[@]}" bundler'
     - 'rm -rf pkg/ || :'
     - 'bundle check || rm -f Gemfile.lock && ("${BUNDLER_INSTALL_CMD[@]}" --local || "${BUNDLER_INSTALL_CMD[@]}" || bundle pristine ||  "${BUNDLER_INSTALL_CMD[@]}") || { echo "PIPELINE: Bundler could not install everything (see log output above)" && exit 99 ; }'
+
+    # Diagnostic bundler, ruby, and gem checks:
+    - 'bundle exec rvm ls || :'
+    - 'bundle exec which ruby || :'
+    - 'bundle show sync || :'
+    - 'bundle exec gem list sync || :'
+
 
 # Assign a matrix level when your test will run.  Heavier jobs get higher numbers
 # NOTE: To skip all jobs with a SIMP_MATRIX_LEVEL, set SIMP_MATRIX_LEVEL=0
@@ -73,13 +99,10 @@ variables:
     - .gitlab-ci.yml
     - .fixtures.yml
     - "spec/spec_helper.rb"
-    - "spec/{classes,unit,defines,type_aliases,types,hosts}/**/*.rb"
-    - "{manifests,files,types}/**/*"
-    - "templates/*.{erb,epp}"
-    - "lib/**/*"
+    - "spec/{classes,unit,defines,type_aliases,types,hosts,lib}/**/*.rb"
+    - "{SIMP,data,manifests,files,types,lib,functions}/**/*"
+    - "templates/**/*.{erb,epp}"
     - "Gemfile"
-    - "SIMP/**/*"
-    - "data/**/*"
   exists:
     - "spec/{classes,unit,defines,type_aliases,types,hosts}/**/*_spec.rb"
 
@@ -87,13 +110,11 @@ variables:
   changes:
     - .gitlab-ci.yml
     - "spec/spec_helper_acceptance.rb"
-    - "spec/acceptance/**/*"
-    - "{manifests,files,types}/**/*"
-    - "templates/*.{erb,epp}"
-    - "lib/**/*"
+    - "spec/{helpers,acceptance}/**/*"
+    - "spec/inspec_*/**/*"
+    - "{SIMP,data,manifests,files,types,lib,functions}/**/*"
+    - "templates/**/*.{erb,epp}"
     - "Gemfile"
-    - "SIMP/**/*"
-    - "data/**/*"
   exists:
     - "spec/acceptance/**/*_spec.rb"
 
@@ -148,8 +169,8 @@ variables:
     - <<: *skip_job_when_commit_message_says_to
     - <<: *force_run_job_when_var_and_lvl_1_or_above
     - <<: *force_run_job_when_commit_mssage_lvl_1_or_above
-    - <<: *relevant_file_conditions_trigger_acceptance_tests
-      <<: *run_job_when_level_1_or_above_w_changes
+    - <<: *run_job_when_level_1_or_above_w_changes
+      <<: *relevant_file_conditions_trigger_acceptance_tests
     - when: never
 
 .with_SIMP_SPEC_MATRIX_LEVEL_1: &with_SIMP_SPEC_MATRIX_LEVEL_1
@@ -157,8 +178,8 @@ variables:
     - <<: *skip_job_when_commit_message_says_to
     - <<: *force_run_job_when_commit_mssage_lvl_1_or_above
     - <<: *force_run_job_when_var_and_lvl_1_or_above
-    - <<: *relevant_file_conditions_trigger_spec_tests
-      <<: *run_job_when_level_1_or_above_w_changes
+    - <<: *run_job_when_level_1_or_above_w_changes
+      <<: *relevant_file_conditions_trigger_spec_tests
     - when: never
 
 # SIMP_MATRIX_LEVEL=2: Resource-heavy or redundant jobs
@@ -194,33 +215,40 @@ variables:
 # Puppet Versions
 #-----------------------------------------------------------------------
 
-.pup_5: &pup_5
+.pup_5_x: &pup_5_x
   image: 'ruby:2.4'
   variables:
     PUPPET_VERSION: '~> 5.0'
     BEAKER_PUPPET_COLLECTION: 'puppet5'
     MATRIX_RUBY_VERSION: '2.4'
 
-.pup_5_5_20: &pup_5_5_20
+.pup_5_pe: &pup_5_pe
   image: 'ruby:2.4'
   variables:
-    PUPPET_VERSION: '5.5.20'
+    PUPPET_VERSION: '5.5.22'
     BEAKER_PUPPET_COLLECTION: 'puppet5'
     MATRIX_RUBY_VERSION: '2.4'
 
-.pup_6: &pup_6
+.pup_6_x: &pup_6_x
   image: 'ruby:2.5'
   variables:
     PUPPET_VERSION: '~> 6.0'
     BEAKER_PUPPET_COLLECTION: 'puppet6'
     MATRIX_RUBY_VERSION: '2.5'
 
-.pup_6_18_0: &pup_6_18_0
+.pup_6_pe: &pup_6_pe
   image: 'ruby:2.5'
   variables:
     PUPPET_VERSION: '6.18.0'
     BEAKER_PUPPET_COLLECTION: 'puppet6'
     MATRIX_RUBY_VERSION: '2.5'
+
+.pup_7_x: &pup_7_x
+  image: 'ruby:2.7'
+  variables:
+    PUPPET_VERSION: '~> 7.0'
+    BEAKER_PUPPET_COLLECTION: 'puppet7'
+    MATRIX_RUBY_VERSION: '2.7'
 
 # Testing Environments
 #-----------------------------------------------------------------------
@@ -259,7 +287,7 @@ variables:
 #=======================================================================
 
 releng_checks:
-  <<: *pup_5
+  <<: *pup_5_x
   <<: *setup_bundler_env
   stage: 'validation'
   tags: ['docker']
@@ -275,33 +303,38 @@ releng_checks:
 # Linting
 #-----------------------------------------------------------------------
 
-pup5-lint:
-  <<: *pup_5
-  <<: *lint_tests
+# NOTE: Don't add more lint checks here.
+#       puppet-lint is a validator, not a parser; it includes its own lexer and
+#       doesn't use the Puppet gem at all.  Running multiple lint tests against
+#       different Puppet versions won't accomplish anything.
 
-pup6-lint:
-  <<: *pup_6
+pup-lint:
+  <<: *pup_6_x
   <<: *lint_tests
 
 # Unit Tests
 #-----------------------------------------------------------------------
 
-pup5-unit:
-  <<: *pup_5
+pup5.x-unit:
+  <<: *pup_5_x
   <<: *unit_tests
   <<: *with_SIMP_SPEC_MATRIX_LEVEL_2
 
-pup5.5.20-unit:
-  <<: *pup_5_5_20
+pup5.pe-unit:
+  <<: *pup_5_pe
   <<: *unit_tests
 
-pup6-unit:
-  <<: *pup_6
+pup6.x-unit:
+  <<: *pup_6_x
   <<: *unit_tests
   <<: *with_SIMP_SPEC_MATRIX_LEVEL_2
 
-pup6.18.0-unit:
-  <<: *pup_6_18_0
+pup6.pe-unit:
+  <<: *pup_6_pe
+  <<: *unit_tests
+
+pup7.x-unit:
+  <<: *pup_7_x
   <<: *unit_tests
 
 # ------------------------------------------------------------------------------
