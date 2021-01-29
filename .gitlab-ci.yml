@@ -56,12 +56,16 @@ variables:
     paths:
       - '.vendor'
   before_script:
-    - 'ruby -e "puts %(\n\n), %q(=)*80, %(\nSIMP-relevant Environment Variables:\n\n#{e=ENV.keys.grep(/^PUPPET|^SIMP|^BEAKER|MATRIX/); pad=e.map{|x| x.size}.max+1; e.map{|v| %(    * #{%(#{v}:).ljust(pad)} #{39.chr + ENV[v] + 39.chr}\n)}.join}\n),  %q(=)*80, %(\n\n)"'
+    # Print important environment variables that may affect this job
+    - 'ruby -e "puts %(\n\n), %q(=)*80, %(\nSIMP-relevant Environment Variables:\n\n#{e=ENV.keys.grep(/^PUPPET|^SIMP|^BEAKER|MATRIX/); pad=((e.map{|x| x.size}.max||0)+1); e.map{|v| %(    * #{%(#{v}:).ljust(pad)} #{39.chr + ENV[v] + 39.chr}\n)}.join}\n),  %q(=)*80, %(\n\n)"'
+
+    - echo -e "\e[0Ksection_start:`date +%s`:before_script10[collapsed=true]\r\e[0KDiagnostic ruby & gem information"
     # Diagnostic ruby & gem information
     - 'which ruby && ruby --version || :'
     - "[[ $- == *i* ]] && echo 'Interactive shell session' || echo 'Non-interactive shell session'"
     - "shopt -q login_shell && echo 'Login shell' || echo 'Not a login shell'"
     - 'rvm ls || :'
+    - echo -e "\e[0Ksection_end:`date +%s`:before_script10\r\e[0K"
 
     # If RVM is available, make SURE it's using the right Ruby:
     #   * Source rvm (to run in non-login shells)
@@ -69,26 +73,32 @@ variables:
     #   * Otherwise: install & use ${MATRIX_RUBY_VERSION}-head (e.g., latest)
     #     * ^^ This could be wonky and introduce variations across runners
     #     * ^^ maybe it should just fail if there is no $MATRIX_RUBY_VERSION installed?
+    - echo -e "\e[0Ksection_start:`date +%s`:before_script20[collapsed=true]\r\e[0KEnsure RVM & ruby is installed"
     - "command -v rvm && { if declare -p rvm_path &> /dev/null; then source \"${rvm_path}/scripts/rvm\"; else source \"$HOME/.rvm/scripts/rvm\" || source /etc/profile.d/rvm.sh; fi; }"
     - "command -v rvm && { LATEST_RVM_RUBY_XY=\"$(rvm ls | grep \"$MATRIX_RUBY_VERSION\" | tail -1 | sed -e 's/^.*\\([0-9]\\+\\.[0-9]\\+\\.[0-9]\\+\\).*$/\\1/g')\"; if [ -z \"$LATEST_RVM_RUBY_XY\" ]; then LATEST_RVM_RUBY_XY=\"${MATRIX_RUBY_VERSION}-head\"; rvm install \"$LATEST_RVM_RUBY\" --no-docs; else echo \"Found RVM Ruby: '${LATEST_RVM_RUBY_XY}'\"; fi; rvm use \"$LATEST_RVM_RUBY_XY\" ;  }"
     - 'ruby --version || :'
     - 'gem list sync || :'
+    - echo -e "\e[0Ksection_end:`date +%s`:before_script20\r\e[0K"
 
     # Bundle gems (preferring cached > local > downloaded resources)
     #   * Try to use cached and local resources before downloading dependencies
-    - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-1.17.1}")'
+    - echo -e "\e[0Ksection_start:`date +%s`:before_script30[collapsed=true]\r\e[0KBundle gems (preferring cached > local > downloaded resources)"
+    - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-2.2.6}")'
     - 'declare GEM_INSTALL_CMD=(gem install --no-document)'
     - 'declare BUNDLER_INSTALL_CMD=(bundle install --no-binstubs --jobs $(nproc) "${FLAGS[@]}")'
     - 'mkdir -p ${GEM_HOME} ${BUNDLER_BIN}'
     - 'gem list -ie "${GEM_BUNDLER_VER[@]}" --silent bundler || "${GEM_INSTALL_CMD[@]}" --local "${GEM_BUNDLER_VER[@]}" bundler || "${GEM_INSTALL_CMD[@]}" "${GEM_BUNDLER_VER[@]}" bundler'
     - 'rm -rf pkg/ || :'
     - 'bundle check || rm -f Gemfile.lock && ("${BUNDLER_INSTALL_CMD[@]}" --local || "${BUNDLER_INSTALL_CMD[@]}" || bundle pristine ||  "${BUNDLER_INSTALL_CMD[@]}") || { echo "PIPELINE: Bundler could not install everything (see log output above)" && exit 99 ; }'
+    - echo -e "\e[0Ksection_end:`date +%s`:before_script30\r\e[0K"
 
     # Diagnostic bundler, ruby, and gem checks:
+    - echo -e "\e[0Ksection_start:`date +%s`:before_script40[collapsed=true]\r\e[0KDiagnostic bundler, ruby, and gem checks"
     - 'bundle exec rvm ls || :'
     - 'bundle exec which ruby || :'
     - 'bundle show sync || :'
     - 'bundle exec gem list sync || :'
+    - echo -e "\e[0Ksection_end:`date +%s`:before_script40\r\e[0K"
 
 
 # Assign a matrix level when your test will run.  Heavier jobs get higher numbers
