@@ -119,6 +119,7 @@ variables:
 .relevant_file_conditions_trigger_acceptance_tests: &relevant_file_conditions_trigger_acceptance_tests
   changes:
     - .gitlab-ci.yml
+    - .fixtures.yml
     - "spec/spec_helper_acceptance.rb"
     - "spec/{helpers,acceptance}/**/*"
     - "spec/inspec_*/**/*"
