@@ -57,7 +57,7 @@ variables:
       - '.vendor'
   before_script:
     # Print important environment variables that may affect this job
-    - 'ruby -e "puts %(\n\n), %q(=)*80, %(\nSIMP-relevant Environment Variables:\n\n#{e=ENV.keys.grep(/^PUPPET|^SIMP|^BEAKER|MATRIX/); pad=((e.map{|x| x.size}.max||0)+1); e.map{|v| %(    * #{%(#{v}:).ljust(pad)} #{39.chr + ENV[v] + 39.chr}\n)}.join}\n),  %q(=)*80, %(\n\n)"'
+    - 'ruby -e "puts %(\n\n), %q(=)*80, %(\nSIMP-relevant Environment Variables:\n\n#{e=ENV.keys.grep(/^PUPPET|^SIMP|^BEAKER|MATRIX/); pad=((e.map{|x| x.size}.max||0)+1); e.map{|v| %(    * #{%(#{v}:).ljust(pad)} #{39.chr + ENV[v] + 39.chr}\n)}.join}\n),  %q(=)*80, %(\n\n)" || :'
 
     - echo -e "\e[0Ksection_start:`date +%s`:before_script10[collapsed=true]\r\e[0KDiagnostic ruby & gem information"
     # Diagnostic ruby & gem information
@@ -69,13 +69,11 @@ variables:
 
     # If RVM is available, make SURE it's using the right Ruby:
     #   * Source rvm (to run in non-login shells)
-    #   * If any $MATRIX_RUBY_VERSION rubies are available, use the latest
-    #   * Otherwise: install & use ${MATRIX_RUBY_VERSION}-head (e.g., latest)
-    #     * ^^ This could be wonky and introduce variations across runners
-    #     * ^^ maybe it should just fail if there is no $MATRIX_RUBY_VERSION installed?
+    #   * Use $MATRIX_RUBY_VERSION ruby, install if not present
     - echo -e "\e[0Ksection_start:`date +%s`:before_script20[collapsed=true]\r\e[0KEnsure RVM & ruby is installed"
-    - "command -v rvm && { if declare -p rvm_path &> /dev/null; then source \"${rvm_path}/scripts/rvm\"; else source \"$HOME/.rvm/scripts/rvm\" || source /etc/profile.d/rvm.sh; fi; }"
-    - "command -v rvm && { LATEST_RVM_RUBY_XY=\"$(rvm ls | grep \"$MATRIX_RUBY_VERSION\" | tail -1 | sed -e 's/^.*\\([0-9]\\+\\.[0-9]\\+\\.[0-9]\\+\\).*$/\\1/g')\"; if [ -z \"$LATEST_RVM_RUBY_XY\" ]; then LATEST_RVM_RUBY_XY=\"${MATRIX_RUBY_VERSION}-head\"; rvm install \"$LATEST_RVM_RUBY\" --no-docs; else echo \"Found RVM Ruby: '${LATEST_RVM_RUBY_XY}'\"; fi; rvm use \"$LATEST_RVM_RUBY_XY\" ;  }"
+    - "if command -v rvm; then if declare -p rvm_path &> /dev/null; then source \"${rvm_path}/scripts/rvm\"; else source \"$HOME/.rvm/scripts/rvm\" || source /etc/profile.d/rvm.sh; fi; fi"
+    - "if command -v rvm && ! grep rvm_install_on_use_flag=1 ~/.rvmrc; then echo rvm_install_on_use_flag=1 >> ~/.rvmrc || echo '== WARNING: ~/.rvmrc is missing rvm_install_on_use_flag=1 and I failed to add it'; fi"
+    - "if command -v rvm; then rvm use \"$MATRIX_RUBY_VERSION\"; else echo \"rvm not detected; skipping 'rvm use'\"; fi"
     - 'ruby --version || :'
     - 'gem list sync || :'
     - echo -e "\e[0Ksection_end:`date +%s`:before_script20\r\e[0K"
