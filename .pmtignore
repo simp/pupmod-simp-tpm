@@ -7,21 +7,25 @@
 # The next baseline sync will overwrite any local changes made to this file.
 # ------------------------------------------------------------------------------
 .*.sw?
-.yardoc
-dist/
-pkg/
-spec/defines/
-spec/fixtures/
-spec/acceptance/
-spec/rp_env/
-!/spec/hieradata/default.yaml
-!/spec/fixtures/site.pp
+.bundle/
+.git/
+.github/
+.gitlab-ci.yml
 .rspec_system
 .vagrant/
-.bundle/
+.vendor/
+.yardoc
+dist/
+doc/
 Gemfile.lock
-vendor/
 junit/
 log/
-doc/
+pkg/
+spec/acceptance/
+spec/defines/
+spec/fixtures/
+spec/rp_env/
+!/spec/fixtures/site.pp
+!/spec/hieradata/default.yaml
 tests/
+vendor/
