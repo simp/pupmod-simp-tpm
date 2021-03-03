@@ -296,7 +296,7 @@ variables:
 #=======================================================================
 
 releng_checks:
-  <<: *pup_5_x
+  <<: *pup_6_x
   <<: *setup_bundler_env
   stage: 'validation'
   tags: ['docker']
@@ -307,7 +307,8 @@ releng_checks:
     - 'bundle exec rake pkg:check_version'
     - 'bundle exec rake pkg:compare_latest_tag'
     - 'bundle exec rake pkg:create_tag_changelog'
-    - 'bundle exec puppet module build'
+    - 'bundle exec pdk build --force --target-dir=dist'
+
 
 # Linting
 #-----------------------------------------------------------------------
