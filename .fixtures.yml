@@ -4,13 +4,13 @@ fixtures:
     augeas_core:
       repo: https://github.com/simp/pupmod-puppetlabs-augeas_core.git
       puppet_version: ">= 6.0.0"
-    augeasproviders_core: https://github.com/simp/augeasproviders_core
-    augeasproviders_grub: https://github.com/simp/augeasproviders_grub
-    concat: https://github.com/simp/puppetlabs-concat
-    ima: https://github.com/simp/pupmod-simp-ima
-    rsync: https://github.com/simp/pupmod-simp-rsync
-    simplib: https://github.com/simp/pupmod-simp-simplib
-    stdlib: https://github.com/simp/puppetlabs-stdlib
-    yum: https://github.com/simp/puppet-yum
+    augeasproviders_core: https://github.com/simp/augeasproviders_core.git
+    augeasproviders_grub: https://github.com/simp/augeasproviders_grub.git
+    concat: https://github.com/simp/puppetlabs-concat.git
+    ima: https://github.com/simp/pupmod-simp-ima.git
+    rsync: https://github.com/simp/pupmod-simp-rsync.git
+    simplib: https://github.com/simp/pupmod-simp-simplib.git
+    stdlib: https://github.com/simp/puppetlabs-stdlib.git
+    yum: https://github.com/simp/puppet-yum.git
   symlinks:
     tpm: "#{source_dir}"

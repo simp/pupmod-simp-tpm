@@ -1,6 +1,6 @@
 {
   "name": "simp-tpm",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "author": "SIMP Team",
   "summary": "Manages TPM 1.2 and TBOOT",
   "license": "Apache-2.0",
@@ -26,7 +26,7 @@
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.13.1 < 7.0.0"
+      "version_requirement": ">= 6.18.0 < 8.0.0"
     },
     {
       "name": "puppet/yum",
@@ -58,7 +58,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 5.0.0 < 7.0.0"
+      "version_requirement": ">= 6.22.1 < 8.0.0"
     }
   ]
 }
