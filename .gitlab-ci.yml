@@ -13,9 +13,7 @@
 # https://puppet.com/docs/pe/2018.1/overview/getting_support_for_pe.html
 # ------------------------------------------------------------------------------
 # Release       Puppet   Ruby    EOL
-# SIMP 6.4      5.5      2.4.10  TBD
-# PE 2018.1     5.5      2.4.10  2021-01 (LTS overlap)
-# PE 2019.8     6.18     2.5.7   2022-12 (LTS)
+# PE 2019.8     6.22     2.5.7   2022-12 (LTS)
 ---
 
 stages:
@@ -32,7 +30,7 @@ variables:
   # anchors.  If it is still `UNDEFINED`, all the other setting from the job's
   # anchor are also missing.
   PUPPET_VERSION:    'UNDEFINED' # <- Matrixed jobs MUST override this (or fail)
-  BUNDLER_VERSION:   '1.17.1'
+  BUNDLER_VERSION:   '2.2.19'
   SIMP_MATRIX_LEVEL: '1'
   SIMP_FORCE_RUN_MATRIX: 'no'
 
@@ -224,20 +222,6 @@ variables:
 # Puppet Versions
 #-----------------------------------------------------------------------
 
-.pup_5_x: &pup_5_x
-  image: 'ruby:2.4'
-  variables:
-    PUPPET_VERSION: '~> 5.0'
-    BEAKER_PUPPET_COLLECTION: 'puppet5'
-    MATRIX_RUBY_VERSION: '2.4'
-
-.pup_5_pe: &pup_5_pe
-  image: 'ruby:2.4'
-  variables:
-    PUPPET_VERSION: '5.5.22'
-    BEAKER_PUPPET_COLLECTION: 'puppet5'
-    MATRIX_RUBY_VERSION: '2.4'
-
 .pup_6_x: &pup_6_x
   image: 'ruby:2.5'
   variables:
@@ -248,7 +232,7 @@ variables:
 .pup_6_pe: &pup_6_pe
   image: 'ruby:2.5'
   variables:
-    PUPPET_VERSION: '6.18.0'
+    PUPPET_VERSION: '6.22.1'
     BEAKER_PUPPET_COLLECTION: 'puppet6'
     MATRIX_RUBY_VERSION: '2.5'
 
@@ -324,15 +308,6 @@ pup-lint:
 
 # Unit Tests
 #-----------------------------------------------------------------------
-
-pup5.x-unit:
-  <<: *pup_5_x
-  <<: *unit_tests
-  <<: *with_SIMP_SPEC_MATRIX_LEVEL_2
-
-pup5.pe-unit:
-  <<: *pup_5_pe
-  <<: *unit_tests
 
 pup6.x-unit:
   <<: *pup_6_x
