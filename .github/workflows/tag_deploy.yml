@@ -11,9 +11,14 @@
 #
 # This pipeline uses the following GitHub Action Secrets:
 #
-#   GitHub Secret variable    Type      Notes
-#   ------------------------  --------  ----------------------------------------
-#   PUPPETFORGE_API_TOKEN     Required
+#   GitHub Secret variable               Notes
+#   -------------------------------      ---------------------------------------
+#   PUPPETFORGE_API_TOKEN
+#   SIMP_CORE_REF_FOR_BUILDING_RPMS      simp-core ref (tag) to use to build
+#                                        RPMs with `rake pkg:single`
+#   SIMP_DEV_GPG_SIGNING_KEY             GPG signing key's secret key
+#   SIMP_DEV_GPG_SIGNING_KEY_ID          User ID (name) of signing key
+#   SIMP_DEV_GPG_SIGNING_KEY_PASSPHRASE  Passphrase to use GPG signing key
 #
 # ------------------------------------------------------------------------------
 #
@@ -55,6 +60,7 @@ jobs:
       - name: "Test that Puppet module can build"
         run: "bundle exec pdk build --force"
 
+
   create-github-release:
     name: Deploy GitHub Release
     needs: [ releng-checks ]
@@ -67,6 +73,16 @@ jobs:
           ref: ${{ github.ref }}
           clean: true
           fetch-depth: 0
+
+      - name: Build Release RPM
+        uses: simp/github-action-build-and-sign-pkg-single-rpm@v1
+        id: build-and-sign-rpm
+        with:
+          gpg_signing_key: ${{ secrets.SIMP_DEV_GPG_SIGNING_KEY }}
+          gpg_signing_key_id: ${{ secrets.SIMP_DEV_GPG_SIGNING_KEY_ID }}
+          gpg_signing_key_passphrase: ${{ secrets.SIMP_DEV_GPG_SIGNING_KEY_PASSPHRASE }}
+          simp_core_ref_for_building_rpms: ${{ secrets.SIMP_CORE_REF_FOR_BUILDING_RPMS }}
+
       - name: Get tag & annotation info (${{github.ref}})
         id: tag-check
         run: |
@@ -99,9 +115,19 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Upload RPM file to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.build-and-sign-rpm.outputs.rpm_file_path }}
+          asset_name: ${{ steps.build-and-sign-rpm.outputs.rpm_file_basename }}
+          asset_content_type: application/octet-stream
+
   deploy-to-puppet-forge:
     name: Deploy PuppetForge Release
-    needs: [ releng-checks ]
+    needs: [ create-github-release ]
     if: github.repository_owner == 'simp'
     runs-on: ubuntu-18.04
     env:
