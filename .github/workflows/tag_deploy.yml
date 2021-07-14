@@ -74,15 +74,6 @@ jobs:
           clean: true
           fetch-depth: 0
 
-      - name: Build Release RPM
-        uses: simp/github-action-build-and-sign-pkg-single-rpm@v1
-        id: build-and-sign-rpm
-        with:
-          gpg_signing_key: ${{ secrets.SIMP_DEV_GPG_SIGNING_KEY }}
-          gpg_signing_key_id: ${{ secrets.SIMP_DEV_GPG_SIGNING_KEY_ID }}
-          gpg_signing_key_passphrase: ${{ secrets.SIMP_DEV_GPG_SIGNING_KEY_PASSPHRASE }}
-          simp_core_ref_for_building_rpms: ${{ secrets.SIMP_CORE_REF_FOR_BUILDING_RPMS }}
-
       - name: Get tag & annotation info (${{github.ref}})
         id: tag-check
         run: |
@@ -115,15 +106,37 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload RPM file to Release
-        uses: actions/upload-release-asset@v1
+  build-and-attach-rpms:
+    name: Trigger RPM release
+    needs: [ create-github-release ]
+    if: github.repository_owner == 'simp'
+    runs-on: ubuntu-18.04
+    env:
+      TARGET_REPO: ${{ github.repository }}
+    steps:
+      - name: Get tag & annotation info (${{github.ref}})
+        id: tag-check
+        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+      - name: Trigger RPM release workflow
+        uses: actions/github-script@v4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          TARGET_TAG: ${{ steps.tag-check.outputs.tag }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.build-and-sign-rpm.outputs.rpm_file_path }}
-          asset_name: ${{ steps.build-and-sign-rpm.outputs.rpm_file_basename }}
-          asset_content_type: application/octet-stream
+          github-token: ${{ secrets.SIMP_AUTO_GITHUB_TOKEN__REPO_SCOPE }}
+          script: |
+            const [owner, repo] = process.env.TARGET_REPO.split('/')
+            await github.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches', {
+              owner: owner,
+              repo: repo,
+              workflow_id: 'release_rpms.yml',
+              ref: process.env.DEFAULT_BRANCH,
+              inputs: {
+                release_tag: process.env.TARGET_TAG
+              }
+            }).then( (result) => {
+              console.log( `== Submitted workflow dispatch: status ${result.status}` )
+            })
 
   deploy-to-puppet-forge:
     name: Deploy PuppetForge Release
