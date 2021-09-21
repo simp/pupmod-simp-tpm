@@ -26,6 +26,7 @@
 #
 # * The CHANGLOG text is altered to remove RPM-style date headers, which don't
 #   render well as markdown on the GitHub release pages
+#
 ---
 name: 'Tag: Release to GitHub & Puppet Forge'
 

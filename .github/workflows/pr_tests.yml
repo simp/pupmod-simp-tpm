@@ -129,7 +129,7 @@ jobs:
 
 #  dump_contexts:
 #    name: 'Examine Context contents'
-#    runs-on: ubuntu-16.04
+#    runs-on: ubuntu-latest
 #    steps:
 #      - name: Dump contexts
 #        env:

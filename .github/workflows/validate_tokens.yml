@@ -29,7 +29,7 @@ on:
 jobs:
   puppetforge:
     name: 'Puppet Forge token authenticates with API'
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     env:
       PUPPETFORGE_API_TOKEN: ${{ secrets.PUPPETFORGE_API_TOKEN }}
       FORGE_USER_AGENT: GitHubActions-ForgeReleng-Workflow/0.4.0 (Purpose/forge-ops-for-${{ github.event.repository.name }})
@@ -42,7 +42,7 @@ jobs:
 
   gitlab:
     name: 'GitLab token has scope for developer'
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     env:
       GITLAB_API_PRIVATE_TOKEN: ${{ secrets.GITLAB_API_PRIVATE_TOKEN }}
       GITLAB_API_URL: ${{ secrets.GITLAB_API_URL }}
@@ -57,7 +57,7 @@ jobs:
 
   github-no-scope:
     name: 'No-scope GitHub token has NO scopes'
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     env:
       GITHUB_ORG: ${{ github.event.organization.login }}
       NO_SCOPE_GITHUB_TOKEN: ${{secrets.NO_SCOPE_GITHUB_TOKEN}}
