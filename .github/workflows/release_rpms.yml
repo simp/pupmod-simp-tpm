@@ -101,16 +101,15 @@ jobs:
             const [owner, repo] = process.env.TARGET_REPO.split('/')
             const tag = process.env.RELEASE_TAG
             const autocreate_release = (process.env.AUTOCREATE_RELEASE == 'yes')
-            var release_id
             const owner_data = { owner: owner, repo: repo }
             const release_data = Object.assign( {tag: tag}, owner_data )
             const create_release_data = Object.assign( {tag_name: tag}, owner_data )
             const tag_data = Object.assign( {ref: `tags/${tag}`}, owner_data )
 
             function id_from_release(data) {
-              console.log( `>> Release for ${owner}/${repo}, tag ${tag}` )
-              console.log( `>>>> release_id: ${data.id}` )
-              return(data.id)
+              console.log( `    >> Release for ${owner}/${repo}, tag ${tag}` )
+              console.log( `    >>>> release_id: ${data.id}` )
+              return data.id
             }
 
             function throw_error_unless_should_autocreate_release(err){
@@ -124,16 +123,19 @@ jobs:
               throw_error_unless_should_autocreate_release(err)
               core.warning(`Can't find release for tag ${tag} and tag exists, auto-creating release`)
 
-              // Must already have a tag
-              github.request( 'GET /repos/{owner}/{repo}/git/matching-refs/{ref}', tag_data ).then (
+              return await github.request( 'GET /repos/{owner}/{repo}/git/matching-refs/{ref}', tag_data ).then (
                 result => {
+                  // Must already have a tag
                   if (result.data.length == 0) { throw `Can't find tag ${tag} in repo ${owner}/${repo}` }
+                  return result
                 }
               ).then(
-                result => {
-                  github.request( 'POST /repos/{owner}/{repo}/releases', create_release_data).then(
+                async result => {
+                  return await github.request( 'POST /repos/{owner}/{repo}/releases', create_release_data).then(
                     result=>{
                       release_id = id_from_release(result.data)
+                      console.log(`    ++ created auto release ${release_id}` )
+                      return release_id
                     },
                     post_err =>{
                       core.error('Error auto-creating release')
@@ -141,21 +143,21 @@ jobs:
                     }
                   )
                 }
-              ).finally(()=>{
-                return(release_id)
-              })
+              )
             }
 
-            github.request('GET /repos/{owner}/{repo}/releases/tags/{tag}', release_data ).then(
-              result => { release_id = id_from_release(result.data) },
-              err => { release_id = autocreate_release_if_appropriate(err) }
-            ).catch( e => { throw e } ).then(
-              result => {
+            await github.request('GET /repos/{owner}/{repo}/releases/tags/{tag}', release_data ).then(
+              async result => { return await id_from_release(result.data) },
+              async err => { return await autocreate_release_if_appropriate(err) }
+            ).then(
+              release_id => {
                 if (!release_id){
                   throw `Could not get release for ${tag} for repo ${owner}:${repo}`
                 }
+                console.log( `    **** release_id: ${release_id}` )
                 core.setOutput('id', release_id)
-              }
+              },
+              err => { throw err }
             )
 
       - name: Checkout code
