@@ -13,7 +13,8 @@
 #   GitHub Secret variable               Notes
 #   -------------------------------      ---------------------------------------
 #   SIMP_CORE_REF_FOR_BUILDING_RPMS      simp-core ref (tag) to use to build
-#                                        RPMs with `rake pkg:single`
+#                                        RPMs with `rake pkg:single` against
+#                                        `build/rpms/dependencies.yaml`
 #   SIMP_DEV_GPG_SIGNING_KEY             GPG signing key's secret key
 #   SIMP_DEV_GPG_SIGNING_KEY_ID          User ID (name) of signing key
 #   SIMP_DEV_GPG_SIGNING_KEY_PASSPHRASE  Passphrase to use GPG signing key
@@ -25,6 +26,7 @@
 #
 # * If triggered by another workflow, it will be necessary to provide a GitHub
 #   access token via the the `target_repo_token` parameter
+#
 #
 ---
 name: 'RELENG: Build + attach RPMs to GitHub Release'
@@ -61,8 +63,16 @@ on:
       target_repo_token:
         description: "API token for uploading to target repo"
         required: false
+      path_to_build:
+        # Example: simp-core builds pupmod from . and simp* from src/assets/simp
+        description: "Subpath to alternative RPM project"
+        required: false
       dry_run:
         description: "Dry run (Test-build RPMs)"
+        required: false
+        default: 'no'
+      verbose:
+        description: 'Verbose RPM builds when "yes"'
         required: false
         default: 'no'
 
@@ -72,28 +82,45 @@ env:
 
 jobs:
   create-and-attach-rpms-to-github-release:
-    name: Build and attach RPMs to Release
+    name: >
+      Build and attach RPMs to Release:
+      ${{ (github.event.inputs.target_repo != null && format('{0}/{1}', github.repository_owner, github.event.inputs.target_repo)) || github.repository }}
+      ${{ github.event.inputs.release_tag }}
+      (build os: ${{ github.event.inputs.build_container_os }})
     runs-on: ubuntu-20.04
     steps:
       - name: "Validate inputs"
+        id: validate-inputs
         run: |
           if ! [[ "$TARGET_REPO" =~ ^[a-z0-9][a-z0-9-]+/[a-z0-9][a-z0-9_-]+$ ]]; then
             printf '::error ::Target repository name has invalid format: %s\n' "$TARGET_REPO"
             exit 88
           fi
 
-          if ! [[ "$RELEASE_TAG" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-(rc|alpha|beta|pre)?([0-9]+)?)?$ ]]; then
-            printf '::error ::Release Tag format is not SemVer or SemVer-ish RPM: %s\n' "$RELEASE_TAG"
+          if [[ "$RELEASE_TAG" =~ ^(simp-|v)?([0-9]+\.[0-9]+\.[0-9]+)(-(rc|RC|[Aa]lpha|[Bb]eta|pre|post)?([0-9]+)?)?$ ]]; then
+            if [ -n "${BASH_REMATCH[5]}" ]; then
+              echo "::set-output name=prebuild_number::${BASH_REMATCH[5]#-}"
+            fi
+            if [ -n "${BASH_REMATCH[3]}" ]; then
+              echo "::set-output name=prebuild_suffix::${BASH_REMATCH[3]#-}"
+            fi
+            if [ -n "${BASH_REMATCH[2]}" ]; then
+              echo "::set-output name=build_semver::${BASH_REMATCH[2]}"
+            fi
+          else
+            printf '::error ::Release Tag format is not SemVer, X.Y.Z-R, X.Y.Z-<prerelease>: "%s"\n' "$RELEASE_TAG"
             exit 88
           fi
 
       - name: >
           Query info for ${{ env.TARGET_REPO }}
-          release ${{ github.event.inputs.release_tag }}
+          release ${{ github.event.inputs.release_tag }} ${{ steps.validate-inputs.outputs.prebuild_suffix }}
+          build os ${{ github.event.inputs.build_container_os }}
           (autocreate_release = '${{ github.event.inputs.autocreate_release }}')
         id: release-api
         env:
           AUTOCREATE_RELEASE: ${{ github.event.inputs.autocreate_release }}
+          PREBUILD_TAG: ${{ steps.validate-inputs.outputs.prebuild_suffix }}
         uses: actions/github-script@v4
         with:
           github-token: ${{ github.event.inputs.target_repo_token || secrets.GITHUB_TOKEN }}
@@ -103,7 +130,8 @@ jobs:
             const autocreate_release = (process.env.AUTOCREATE_RELEASE == 'yes')
             const owner_data = { owner: owner, repo: repo }
             const release_data = Object.assign( {tag: tag}, owner_data )
-            const create_release_data = Object.assign( {tag_name: tag}, owner_data )
+            const prerelease = process.env.PREBUILD_TAG ? true : false
+            const create_release_data = Object.assign( {tag_name: tag, prerelease: prerelease}, owner_data )
             const tag_data = Object.assign( {ref: `tags/${tag}`}, owner_data )
 
             function id_from_release(data) {
@@ -168,7 +196,35 @@ jobs:
           clean: true
           fetch-depth: 0
 
-      - name: 'Build & Sign RPMs for ${{ github.event.inputs.release_tag }} Release'
+      - name: 'Customize RPM Release tag via build/rpm_metadata/release (pre-release only)'
+        if: steps.validate-inputs.outputs.prebuild_suffix
+        env:
+          BUILD_SEMVER: ${{ steps.validate-inputs.outputs.build_semver }}
+          PREBUILD_TAG: ${{ steps.validate-inputs.outputs.prebuild_suffix }}
+          PREBUILD_NUMBER: ${{ steps.validate-inputs.outputs.prebuild_number }}
+        # Note: To accomodate the capabilities of EL7's version of RPM, the
+        # release number is formatted according to the Fedora Packaging
+        # Guidelines' "Traditional versioning" conventions:
+        #
+        #   - https://fedoraproject.org/en-US/packaging-guidelines/Versioning/
+        #   - https://fedoraproject.org/wiki/Package_Versioning_Examples
+        #
+        run: |
+          mkdir -p build/rpm_metadata
+          # Special case for simp-doc's unique data format in /release
+          if [[ "$TARGET_REPO" =~ ^simp\/simp-doc$ ]]; then
+            echo "version: $BUILD_SEMVER" > build/rpm_metadata/release
+            echo "release: 0.${PREBUILD_NUMBER:-$GITHUB_RUN_NUMBER}.${PREBUILD_TAG}" >> build/rpm_metadata/release
+            printf '::warning ::Added file build/rpm_metadata/release with content "%s"\n' "$(cat build/rpm_metadata/release)"
+          else
+            echo "0.${PREBUILD_NUMBER:-$GITHUB_RUN_NUMBER}.${PREBUILD_TAG}" > build/rpm_metadata/release
+            printf '::warning ::Added file build/rpm_metadata/release with content "%s"\n' "$(cat build/rpm_metadata/release)"
+          fi
+
+      - name: >
+          Build & Sign RPMs for
+          ${{ github.event.inputs.release_tag }}
+          Release (${{ github.event.inputs.build_container_os }})
         uses: simp/github-action-build-and-sign-pkg-single-rpm@v2
         id: build-and-sign-rpm
         with:
@@ -177,6 +233,8 @@ jobs:
           gpg_signing_key_passphrase: ${{ secrets.SIMP_DEV_GPG_SIGNING_KEY_PASSPHRASE }}
           simp_core_ref_for_building_rpms: ${{ secrets.SIMP_CORE_REF_FOR_BUILDING_RPMS }}
           simp_builder_docker_image: 'docker.io/simpproject/simp_build_${{ github.event.inputs.build_container_os }}:latest'
+          path_to_build: "${{ (github.event.inputs.path_to_build != null && format('{0}/{1}', github.workspace, github.event.inputs.path_to_build)) || github.workspace }}"
+          verbose: ${{ github.event.inputs.verbose }}
 
       - name: "Wipe all previous assets from GitHub Release (when clean == 'yes')"
         if: ${{ github.event.inputs.clean == 'yes' && github.event.inputs.dry_run != 'yes' }}
@@ -197,7 +255,7 @@ jobs:
               await github.repos.deleteReleaseAsset({ owner, repo, asset_id })
             })
 
-      - name: 'Upload RPM file(s) to GitHub Release (github-script)'
+      - name: "Upload RPM file(s) to GitHub Release (dry_run != 'yes')"
         if: ${{ github.event.inputs.dry_run != 'yes' }}
         uses: actions/github-script@v4
         env:
