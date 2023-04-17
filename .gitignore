@@ -9,7 +9,12 @@
 .idea/
 dist
 /pkg
-/spec/fixtures
+# Read everything in fixtures
+/spec/fixtures/*
+# Un-ignore hieradata
+!/spec/fixtures/hieradata/*
+# Except this one, which is auto-generated
+/spec/fixtures/hieradata/hiera.yaml
 /spec/rp_env
 /.rspec_system
 /.vagrant
