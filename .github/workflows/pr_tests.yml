@@ -32,9 +32,9 @@ env:
 jobs:
   puppet-syntax:
     name: 'Puppet Syntax'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: "Install Ruby ${{matrix.puppet.ruby_version}}"
         uses: ruby/setup-ruby@v1  # ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
         with:
@@ -44,9 +44,9 @@ jobs:
 
   puppet-style:
     name: 'Puppet Style'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: "Install Ruby ${{matrix.puppet.ruby_version}}"
         uses: ruby/setup-ruby@v1
         with:
@@ -58,10 +58,10 @@ jobs:
   ruby-style:
     if: false # TODO Modules will need: rubocop in Gemfile, .rubocop.yml
     name: 'Ruby Style (experimental)'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: "Install Ruby ${{matrix.puppet.ruby_version}}"
         uses: ruby/setup-ruby@v1
         with:
@@ -73,9 +73,9 @@ jobs:
 
   file-checks:
     name: 'File checks'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: 'Install Ruby 2.5'
         uses: ruby/setup-ruby@v1
         with:
@@ -86,9 +86,9 @@ jobs:
 
   releng-checks:
     name: 'RELENG checks'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: 'Install Ruby ${{matrix.puppet.ruby_version}}'
         uses: ruby/setup-ruby@v1
         with:
@@ -97,7 +97,7 @@ jobs:
       - name: 'Tags and changelogs'
         run: |
           bundle exec rake pkg:check_version
-          bundle exec rake pkg:compare_latest_tag
+          bundle exec rake pkg:compare_latest_tag[,true]
           bundle exec rake pkg:create_tag_changelog
       - name: 'Test-build the Puppet module'
         run: 'bundle exec pdk build --force'
@@ -105,7 +105,7 @@ jobs:
   spec-tests:
     name: 'Puppet Spec'
     needs: [puppet-syntax]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         puppet:
@@ -118,7 +118,7 @@ jobs:
     env:
       PUPPET_VERSION: '${{matrix.puppet.puppet_version}}'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: 'Install Ruby ${{matrix.puppet.ruby_version}}'
         uses: ruby/setup-ruby@v1
         with:
