@@ -27,7 +27,7 @@ on:
     types: [opened, reopened, synchronize]
 
 env:
-  PUPPET_VERSION: '~> 6'
+  PUPPET_VERSION: '~> 7'
 
 jobs:
   puppet-syntax:
@@ -38,7 +38,7 @@ jobs:
       - name: "Install Ruby ${{matrix.puppet.ruby_version}}"
         uses: ruby/setup-ruby@v1  # ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
         with:
-          ruby-version: 2.5
+          ruby-version: 2.7
           bundler-cache: true
       - run: "bundle exec rake syntax"
 
@@ -50,7 +50,7 @@ jobs:
       - name: "Install Ruby ${{matrix.puppet.ruby_version}}"
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.5
+          ruby-version: 2.7
           bundler-cache: true
       - run: "bundle exec rake lint"
       - run: "bundle exec rake metadata_lint"
@@ -65,7 +65,7 @@ jobs:
       - name: "Install Ruby ${{matrix.puppet.ruby_version}}"
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.5
+          ruby-version: 2.7
           bundler-cache: true
       - run: |
           bundle show
@@ -76,10 +76,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: 'Install Ruby 2.5'
+      - name: 'Install Ruby 2.7'
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.5
+          ruby-version: 2.7
           bundler-cache: true
       - run: bundle exec rake check:dot_underscore
       - run: bundle exec rake check:test_file
@@ -92,7 +92,7 @@ jobs:
       - name: 'Install Ruby ${{matrix.puppet.ruby_version}}'
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.5
+          ruby-version: 2.7
           bundler-cache: true
       - name: 'Tags and changelogs'
         run: |
@@ -109,12 +109,12 @@ jobs:
     strategy:
       matrix:
         puppet:
-          - label: 'Puppet 6.22 [SIMP 6.6/PE 2019.8]'
-            puppet_version: '~> 6.22.1'
-            ruby_version: '2.5'
           - label: 'Puppet 7.x'
-            puppet_version: '~> 7.0'
+            puppet_version: '~> 7.21.0'
             ruby_version: '2.7'
+          - label: 'Puppet 8.x'
+            puppet_version: '~> 8.0'
+            ruby_version: '3.2'
     env:
       PUPPET_VERSION: '${{matrix.puppet.puppet_version}}'
     steps:
