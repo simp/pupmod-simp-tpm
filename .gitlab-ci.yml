@@ -340,6 +340,7 @@ pup7.pe-unit:
   <<: *pup_7_pe
   <<: *unit_tests
 
+# Commenting until Puppet 8 is released
 #pup8.x-unit:
 #  <<: *pup_8_x
 #  <<: *unit_tests
