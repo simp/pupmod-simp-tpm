@@ -109,14 +109,16 @@ jobs:
     strategy:
       matrix:
         puppet:
-          - label: 'Puppet 7.x'
-            puppet_version: '~> 7.21.0'
+          - label: 'Puppet 7.x [SIMP 6.6/PE 2021.7]'
+            puppet_version: '~> 7.0'
             ruby_version: '2.7'
+            experimental: false
           - label: 'Puppet 8.x'
             puppet_version: '~> 8.0'
-            ruby_version: '3.2'
+            ruby_version: 3.1
+            experimental: true
     env:
-      PUPPET_VERSION: '${{matrix.puppet.puppet_version}}'
+      PUPPET_VERSION: ${{matrix.puppet.puppet_version}}
     steps:
       - uses: actions/checkout@v3
       - name: 'Install Ruby ${{matrix.puppet.ruby_version}}'
@@ -126,6 +128,8 @@ jobs:
           bundler-cache: true
       - run: 'command -v rpm || if command -v apt-get; then sudo apt-get update; sudo apt-get install -y rpm; fi ||:'
       - run: 'bundle exec rake spec'
+        continue-on-error: ${{matrix.puppet.experimental}}
+        fail-fast: false
 
 #  dump_contexts:
 #    name: 'Examine Context contents'

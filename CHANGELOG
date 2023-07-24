@@ -1,3 +1,6 @@
+* Mon Jul 24 2023 Chris Tessmer <chris.tessmer@onyxpoint.com> - 3.4.0
+- Add RockyLinux 8 support
+
 * Sat Oct 15 2022 Trevor Vaughan <trevor@sicura.us> - 3.3.1
 - Update puppet/yum dependency version
 
