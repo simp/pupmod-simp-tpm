@@ -117,10 +117,11 @@ jobs:
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IS_PRERELASE: ${{ steps.tag-check.outputs.prerelease }}
         run: |
           echo "${RELEASE_MESSAGE}" > /tmp/.commit-msg.txt
           args=(--file /tmp/.commit-msg.txt)
-          [[ ${{ steps.tag-check.outputs.prerelease }} == yes ]] && args+=(--prerelease)
+          [[ $IS_PRERELASE == yes ]] && args+=(--prerelease)
 
           hub release create ${args[@]} "$TARGET_TAG"
 
