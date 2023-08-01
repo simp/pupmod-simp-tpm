@@ -28,7 +28,7 @@ class tpm::tboot::policy {
       command => "/usr/bin/sh ${policy_script} ${owner_password}",
       tries   => 1,
       unless  => 'test -f /boot/list.data',
-      require => File["${policy_script}"],
+      require => File[$policy_script],
       notify  => Reboot_notify['Tboot Policy Change']
     }
 
@@ -36,7 +36,7 @@ class tpm::tboot::policy {
 
     file { '/boot/list.data':
       ensure => absent,
-      notify  => Reboot_notify['Tboot Policy Change']
+      notify => Reboot_notify['Tboot Policy Change']
     }
 
   }
