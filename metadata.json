@@ -1,6 +1,6 @@
 {
   "name": "simp-tpm",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "author": "SIMP Team",
   "summary": "Manages TPM 1.2 and TBOOT",
   "license": "Apache-2.0",
@@ -22,22 +22,22 @@
     },
     {
       "name": "simp/simplib",
-      "version_requirement": ">= 3.5.0 < 5.0.0"
+      "version_requirement": ">= 4.9.0 < 5.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 8.0.0 < 9.0.0"
+      "version_requirement": ">= 8.0.0 < 10.0.0"
     },
     {
       "name": "puppet/yum",
-      "version_requirement": ">= 2.0.0 < 6.0.0"
+      "version_requirement": ">= 2.0.0 < 8.0.0"
     }
   ],
   "simp": {
     "optional_dependencies": [
       {
         "name": "simp/rsync",
-        "version_requirement": ">= 6.0.0 < 7.0.0"
+        "version_requirement": ">= 6.1.1 < 7.0.0"
       }
     ]
   },
@@ -58,7 +58,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 6.22.1 < 8.0.0"
+      "version_requirement": ">= 7.0.0 < 9.0.0"
     }
   ]
 }

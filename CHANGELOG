@@ -1,3 +1,11 @@
+* Wed Oct 11 2023 Steven Pritchard <steve@sicura.us> - 3.5.0
+- [puppetsync] Updates for Puppet 8
+  - These updates may include the following:
+    - Update Gemfile
+    - Add support for Puppet 8
+    - Drop support for Puppet 6
+    - Update module dependencies
+
 * Mon Jul 24 2023 Chris Tessmer <chris.tessmer@onyxpoint.com> - 3.4.0
 - Add RockyLinux 8 support
 
