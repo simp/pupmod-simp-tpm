@@ -1,3 +1,7 @@
+* Wed Oct 18 2023 Steven Pritchard <steve@sicura.us> - 3.5.1
+- Replace calls to `File.exists?` with `File.exist?` for compatibility with
+  Ruby 3
+
 * Wed Oct 11 2023 Steven Pritchard <steve@sicura.us> - 3.5.0
 - [puppetsync] Updates for Puppet 8
   - These updates may include the following:
