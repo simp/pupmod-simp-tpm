@@ -180,7 +180,7 @@ module Facter
           raw = get_pubek_unowned
           out['_status'] = 'success: tpm unowned'
         else
-          if File.exists?(pass_file)
+          if File.exist?(pass_file)
             owner_pass = Facter::Core::Execution.execute("cat #{pass_file} 2> /dev/null")
             if owner_pass.eql? ""
               out['_status'] = 'error: the password file is empty'

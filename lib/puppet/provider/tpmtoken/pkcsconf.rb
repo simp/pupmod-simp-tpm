@@ -128,7 +128,7 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
   def flush
     if @property_flush[:ensure] == :absent
       f = File.expand_path('/var/lib/opencryptoki/tpm/root')
-      FileUtils.rm_rf(f) if File.exists?(f)
+      FileUtils.rm_rf(f) if File.exist?(f)
       debug("Deleted interface #{resource[:name]} folder at #{f}")
       @property_hash[:ensure] = :absent
     end

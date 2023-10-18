@@ -177,7 +177,7 @@ describe 'tpm', :type => :fact do
       context 'tpm is owned' do
         before(:each) do
           @tpm_fact.stubs(:get_pubek_owned).returns File.read('spec/files/tpm/tpm_getpubek.txt')
-          File.stubs(:exists?).with('/dev/null/simp/tpm_ownership_owner_pass').returns true
+          File.stubs(:exist?).with('/dev/null/simp/tpm_ownership_owner_pass').returns true
           Facter::Core::Execution.stubs(:execute).with('cat /dev/null/simp/tpm_ownership_owner_pass 2> /dev/null').returns 'twentycharacters0000'
         end
         let(:params) {{ 'enabled' => 1, 'owned' => 1 }}

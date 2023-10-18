@@ -45,18 +45,18 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
     let(:loc) { '/tmp' }
     after :each do
       file = "#{loc}/simp/tpm_ownership_owner_pass"
-      FileUtils.rm(file) if File.exists? file
+      FileUtils.rm(file) if File.exist? file
     end
 
     context 'with advanced_facts => false' do
       it 'should not do a thing' do
-        expect(File.exists?("#{loc}/simp/tpm_ownership_owner_pass")).to be_falsey
+        expect(File.exist?("#{loc}/simp/tpm_ownership_owner_pass")).to be_falsey
       end
     end
     context 'with advanced_facts => true' do
       it 'should drop off the password file' do
         expect(provider.dump_owner_pass(loc)).to match(/twentycharacters0000/)
-        expect(File.exists?("#{loc}/simp/tpm_ownership_owner_pass")).to be_truthy
+        expect(File.exist?("#{loc}/simp/tpm_ownership_owner_pass")).to be_truthy
       end
     end
   end
