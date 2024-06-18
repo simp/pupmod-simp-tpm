@@ -30,9 +30,9 @@ describe Puppet::Type.type(:tpmtoken).provider(:pkcsconf) do
   }
 
   before(:each) do
-    provider.stubs(:pkcsconf).with(['-t']).returns(pkcsconf_t_out)
-    provider.class.stubs(:pkcsconf).with(['-t']).returns(pkcsconf_t_out)
-    provider.stubs(:new).returns(pkcsconf_t_hash[0], pkcsconf_t_hash[1])
+    allow(provider).to receive(:pkcsconf).with(['-t']).and_return(pkcsconf_t_out)
+    allow(provider.class).to receive(:pkcsconf).with(['-t']).and_return(pkcsconf_t_out)
+    allow(provider).to receive(:new).and_return(pkcsconf_t_hash[0], pkcsconf_t_hash[1])
   end
 
   after :each do
