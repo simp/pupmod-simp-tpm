@@ -115,8 +115,8 @@ jobs:
             experimental: false
           - label: 'Puppet 8.x'
             puppet_version: '~> 8.0'
-            ruby_version: 3.1
-            experimental: true
+            ruby_version: '3.2'
+            experimental: false
       fail-fast: false
     env:
       PUPPET_VERSION: ${{matrix.puppet.puppet_version}}

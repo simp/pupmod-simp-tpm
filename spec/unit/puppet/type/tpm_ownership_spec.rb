@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Puppet::Type.type(:tpm_ownership) do
 
   before :each do
-    Facter.stubs(:value).with(:has_tpm).returns(false)
+    allow(Facter).to receive(:value).with(:has_tpm).and_return(false)
   end
 
   context 'should require a boolean for advanced_facts' do

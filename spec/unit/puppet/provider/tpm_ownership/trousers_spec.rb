@@ -20,11 +20,11 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
 
 
   before :each do
-    Puppet.stubs(:[]).with(:vardir).returns('/tmp')
-    Facter.stubs(:value).with(:has_tpm).returns(true)
-    Facter.stubs(:value).with(:kernel).returns('Linux')
-    Facter.stubs(:value).with(:tpm).returns(tpm_fact)
-    FileUtils.stubs(:chown).with('root','root', '/tmp/simp').returns true
+    allow(Puppet).to receive(:[]).with(:vardir).and_return('/tmp')
+    allow(Facter).to receive(:value).with(:has_tpm).and_return(true)
+    allow(Facter).to receive(:value).with(:kernel).and_return('Linux')
+    allow(Facter).to receive(:value).with(:tpm).and_return(tpm_fact)
+    allow(FileUtils).to receive(:chown).with('root','root', '/tmp/simp').and_return true
   end
 
   after :each do
