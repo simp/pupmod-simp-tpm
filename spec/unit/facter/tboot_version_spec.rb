@@ -7,8 +7,8 @@ describe 'tboot_version', :type => :fact do
     before :each do
       Facter.clear
        Facter.clear_messages
-       Facter::Core::Execution.stubs(:which).with('rpm').returns '/usr/bin/rpm'
-       Facter::Core::Execution.stubs(:execute).with('uname -m').returns 'Linux'
+       allow(Facter::Core::Execution).to receive(:which).with('rpm').and_return '/usr/bin/rpm'
+       allow(Facter::Core::Execution).to receive(:execute).with('uname -m').and_return 'Linux'
     end
 
     tboot_installed   = "Name        : tboot
@@ -22,8 +22,8 @@ Architecture: x86_64"
     context 'tboot installed' do
 
       it 'should return the version' do
-        Facter::Core::Execution.stubs(:which).with('txt-stat').returns '/sbin/txt-stat'
-        Facter::Core::Execution.stubs(:execute).with('rpm -qi tboot').returns tboot_installed
+        allow(Facter::Core::Execution).to receive(:which).with('txt-stat').and_return '/sbin/txt-stat'
+        allow(Facter::Core::Execution).to receive(:execute).with('rpm -qi tboot').and_return tboot_installed
         expect(Facter.fact(:tboot_version).value).to eq "1.9.6"
       end
     end
@@ -31,8 +31,8 @@ Architecture: x86_64"
     context 'tboot not installed' do
 
       it 'should return the version' do
-        Facter::Core::Execution.stubs(:which).with('txt-stat').returns nil
-        Facter::Core::Execution.stubs(:execute).with('rpm -qi tboot').returns tboot_notinstalled
+        allow(Facter::Core::Execution).to receive(:which).with('txt-stat').and_return nil
+        allow(Facter::Core::Execution).to receive(:execute).with('rpm -qi tboot').and_return tboot_notinstalled
         expect(Facter.fact(:tboot_version).value).to eq nil 
       end
     end

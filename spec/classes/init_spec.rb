@@ -11,7 +11,7 @@ describe 'tpm' do
       end
 
       # before(:each) do
-      #   File.stubs(:exist?).with('/dev/tpm0').returns(true)
+      #   allow(File).to receive(:exist?).with('/dev/tpm0').and_return(true)
       # end
 
       context 'with default parameters and no physical TPM' do
