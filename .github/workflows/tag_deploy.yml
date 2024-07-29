@@ -30,7 +30,7 @@
 ---
 name: 'Tag: Release to GitHub w/RPMs + Puppet Forge'
 
-on:
+'on':
   push:
     tags:
       # NOTE: These filter patterns aren't actually regexes:
@@ -39,7 +39,7 @@ on:
       - '[0-9]+\.[0-9]+\.[0-9]+\-[a-z]+[0-9]+'
 
 env:
-  PUPPET_VERSION: '~> 7'
+  PUPPET_VERSION: '~> 8'
 
 jobs:
   releng-checks:
@@ -55,7 +55,7 @@ jobs:
           clean: true
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.2
           bundler-cache: true
       - run: bundle exec rake pkg:check_version
       - run: bundle exec rake pkg:compare_latest_tag
@@ -67,7 +67,8 @@ jobs:
 
   create-github-release:
     name: Deploy GitHub Release
-    needs: [ releng-checks ]
+    needs:
+      - releng-checks
     if: github.repository_owner == 'simp'
     runs-on: ubuntu-latest
     outputs:
@@ -117,17 +118,18 @@ jobs:
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          IS_PRERELASE: ${{ steps.tag-check.outputs.prerelease }}
+          IS_PRERELEASE: ${{ steps.tag-check.outputs.prerelease }}
         run: |
           echo "${RELEASE_MESSAGE}" > /tmp/.commit-msg.txt
           args=(-F /tmp/.commit-msg.txt)
-          [[ $IS_PRERELASE == yes ]] && args+=(--prerelease)
+          [[ "$IS_PRERELEASE" == yes ]] && args+=(--prerelease)
 
           gh release create ${args[@]} "$TARGET_TAG"
 
   build-and-attach-rpms:
     name: Trigger RPM release
-    needs: [ create-github-release ]
+    needs:
+      - create-github-release
     if: github.repository_owner == 'simp'
     runs-on: ubuntu-latest
     env:
@@ -165,7 +167,8 @@ jobs:
 
   deploy-to-puppet-forge:
     name: 'Deploy PuppetForge Release'
-    needs: [ create-github-release ]
+    needs:
+      - create-github-release
     if: (github.repository_owner == 'simp') && (needs.create-github-release.outputs.prerelease != 'yes')
     runs-on: ubuntu-latest
     env:
@@ -180,7 +183,7 @@ jobs:
           clean: true
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.2
           bundler-cache: true
       - name: Build Puppet module (PDK)
         run: bundle exec pdk build --force
