@@ -8,13 +8,12 @@
 # ------------------------------------------------------------------------------
 # The testing matrix considers ruby/puppet versions supported by SIMP and PE:
 #
-# https://puppet.com/docs/pe/2019.8/component_versions_in_recent_pe_releases.html
+# https://puppet.com/docs/pe/latest/component_versions_in_recent_pe_releases.html
 # https://puppet.com/misc/puppet-enterprise-lifecycle
-# https://puppet.com/docs/pe/2018.1/overview/getting_support_for_pe.html
 # ------------------------------------------------------------------------------
 # Release       Puppet   Ruby    EOL
-# PE 2019.8     6.28     2.5.7   2023-07 (LTS)
-# PE 2021.7     7.20     2.7.6   TBD (LTS)
+# PE 2021.7     7.30     2.7.8   2025-02 (LTS)
+# PE 2023.8     8.6      3.2.3   TBD
 ---
 
 stages:
@@ -30,29 +29,29 @@ variables:
   # fail.  The intended value for PUPPET_VERSION is provided by the `pup_#` YAML
   # anchors.  If it is still `UNDEFINED`, all the other setting from the job's
   # anchor are also missing.
-  PUPPET_VERSION:    'UNDEFINED' # <- Matrixed jobs MUST override this (or fail)
-  BUNDLER_VERSION:   '2.2.19'
+  PUPPET_VERSION: 'UNDEFINED'  # <- Matrixed jobs MUST override this (or fail)
+  BUNDLER_VERSION: '2.4.22'
   SIMP_MATRIX_LEVEL: '1'
   SIMP_FORCE_RUN_MATRIX: 'no'
 
   # Force dependencies into a path the gitlab-runner user can write to.
   # (This avoids some failures on Runners with misconfigured ruby environments.)
-  GEM_HOME:          .vendor/gem_install
+  GEM_HOME: .vendor/gem_install
   BUNDLE_CACHE_PATH: .vendor/bundle
-  BUNDLE_PATH:       .vendor/bundle
-  BUNDLE_BIN:        .vendor/gem_install/bin
-  BUNDLE_NO_PRUNE:   'true'
+  BUNDLE_PATH: .vendor/bundle
+  BUNDLE_BIN: .vendor/gem_install/bin
+  BUNDLE_NO_PRUNE: 'true'
 
 .snippets:
   before_beaker_google:
     # Logic for beaker-google environments
     - echo -e "\e[0Ksection_start:`date +%s`:before_script05[collapsed=true]\r\e[0KGCP environment checks"
-    - "if [ \"$BEAKER_HYPERVISOR\" ==  google ]; then mkdir -p ~/.ssh; chmod 700 ~/.ssh; test -f ~/.ssh/google_compute_engine || ssh-keygen -f ~/.ssh/google_compute_engine < /dev/null; echo 'gem \"beaker-google\"' >> Gemfile.local ; fi"
+    - "if [ \"$BEAKER_HYPERVISOR\" ==  google ]; then mkdir -p ~/.ssh; chmod 700 ~/.ssh; test -f ~/.ssh/google_compute_engine || ssh-keygen -f ~/.ssh/google_compute_engine < /dev/null; echo 'gem \"beaker-google\"' >> Gemfile.local ; fi"  # yamllint disable rule:line-length
     - echo -e "\e[0Ksection_end:`date +%s`:before_script05\r\e[0K"
 
   before:
     # Print important environment variables that may affect this job
-    - 'ruby -e "puts %(\n\n), %q(=)*80, %(\nSIMP-relevant Environment Variables:\n\n#{e=ENV.keys.grep(/^PUPPET|^SIMP|^BEAKER|MATRIX|GOOGLE/); pad=((e.map{|x| x.size}.max||0)+1); e.map{|v| %(    * #{%(#{v}:).ljust(pad)} #{39.chr + ENV[v] + 39.chr}\n)}.join}\n),  %q(=)*80, %(\n\n)" || :'
+    - 'ruby -e "puts %(\n\n), %q(=)*80, %(\nSIMP-relevant Environment Variables:\n\n#{e=ENV.keys.grep(/^PUPPET|^SIMP|^BEAKER|MATRIX|GOOGLE/); pad=((e.map{|x| x.size}.max||0)+1); e.map{|v| %(    * #{%(#{v}:).ljust(pad)} #{39.chr + ENV[v] + 39.chr}\n)}.join}\n),  %q(=)*80, %(\n\n)" || :'  # yamllint disable rule:line-length
 
     - echo -e "\e[0Ksection_start:`date +%s`:before_script10[collapsed=true]\r\e[0KDiagnostic ruby & gem information"
     # Diagnostic ruby & gem information
@@ -67,7 +66,10 @@ variables:
     #   * Use $MATRIX_RUBY_VERSION ruby, install if not present
     - echo -e "\e[0Ksection_start:`date +%s`:before_script20[collapsed=true]\r\e[0KEnsure RVM & ruby is installed"
     - "if command -v rvm; then if declare -p rvm_path &> /dev/null; then source \"${rvm_path}/scripts/rvm\"; else source \"$HOME/.rvm/scripts/rvm\" || source /etc/profile.d/rvm.sh; fi; fi"
-    - "if command -v rvm && ! grep rvm_install_on_use_flag=1 ~/.rvmrc; then echo rvm_install_on_use_flag=1 >> ~/.rvmrc || echo '== WARNING: ~/.rvmrc is missing rvm_install_on_use_flag=1 and I failed to add it'; fi"
+    - >-
+      if command -v rvm && ! grep rvm_install_on_use_flag=1 ~/.rvmrc; then
+      echo rvm_install_on_use_flag=1 >> ~/.rvmrc
+      || echo '== WARNING: ~/.rvmrc is missing rvm_install_on_use_flag=1 and I failed to add it'; fi
     - "if command -v rvm; then rvm use \"$MATRIX_RUBY_VERSION\"; else echo \"rvm not detected; skipping 'rvm use'\"; fi"
     - 'ruby --version || :'
     - 'gem list sync || :'
@@ -76,13 +78,20 @@ variables:
     # Bundle gems (preferring cached > local > downloaded resources)
     #   * Try to use cached and local resources before downloading dependencies
     - echo -e "\e[0Ksection_start:`date +%s`:before_script30[collapsed=true]\r\e[0KBundle gems (preferring cached > local > downloaded resources)"
-    - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-2.2.6}")'
+    - 'declare GEM_BUNDLER_VER=(-v "~> ${BUNDLER_VERSION:-2.4.22}")'
     - 'declare GEM_INSTALL_CMD=(gem install --no-document)'
     - 'declare BUNDLER_INSTALL_CMD=(bundle install --no-binstubs --jobs $(nproc) "${FLAGS[@]}")'
     - 'mkdir -p ${GEM_HOME} ${BUNDLER_BIN}'
     - 'gem list -ie "${GEM_BUNDLER_VER[@]}" --silent bundler || "${GEM_INSTALL_CMD[@]}" --local "${GEM_BUNDLER_VER[@]}" bundler || "${GEM_INSTALL_CMD[@]}" "${GEM_BUNDLER_VER[@]}" bundler'
     - 'rm -rf pkg/ || :'
-    - 'bundle check || rm -f Gemfile.lock && ("${BUNDLER_INSTALL_CMD[@]}" --local || "${BUNDLER_INSTALL_CMD[@]}" || bundle pristine ||  "${BUNDLER_INSTALL_CMD[@]}") || { echo "PIPELINE: Bundler could not install everything (see log output above)" && exit 99 ; }'
+    - >-
+      bundle check
+      || rm -f Gemfile.lock
+      && ("${BUNDLER_INSTALL_CMD[@]}" --local
+      || "${BUNDLER_INSTALL_CMD[@]}"
+      || bundle pristine
+      || "${BUNDLER_INSTALL_CMD[@]}")
+      || { echo "PIPELINE: Bundler could not install everything (see log output above)" && exit 99 ; }
     - echo -e "\e[0Ksection_end:`date +%s`:before_script30\r\e[0K"
 
     # Diagnostic bundler, ruby, and gem checks:
@@ -179,7 +188,6 @@ variables:
   when: on_success
 
 
-
 # SIMP_MATRIX_LEVEL=1: Intended to run every commit
 .with_SIMP_ACCEPTANCE_MATRIX_LEVEL_1: &with_SIMP_ACCEPTANCE_MATRIX_LEVEL_1
   rules:
@@ -230,7 +238,7 @@ variables:
 
 
 # Puppet Versions
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 .pup_7_x: &pup_7_x
   image: 'ruby:2.7'
@@ -254,9 +262,8 @@ variables:
     MATRIX_RUBY_VERSION: '3.2'
 
 
-
 # Testing Environments
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 .lint_tests: &lint_tests
   stage: 'validation'
@@ -284,7 +291,6 @@ variables:
     - !reference [.snippets, before]
 
 
-
 .acceptance_base: &acceptance_base
   stage: 'acceptance'
   <<: *setup_bundler_env
@@ -299,7 +305,7 @@ variables:
 
 
 # Pipeline / testing matrix
-#=======================================================================
+# =======================================================================
 
 releng_checks:
   <<: *pup_7_x
@@ -317,7 +323,7 @@ releng_checks:
 
 
 # Linting
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 # NOTE: Don't add more lint checks here.
 #       puppet-lint is a validator, not a parser; it includes its own lexer and
@@ -329,7 +335,7 @@ pup-lint:
   <<: *lint_tests
 
 # Unit Tests
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 pup7.x-unit:
   <<: *pup_7_x
@@ -340,10 +346,9 @@ pup7.pe-unit:
   <<: *pup_7_pe
   <<: *unit_tests
 
-# Commenting until Puppet 8 is released
-#pup8.x-unit:
-#  <<: *pup_8_x
-#  <<: *unit_tests
+pup8.x-unit:
+  <<: *pup_8_x
+  <<: *unit_tests
 
 # ------------------------------------------------------------------------------
 #             NOTICE: **This file is maintained with puppetsync**

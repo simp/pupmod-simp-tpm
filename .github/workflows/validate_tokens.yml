@@ -21,7 +21,7 @@
 ---
 name: 'Manual: Validate API tokens'
 
-on:
+'on':
   - workflow_dispatch
 
 jobs:
@@ -66,4 +66,3 @@ jobs:
             echo "::debug ::${scopes}"
             exit 1
           fi
-
