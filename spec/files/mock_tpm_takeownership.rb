@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 def tpm_takeownership
-  system "stty -echo"
+  system 'stty -echo'
 
   print 'Enter owner password: '
   owner_pass = gets.chomp
@@ -20,14 +20,14 @@ def tpm_takeownership
   print "\nConfirm password: "
   srk_pass_confirm = gets.chomp
 
-  if !srk_pass.eql? srk_pass_confirm
+  unless srk_pass.eql? srk_pass_confirm
     puts "\nPasswords didn't match"
     return 255
   end
 
-  system "stty echo"
+  system 'stty echo'
   puts
-  return 0
+  0
 end
 
 if ENV['MOCK_TIMEOUT'] == 'yes'

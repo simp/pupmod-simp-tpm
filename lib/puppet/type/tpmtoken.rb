@@ -17,7 +17,7 @@ Example:
 
   ensurable
 
-  newparam(:label, :namevar => true) do
+  newparam(:label, namevar: true) do
     desc 'The tag of the slot, to be used during initialization'
   end
 
@@ -29,8 +29,8 @@ Example:
   newparam(:so_pin) do
     desc 'Security Officer (SO) PIN for the interface'
     validate do |value|
-      if value.length < 4 or value.length > 8
-        fail("Pin needs to be between 4 and 8 characters")
+      if (value.length < 4) || (value.length > 8)
+        raise('Pin needs to be between 4 and 8 characters')
       end
     end
   end
@@ -38,17 +38,16 @@ Example:
   newparam(:user_pin) do
     desc 'User PIN for the interface'
     validate do |value|
-      if value.length < 4 or value.length > 8
-        fail("Pin needs to be between 4 and 8 characters")
+      if (value.length < 4) || (value.length > 8)
+        raise('Pin needs to be between 4 and 8 characters')
       end
     end
   end
 
   autorequire(:package) do
-    [ 'opencryptoki','opencryptoki-tpmtok','tpm-tools-pkcs11' ]
+    [ 'opencryptoki', 'opencryptoki-tpmtok', 'tpm-tools-pkcs11' ]
   end
   autorequire(:service) do
     'pkcsslotd'
   end
-
 end
