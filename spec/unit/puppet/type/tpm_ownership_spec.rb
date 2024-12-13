@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:tpm_ownership) do
-
   before :each do
     allow(Facter).to receive(:value).with(:has_tpm).and_return(false)
   end
@@ -10,33 +9,33 @@ describe Puppet::Type.type(:tpm_ownership) do
     it 'is given a boolean' do
       expect {
         Puppet::Type.type(:tpm_ownership).new(
-          :name           => 'tpm0',
-          :owner_pass     => 'badpass',
-          :srk_pass       => 'badpass',
-          :advanced_facts => true
+          name: 'tpm0',
+          owner_pass: 'badpass',
+          srk_pass: 'badpass',
+          advanced_facts: true,
         )
-      }.to_not raise_error
+      }.not_to raise_error
     end
     it 'is given a string that is not a boolean' do
       expect {
         Puppet::Type.type(:tpm_ownership).new(
-          :name           => 'tpm0',
-          :owner_pass     => 'badpass',
-          :srk_pass       => 'badpass',
-          :advanced_facts => 'not a boolean'
+          name: 'tpm0',
+          owner_pass: 'badpass',
+          srk_pass: 'badpass',
+          advanced_facts: 'not a boolean',
         )
       }.to raise_error
     end
   end
 
   [:owner_pass, :srk_pass].each do |param|
-    it "should require a string for #{param}" do
+    it "requires a string for #{param}" do
       expect {
         Puppet::Type.type(:tpm_ownership).new(
           :name => 'tpm0',
-          param => ['array','should','fail']
+          param => ['array', 'should', 'fail'],
         )
-      }.to raise_error(/#{param.to_s} must be a String/)
+      }.to raise_error(%r{#{param} must be a String})
     end
   end
 end
