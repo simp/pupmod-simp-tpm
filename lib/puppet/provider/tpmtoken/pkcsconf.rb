@@ -1,18 +1,19 @@
+require 'English'
 Puppet::Type.type(:tpmtoken).provide :pkcsconf do
   desc 'Initialize the TPM PKCS#11 interface'
 
-  confine :has_tpm => true
+  confine has_tpm: true
 
-  defaultfor :kernel => :Linux
+  defaultfor kernel: :Linux
 
-  commands :pkcsconf        => 'pkcsconf'
-  commands :tpmtoken_init   => 'tpmtoken_init'
-  commands :tpm_restrictsrk => 'tpm_restrictsrk'
+  commands pkcsconf: 'pkcsconf'
+  commands tpmtoken_init: 'tpmtoken_init'
+  commands tpm_restrictsrk: 'tpm_restrictsrk'
 
   mk_resource_methods
 
-  def initialize(value={})
-    super(value)
+  def initialize(value = {})
+    super
     @property_flush = {}
   end
 
@@ -22,15 +23,15 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
 
     pty_timeout = 15
 
-    PTY.spawn( cmd ) do |r,w,pid|
+    PTY.spawn(cmd) do |r, w, pid|
       w.sync = true
 
-      expect_array.each do |reg,stdin|
+      expect_array.each do |reg, stdin|
         debug("Starting the expect session with #{cmd}")
         begin
-          r.expect( reg, pty_timeout) do |s|
+          r.expect(reg, pty_timeout) do |s|
             w.puts stdin
-            debug( "Matched: #{s} | Matcher regex: #{reg} | String typed in: #{stdin}" )
+            debug("Matched: #{s} | Matcher regex: #{reg} | String typed in: #{stdin}")
           end
         rescue Errno::EIO
         end
@@ -38,23 +39,20 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
 
       Process.wait(pid) # set $? to the correct exit code
     end
-    exit_code = $?
-    debug( "exit code #{exit_code}" )
+    exit_code = $CHILD_STATUS
+    debug("exit code #{exit_code}")
 
-    if exit_code.exitstatus == 0
-      return true
-    else
-      return false
-    end
+    return true if exit_code.exitstatus == 0
 
+    false
   end
 
   def initialize_token(so_pin, user_pin)
     stdin = [
-      [ /Enter new password:/i, so_pin   ],
-      [ /Confirm password/i,    so_pin   ],
-      [ /Enter new password:/i, user_pin ],
-      [ /Confirm password/i,    user_pin ],
+      [ %r{Enter new password:}i, so_pin   ],
+      [ %r{Confirm password}i,    so_pin   ],
+      [ %r{Enter new password:}i, user_pin ],
+      [ %r{Confirm password}i,    user_pin ],
     ]
     success = tpmtoken_init(stdin)
     debug("Ran tpmtoken_init, which returned exit code: #{success}")
@@ -76,25 +74,25 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
 
     # clean the output so the YAML parser will read it
     cmd.each do |line|
-      line.gsub!(/\t/,' '*4)        # tabs make YAML unhappy
-      line.gsub!(/[^[:print:]]/,'') # removes non-printable characters, like \b
-      line.gsub!(/#/,'')            # the hash symbol also makes YAML misbehave
+      line.gsub!("\t", ' ' * 4) # tabs make YAML unhappy
+      line.gsub!(%r{[^[:print:]]}, '') # removes non-printable characters, like \b
+      line.delete!('#') # the hash symbol also makes YAML misbehave
     end
     debug('Cleaned the text, now loading YAML')
-    y = YAML.load(cmd.join("\n"))
+    y = YAML.safe_load(cmd.join("\n"))
 
     # lowercase all the keys and replace all spaces with _
     lower = []
-    y.values.each do |val|
+    y.each_value do |val|
       debug('Lowercasing all the keys')
-      lower << Hash[val.map{ |k,v| [k.downcase.gsub(/ /, '_').to_sym, v] }]
+      lower << Hash[val.map { |k, v| [k.downcase.tr(' ', '_').to_sym, v] }]
     end
 
     properties = []
     lower.each do |prop|
       # isolate the flags
       prop[:flags_raw] = prop[:flags]
-      prop[:flags]     = prop[:flags_raw].scan(/([A-Z_]{3,})/ ).flatten
+      prop[:flags]     = prop[:flags_raw].scan(%r{([A-Z_]{3,})}).flatten
 
       # these need to be in the type
       prop[:name]   = prop[:label]
@@ -119,7 +117,7 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
   def self.prefetch(resources)
     debug('Prefetching')
     instances.each do |prov|
-      if resource = resources[prov.name]
+      if (resource = resources[prov.name])
         resource.provider = prov
       end
     end
@@ -133,14 +131,13 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
       @property_hash[:ensure] = :absent
     end
 
-    if @property_flush[:ensure] == :present
-      if resource[:so_pin].nil? or resource[:user_pin].nil?
-        raise(Puppet::Error, 'Both PINs are required to use pkcs_slot')
-      end
-      debug('Initializing token using initialize_token')
-      initialize_token( resource[:so_pin], resource[:user_pin] )
-      @property_hash[:ensure] = :present
+    return unless @property_flush[:ensure] == :present
+    if resource[:so_pin].nil? || resource[:user_pin].nil?
+      raise(Puppet::Error, 'Both PINs are required to use pkcs_slot')
     end
+    debug('Initializing token using initialize_token')
+    initialize_token(resource[:so_pin], resource[:user_pin])
+    @property_hash[:ensure] = :present
   end
 
   def exists?
@@ -157,5 +154,4 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
     debug('Destroying resource')
     @property_flush[:ensure] = :absent
   end
-
 end

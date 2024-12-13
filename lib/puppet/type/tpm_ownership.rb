@@ -15,7 +15,7 @@ require 'puppet/parameter/boolean'
 Puppet::Type.newtype(:tpm_ownership) do
   @doc = "A type to manage ownership of a TPM. `owner_pass` is required, while
 `srk_pass` is only necessary if you aren't using Trusted Boot or the PKCS#11
-interface. The SRK (Storage Root Key) password must be  to be null in order to 
+interface. The SRK (Storage Root Key) password must be  to be null in order to
 use those features.
 
 If you need to use a 'well-known' password, make the password equal to the
@@ -32,8 +32,7 @@ Example:
   }
 "
 
-  feature :take_ownership, "The ability to take ownership of a TPM"
-
+  feature :take_ownership, 'The ability to take ownership of a TPM'
 
   newparam(:owner_pass) do
     desc 'The owner password of the TPM'
@@ -54,30 +53,27 @@ Example:
     defaultto 'well-known'
   end
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'The name of the resource - usually tpm0, the default device.'
     defaultto 'tpm0'
   end
 
-  newparam(:advanced_facts, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+  newparam(:advanced_facts, boolean: true, parent: Puppet::Parameter::Boolean) do
     desc "Enabling the advanced facts will write your owner password to a file on the
       system, only readable by the root user. It will be used to query the
       TPM using trousers."
     defaultto 'false'
   end
 
-
   newproperty(:owned) do
     desc 'Ownership status of the TPM'
-    newvalues(:true,:false)
+    newvalues(:true, :false)
   end
 
-
   autorequire(:package) do
-    [ 'trousers','tpm-tools' ]
+    [ 'trousers', 'tpm-tools' ]
   end
   autorequire(:service) do
     'tcsd'
   end
-
 end
