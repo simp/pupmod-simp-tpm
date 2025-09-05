@@ -49,7 +49,7 @@ jobs:
     steps:
       - name: "Assert '${{ github.ref }}' is a tag"
         run: '[[ "$GITHUB_REF" =~ ^refs/tags/ ]] || { echo "::error ::GITHUB_REF is not a tag: ${GITHUB_REF}"; exit 1 ; }'
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.ref }}
           clean: true
@@ -75,7 +75,7 @@ jobs:
       tag: ${{ steps.tag-check.outputs.tag }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.ref }}
           clean: true
@@ -174,7 +174,7 @@ jobs:
       FORGE_API_URL: https://forgeapi.puppet.com/v3/releases
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.ref }}
           clean: true
