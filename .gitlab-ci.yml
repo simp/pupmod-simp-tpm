@@ -276,7 +276,7 @@ variables:
     - 'bundle exec rake spec'
 
 .beaker: &beaker
-  image: ruby:2.7.2  # must be 2.7.2 if running in GCP
+  image: ruby:2.7.8  # must be 2.7.2 if running in GCP
   tags:
     - beaker
   before_script:
