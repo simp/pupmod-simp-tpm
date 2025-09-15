@@ -41,12 +41,13 @@ describe 'tpm::tboot' do
           it { is_expected.to contain_class('tpm::tboot::grub::grub2') }
           it { is_expected.to contain_exec('Update grub config') }
           it {
-            is_expected.to contain_file('/etc/default/grub-tboot').with_content(<<-EOF.gsub(%r{^\s+}, '').strip,
+            is_expected.to contain_file('/etc/default/grub-tboot').with_content(
+              <<-EOF.gsub(%r{^\s+}, '').strip,
             GRUB_CMDLINE_TBOOT="logging=serial,memory,vga min_ram=0x2000000"
             GRUB_CMDLINE_LINUX_TBOOT="intel_iommu=on"
             GRUB_TBOOT_POLICY_DATA=""
           EOF
-                                                                               )
+            )
           }
           it { is_expected.to contain_class('tpm::tboot::policy') } # \
           it { is_expected.to contain_file('/boot/list.data').with_ensure('absent') }
@@ -75,7 +76,7 @@ describe 'tpm::tboot' do
         let(:params) do
           {
             tboot_version: '1.9.6',
-         create_policy: true
+            create_policy: true,
           }
         end
 
@@ -86,28 +87,29 @@ describe 'tpm::tboot' do
         let(:params) do
           {
             tboot_version: '1.9.7',
-         tboot_boot_options: ['logging=vga,memory', 'garbage'],
-         additional_boot_options: ['logging=vga,memory', 'garbage'],
-         create_policy: true,
-         lock_kernel_packages: false
+            tboot_boot_options: [ 'logging=vga,memory', 'garbage', ],
+            additional_boot_options: [ 'logging=vga,memory', 'garbage', ],
+            create_policy: true,
+            lock_kernel_packages: false,
           }
         end
 
         if os_facts[:os][:release][:major].to_i == 7
           it {
-            is_expected.to contain_file('/etc/default/grub-tboot').with_content(<<-EOF.gsub(%r{^\s+}, '').strip,
+            is_expected.to contain_file('/etc/default/grub-tboot').with_content(
+              <<-EOF.gsub(%r{^\s+}, '').strip,
             GRUB_CMDLINE_TBOOT="logging=vga,memory garbage"
             GRUB_CMDLINE_LINUX_TBOOT="logging=vga,memory garbage"
             GRUB_TBOOT_POLICY_DATA="list.data"
           EOF
-                                                                               )
+            )
           }
           it { is_expected.to contain_file('/root/txt/create_lcp_boot_policy.sh') }
           it {
-            is_expected.to contain_exec('Generate and install tboot policy').with({
-                                                                                    'require' => 'File[/root/txt/create_lcp_boot_policy.sh]',
-            'notify' => 'Reboot_notify[Tboot Policy Change]'
-                                                                                  })
+            is_expected.to contain_exec('Generate and install tboot policy').with(
+              'require' => 'File[/root/txt/create_lcp_boot_policy.sh]',
+              'notify' => 'Reboot_notify[Tboot Policy Change]',
+            )
           }
           it 'ensures version lock is removed' do
             contain_yum__versionlock('*:kernel-*-*.*').with_ensure('absent')
@@ -133,8 +135,8 @@ describe 'tpm::tboot' do
         let(:params) do
           {
             tboot_version: '1.9.7',
-         sinit_source: 'https://kickstart-server.domain/ks/2nd_gen_i5_i7_SINIT_51.BIN',
-         sinit_name: '2nd_gen_i5_i7_SINIT_51.BIN'
+            sinit_source: 'https://kickstart-server.domain/ks/2nd_gen_i5_i7_SINIT_51.BIN',
+            sinit_name: '2nd_gen_i5_i7_SINIT_51.BIN',
           }
         end
 
@@ -151,9 +153,9 @@ describe 'tpm::tboot' do
         let(:params) do
           {
             tboot_version: '1.9.7',
-         sinit_source: 'rsync',
-         sinit_name: '2nd_gen_i5_i7_SINIT_51.BIN',
-         rsync_server: '127.0.0.1',
+            sinit_source: 'rsync',
+            sinit_name: '2nd_gen_i5_i7_SINIT_51.BIN',
+            rsync_server: '127.0.0.1',
           }
         end
 

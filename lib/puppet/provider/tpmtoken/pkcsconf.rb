@@ -33,7 +33,7 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
             w.puts stdin
             debug("Matched: #{s} | Matcher regex: #{reg} | String typed in: #{stdin}")
           end
-        rescue Errno::EIO
+        rescue Errno::EIO # rubocop:disable Lint/SuppressedException
         end
       end
 

@@ -150,7 +150,7 @@ Layout/FirstArgumentIndentation:
 Layout/HashAlignment:
   Enabled: false
 Layout/HeredocIndentation:
-  Enabled: false
+  Enabled: true
 Layout/LeadingEmptyLines:
   Enabled: false
 Layout/SpaceAroundMethodCallOperator:
@@ -480,7 +480,7 @@ Style/TrailingBodyOnMethodDefinition:
 Style/TrailingBodyOnModule:
   Enabled: false
 Style/TrailingCommaInHashLiteral:
-  Enabled: false
+  EnforcedStyleForMultiline: comma
 Style/TrailingMethodEndStatement:
   Enabled: false
 Style/UnpackFirst:

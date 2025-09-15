@@ -71,7 +71,10 @@ Example:
   end
 
   autorequire(:package) do
-    [ 'trousers', 'tpm-tools' ]
+    [
+      'trousers',
+      'tpm-tools',
+    ]
   end
   autorequire(:service) do
     'tcsd'

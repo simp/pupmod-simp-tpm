@@ -3,12 +3,12 @@ require 'json'
 
 describe Puppet::Type.type(:tpmtoken).provider(:pkcsconf) do
   let(:resource) do
-    Puppet::Type.type(:tpmtoken).new({
-                                       name: 'IBM PKCS11 TPM Token',
+    Puppet::Type.type(:tpmtoken).new(
+      name: 'IBM PKCS11 TPM Token',
       so_pin: '123456',
       user_pin: '12345678',
-      provider: 'pkcsconf'
-                                     })
+      provider: 'pkcsconf',
+    )
   end
   let(:provider) { resource.provider }
 

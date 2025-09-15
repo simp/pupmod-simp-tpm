@@ -8,8 +8,8 @@ class Facter::TPM::Util
 
     @result = {
       'sys_path' => sys_path,
-      'version'  => version,
-      'status'   => status
+      'version' => version,
+      'status' => status,
     }
 
     @result['pubek'] = pubek(@result['status'])
@@ -134,7 +134,11 @@ class Facter::TPM::Util
   def status
     require 'yaml'
 
-    ignore_list = [ 'pubek', 'cancel', 'options' ]
+    ignore_list = [
+      'pubek',
+      'cancel',
+      'options',
+    ]
     files = Dir.glob("#{@sys_path}/device/*")
 
     out = {}
