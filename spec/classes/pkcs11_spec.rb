@@ -8,10 +8,10 @@ describe 'tpm::pkcs11' do
       it { is_expected.to create_package('opencryptoki-tpmtok') }
       it { is_expected.to create_package('tpm-tools-pkcs11') }
       it {
-        is_expected.to create_service('pkcsslotd').with({
-                                                          ensure: 'running',
-        enable: true
-                                                        })
+        is_expected.to create_service('pkcsslotd').with(
+          ensure: 'running',
+          enable: true,
+        )
       }
     end
   end

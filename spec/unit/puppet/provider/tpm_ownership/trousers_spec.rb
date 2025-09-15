@@ -9,12 +9,12 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
   end
 
   let(:resource) do
-    Puppet::Type.type(:tpm_ownership).new({
-                                            name: 'tpm0',
+    Puppet::Type.type(:tpm_ownership).new(
+      name: 'tpm0',
       owner_pass: 'twentycharacters0000',
       srk_pass: 'twentycharacters1111',
-      provider: 'trousers'
-                                          })
+      provider: 'trousers',
+    )
   end
 
   before :each do
@@ -31,13 +31,13 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
 
   describe 'dump_owner_pass' do
     let(:resource) do
-      Puppet::Type.type(:tpm_ownership).new({
-                                              name: 'tpm0',
+      Puppet::Type.type(:tpm_ownership).new(
+        name: 'tpm0',
         owner_pass: 'twentycharacters0000',
         srk_pass: 'twentycharacters1111',
         advanced_facts: true,
-        provider: 'trousers'
-                                            })
+        provider: 'trousers',
+      )
     end
     let(:loc) { '/tmp' }
 
@@ -83,77 +83,77 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
   describe 'generate_args' do
     context 'both passwords specified' do
       let(:resource) do
-        Puppet::Type.type(:tpm_ownership).new({
-                                                name: 'tpm0',
+        Puppet::Type.type(:tpm_ownership).new(
+          name: 'tpm0',
           owner_pass: 'twentycharacters0000',
           srk_pass: 'twentycharacters1111',
-          provider: 'trousers'
-                                              })
+          provider: 'trousers',
+        )
       end
 
       it 'generates patterns for owner and srk passwords' do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-                              [ %r{owner password}i,   'twentycharacters0000' ],
-                              [ %r{Confirm password}i, 'twentycharacters0000' ],
-                              [ %r{SRK password}i,     'twentycharacters1111' ],
-                              [ %r{Confirm password}i, 'twentycharacters1111' ],
-                            ])
+          [ %r{owner password}i,   'twentycharacters0000' ],
+          [ %r{Confirm password}i, 'twentycharacters0000' ],
+          [ %r{SRK password}i,     'twentycharacters1111' ],
+          [ %r{Confirm password}i, 'twentycharacters1111' ],
+        ])
         expect(cmd).to eq('tpm_takeownership')
       end
     end
 
     context 'well-known owner password' do
       let(:resource) do
-        Puppet::Type.type(:tpm_ownership).new({
-                                                name: 'tpm0',
+        Puppet::Type.type(:tpm_ownership).new(
+          name: 'tpm0',
           owner_pass: 'well-known',
           srk_pass: 'twentycharacters1111',
-          provider: 'trousers'
-                                              })
+          provider: 'trousers',
+        )
       end
 
       it 'generates patterns for only SRK pass and a proper cmd' do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-                              [ %r{SRK password}i,     'twentycharacters1111' ],
-                              [ %r{Confirm password}i, 'twentycharacters1111' ],
-                            ])
+          [ %r{SRK password}i,     'twentycharacters1111' ],
+          [ %r{Confirm password}i, 'twentycharacters1111' ],
+        ])
         expect(cmd).to eq('tpm_takeownership -y')
       end
     end
 
     context 'well-known SRK password' do
       let(:resource) do
-        Puppet::Type.type(:tpm_ownership).new({
-                                                name: 'tpm0',
+        Puppet::Type.type(:tpm_ownership).new(
+          name: 'tpm0',
           owner_pass: 'twentycharacters0000',
           srk_pass: 'well-known',
-          provider: 'trousers'
-                                              })
+          provider: 'trousers',
+        )
       end
 
       it 'generates patterns for only owner pass and a proper cmd' do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-                              [ %r{owner password}i,   'twentycharacters0000' ],
-                              [ %r{Confirm password}i, 'twentycharacters0000' ],
-                            ])
+          [ %r{owner password}i,   'twentycharacters0000' ],
+          [ %r{Confirm password}i, 'twentycharacters0000' ],
+        ])
         expect(cmd).to eq('tpm_takeownership -z')
       end
     end
 
     context 'both well-known passwords' do
       let(:resource) do
-        Puppet::Type.type(:tpm_ownership).new({
-                                                name: 'tpm0',
+        Puppet::Type.type(:tpm_ownership).new(
+          name: 'tpm0',
           owner_pass: 'well-known',
           srk_pass: 'well-known',
-          provider: 'trousers'
-                                              })
+          provider: 'trousers',
+        )
       end
 
       it 'generates no patterns and a proper cmd' do

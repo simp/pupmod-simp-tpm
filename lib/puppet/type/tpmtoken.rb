@@ -45,7 +45,11 @@ Example:
   end
 
   autorequire(:package) do
-    [ 'opencryptoki', 'opencryptoki-tpmtok', 'tpm-tools-pkcs11' ]
+    [
+      'opencryptoki',
+      'opencryptoki-tpmtok',
+      'tpm-tools-pkcs11',
+    ]
   end
   autorequire(:service) do
     'pkcsslotd'
