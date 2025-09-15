@@ -12,7 +12,7 @@ Facter.add('tboot_version') do
   setcode do
     if Facter::Core::Execution.which('txt-stat')
       rpminfo = Facter::Core::Execution.execute('rpm -qi tboot').split("\n")
-      parse_line(rpminfo, /Version/)
+      parse_line(rpminfo, %r{Version})
     end
   end
 end
