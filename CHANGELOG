@@ -1,3 +1,6 @@
+* Wed Sep 17 2025 Steven Pritchard <steve@sicura.us> - 3.5.2
+- Update dependencies
+
 * Wed Oct 18 2023 Steven Pritchard <steve@sicura.us> - 3.5.1
 - Replace calls to `File.exists?` with `File.exist?` for compatibility with
   Ruby 3

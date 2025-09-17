@@ -42,7 +42,7 @@ class tpm::tboot::policy {
   }
 
   reboot_notify { 'Tboot Policy Change':
-    reason    => 'Trusted tboot policy has been changed, please reboot to complete a verified launch'
+    reason => 'Trusted tboot policy has been changed, please reboot to complete a verified launch'
   }
 
 }
