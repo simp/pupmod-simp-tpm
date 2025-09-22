@@ -47,7 +47,7 @@ Puppet::Type.type(:tpm_ownership).provide(:trousers) do
   # @param command [String] The command to interact with
   # @param stdin [Array<Regex, String>] List of pairs [regex, string] to print as stdin
   # @return [Boolean] <= 0 is true, anything else is false
-  def tpm_takeownership(expect_array, cmd = 'tpm_takeownership')
+  def tpm_takeownership(expect_array, cmd = 'tpm_takeownership') # rubocop:disable Naming/PredicateMethod
     require 'expect'
     require 'pty'
 

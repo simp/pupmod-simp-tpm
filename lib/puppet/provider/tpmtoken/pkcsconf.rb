@@ -17,7 +17,7 @@ Puppet::Type.type(:tpmtoken).provide :pkcsconf do
     @property_flush = {}
   end
 
-  def tpmtoken_init(expect_array, cmd = 'tpmtoken_init')
+  def tpmtoken_init(expect_array, cmd = 'tpmtoken_init') # rubocop:disable Naming/PredicateMethod
     require 'expect'
     require 'pty'
 
