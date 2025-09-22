@@ -1,3 +1,6 @@
+* Mon Sep 22 2025 Steven Pritchard <steve@sicura.us> - 3.5.3
+- Cleanup for rubocop
+
 * Wed Sep 17 2025 Steven Pritchard <steve@sicura.us> - 3.5.2
 - Update dependencies
 
