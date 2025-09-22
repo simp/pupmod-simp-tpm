@@ -87,8 +87,8 @@ describe 'tpm::tboot' do
         let(:params) do
           {
             tboot_version: '1.9.7',
-            tboot_boot_options: [ 'logging=vga,memory', 'garbage', ],
-            additional_boot_options: [ 'logging=vga,memory', 'garbage', ],
+            tboot_boot_options: [ 'logging=vga,memory', 'garbage' ],
+            additional_boot_options: [ 'logging=vga,memory', 'garbage' ],
             create_policy: true,
             lock_kernel_packages: false,
           }

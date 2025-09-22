@@ -86,15 +86,15 @@ Puppet::Type.type(:tpm_ownership).provide(:trousers) do
     srk_pass   = resource[:srk_pass]
 
     if owner_pass != 'well-known'
-  stdin << [ %r{owner password}i,   owner_pass ]
-  stdin << [ %r{Confirm password}i, owner_pass ]
+      stdin << [ %r{owner password}i,   owner_pass ]
+      stdin << [ %r{Confirm password}i, owner_pass ]
     else
       cmd << '-y'
     end
 
     if srk_pass != 'well-known'
-  stdin << [ %r{SRK password}i,     srk_pass   ]
-  stdin << [ %r{Confirm password}i, srk_pass   ]
+      stdin << [ %r{SRK password}i, srk_pass ]
+      stdin << [ %r{Confirm password}i, srk_pass ]
     else
       cmd << '-z'
     end

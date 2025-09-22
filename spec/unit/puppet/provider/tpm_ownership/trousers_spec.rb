@@ -95,11 +95,11 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-          [ %r{owner password}i,   'twentycharacters0000' ],
-          [ %r{Confirm password}i, 'twentycharacters0000' ],
-          [ %r{SRK password}i,     'twentycharacters1111' ],
-          [ %r{Confirm password}i, 'twentycharacters1111' ],
-        ])
+                              [ %r{owner password}i,   'twentycharacters0000' ],
+                              [ %r{Confirm password}i, 'twentycharacters0000' ],
+                              [ %r{SRK password}i,     'twentycharacters1111' ],
+                              [ %r{Confirm password}i, 'twentycharacters1111' ],
+                            ])
         expect(cmd).to eq('tpm_takeownership')
       end
     end
@@ -118,9 +118,9 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-          [ %r{SRK password}i,     'twentycharacters1111' ],
-          [ %r{Confirm password}i, 'twentycharacters1111' ],
-        ])
+                              [ %r{SRK password}i,     'twentycharacters1111' ],
+                              [ %r{Confirm password}i, 'twentycharacters1111' ],
+                            ])
         expect(cmd).to eq('tpm_takeownership -y')
       end
     end
@@ -139,9 +139,9 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
         stdin, cmd = provider.generate_args
 
         expect(stdin).to eq([
-          [ %r{owner password}i,   'twentycharacters0000' ],
-          [ %r{Confirm password}i, 'twentycharacters0000' ],
-        ])
+                              [ %r{owner password}i,   'twentycharacters0000' ],
+                              [ %r{Confirm password}i, 'twentycharacters0000' ],
+                            ])
         expect(cmd).to eq('tpm_takeownership -z')
       end
     end

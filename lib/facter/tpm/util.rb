@@ -1,5 +1,12 @@
 # TPM Utility Functions
-#
+
+# Facter namespace
+module Facter; end
+
+# Facter::TPM namespace
+module Facter::TPM; end
+
+# Facter::TPM::Util class
 class Facter::TPM::Util
   attr_accessor :result
 
