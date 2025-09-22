@@ -96,13 +96,11 @@ describe 'tpm::tboot' do
 
         if os_facts[:os][:release][:major].to_i == 7
           it {
-            is_expected.to contain_file('/etc/default/grub-tboot').with_content(
-              <<~EOF,
-                GRUB_CMDLINE_TBOOT="logging=vga,memory garbage"
-                GRUB_CMDLINE_LINUX_TBOOT="logging=vga,memory garbage"
-                GRUB_TBOOT_POLICY_DATA="list.data"
-              EOF
-            )
+            is_expected.to contain_file('/etc/default/grub-tboot').with_content(<<~EOF.chomp)
+              GRUB_CMDLINE_TBOOT="logging=vga,memory garbage"
+              GRUB_CMDLINE_LINUX_TBOOT="logging=vga,memory garbage"
+              GRUB_TBOOT_POLICY_DATA="list.data"
+            EOF
           }
           it { is_expected.to contain_file('/root/txt/create_lcp_boot_policy.sh') }
           it {
