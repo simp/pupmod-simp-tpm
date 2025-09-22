@@ -14,7 +14,7 @@ group :syntax do
   gem 'metadata-json-lint'
   gem 'puppet-lint-trailing_comma-check', require: false
   gem 'rubocop', '~> 1.80.0'
-  gem 'rubocop-performance', '~> 1.23.0'
+  gem 'rubocop-performance', '~> 1.26.0'
   gem 'rubocop-rake', '~> 0.6.0'
   gem 'rubocop-rspec', '~> 3.2.0'
 end
