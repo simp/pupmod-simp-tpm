@@ -9,7 +9,7 @@
 # @author Nick Miller <nick.miller@onyxpoint.com>
 #
 Facter.add('tpm') do
-  confine :has_tpm => true
+  confine has_tpm: true
   confine do
     Facter::Core::Execution.which('tpm_version')
   end

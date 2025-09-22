@@ -6,7 +6,7 @@
 # txt['pubkey'] not sure what this is for
 #
 Facter.add('tboot') do
-  confine :has_tpm => true
+  confine has_tpm: true
   confine do
     Facter::Core::Execution.which('txt-stat')
   end
@@ -23,9 +23,9 @@ Facter.add('tboot') do
 
     ret = {}
     ret['tboot_session']   = txt_stat.length > 60
-    ret['measured_launch'] = parse_line(txt_stat, /TXT measured launch/) == 'true' ? true : false
-    ret['errorcode']       = parse_line(txt_stat, /ERRORCODE/)
-    ret['pubkey']          = pubkey_raw.each { |l| l.strip! }.join(' ').gsub(/ /,'')
+    ret['measured_launch'] = (parse_line(txt_stat, %r{TXT measured launch}) == 'true') ? true : false
+    ret['errorcode']       = parse_line(txt_stat, %r{ERRORCODE})
+    ret['pubkey']          = pubkey_raw.each { |l| l.strip! }.join(' ').delete(' ')
     ret
   end
 end

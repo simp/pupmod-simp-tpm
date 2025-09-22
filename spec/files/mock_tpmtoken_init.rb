@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 def tpmtoken_init
-  system "stty -echo"
+  system 'stty -echo'
 
   puts 'A new TPM security officer password is needed. The password must be between 4 and 8 characters in length.'
   print 'Enter new password: '
@@ -24,21 +24,19 @@ def tpmtoken_init
   print "\nConfirm password: "
   srk_pass_confirm = gets.chomp
 
-  if !srk_pass.eql? srk_pass_confirm
+  unless srk_pass.eql? srk_pass_confirm
     puts "\nPasswords didn't match"
     return 1
   end
 
   sleep 2
 
-  system "stty echo"
+  system 'stty echo'
   puts
-  return 0
+  0
 end
 
 if ENV['MOCK_TIMEOUT'] == 'yes'
   sleep 30
-  exit tpmtoken_init
-else
-  exit tpmtoken_init
 end
+exit tpmtoken_init
