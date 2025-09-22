@@ -125,11 +125,11 @@ describe 'tpm', type: :fact do
       end
       it 'has structured values for caps' do
         expect(tpm_fact.send(:status)['caps']).not_to be nil
-        expect(tpm_fact.send(:status)['caps']).to eq({
-                                                       'manufacturer' => 1_398_033_696,
+        expect(tpm_fact.send(:status)['caps']).to eq(
+          'manufacturer'     => 1_398_033_696,
           'tcg_version'      => 1.2,
           'firmware_version' => 8.28,
-                                                     })
+        )
       end
       it 'has simple keys for the rest of the file' do
         expect(tpm_fact.send(:status).keys).to contain_exactly(

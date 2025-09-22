@@ -94,12 +94,14 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
       it 'generates patterns for owner and srk passwords' do
         stdin, cmd = provider.generate_args
 
-        expect(stdin).to eq([
-                              [ %r{owner password}i,   'twentycharacters0000' ],
-                              [ %r{Confirm password}i, 'twentycharacters0000' ],
-                              [ %r{SRK password}i,     'twentycharacters1111' ],
-                              [ %r{Confirm password}i, 'twentycharacters1111' ],
-                            ])
+        expect(stdin).to eq(
+          [
+            [ %r{owner password}i,   'twentycharacters0000' ],
+            [ %r{Confirm password}i, 'twentycharacters0000' ],
+            [ %r{SRK password}i,     'twentycharacters1111' ],
+            [ %r{Confirm password}i, 'twentycharacters1111' ],
+          ],
+        )
         expect(cmd).to eq('tpm_takeownership')
       end
     end
@@ -117,10 +119,12 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
       it 'generates patterns for only SRK pass and a proper cmd' do
         stdin, cmd = provider.generate_args
 
-        expect(stdin).to eq([
-                              [ %r{SRK password}i,     'twentycharacters1111' ],
-                              [ %r{Confirm password}i, 'twentycharacters1111' ],
-                            ])
+        expect(stdin).to eq(
+          [
+            [ %r{SRK password}i,     'twentycharacters1111' ],
+            [ %r{Confirm password}i, 'twentycharacters1111' ],
+          ],
+        )
         expect(cmd).to eq('tpm_takeownership -y')
       end
     end
@@ -138,10 +142,12 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
       it 'generates patterns for only owner pass and a proper cmd' do
         stdin, cmd = provider.generate_args
 
-        expect(stdin).to eq([
-                              [ %r{owner password}i,   'twentycharacters0000' ],
-                              [ %r{Confirm password}i, 'twentycharacters0000' ],
-                            ])
+        expect(stdin).to eq(
+          [
+            [ %r{owner password}i,   'twentycharacters0000' ],
+            [ %r{Confirm password}i, 'twentycharacters0000' ],
+          ],
+        )
         expect(cmd).to eq('tpm_takeownership -z')
       end
     end
@@ -168,10 +174,12 @@ describe Puppet::Type.type(:tpm_ownership).provider(:trousers) do
   describe 'read_sys' do
     it 'constructs an instances hash from /sys/class/tpm' do
       mock_sys = 'spec/files/tpm/'
-      expected = [{
-        name: 'tpm',
-        owned: :true,
-      }]
+      expected = [
+        {
+          name: 'tpm',
+          owned: :true,
+        },
+      ]
       expect(provider.class.read_sys(mock_sys)).to eq(expected)
     end
   end
