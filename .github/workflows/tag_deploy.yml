@@ -55,7 +55,7 @@ jobs:
           clean: true
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.8
+          ruby-version: 3.4.8
           bundler-cache: true
       - run: bundle exec rake pkg:check_version
       - run: bundle exec rake pkg:compare_latest_tag
@@ -180,7 +180,7 @@ jobs:
           clean: true
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.8
+          ruby-version: 3.4.8
           bundler-cache: true
       - name: Build Puppet module (PDK)
         run: bundle exec pdk build --force
